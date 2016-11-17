@@ -1,2 +1,6 @@
 package: github.com/antham/chyle
-import: []
+import:
+- package: github.com/spf13/cobra
+- package: github.com/spf13/viper
+- package: gopkg.in/src-d/go-git.v4
+  version: ^4.0.0-rc4
