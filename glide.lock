@@ -1,5 +1,5 @@
 hash: 01c721c041afce7ba4105538f7781ec387a08a144dd8d39a9d522ec8d123e70f
-updated: 2016-11-17T23:23:58.815862228+01:00
+updated: 2016-11-18T21:14:07.375516906+01:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197
@@ -24,6 +24,10 @@ imports:
   version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
 - name: github.com/pelletier/go-toml
   version: 45932ad32dfdd20826f5671da37a5f3ce9f26a8d
+- name: github.com/sergi/go-diff
+  version: 552b4e9bbdca9e5adafd95ee98c822fdd11b330b
+  subpackages:
+  - diffmatchpatch
 - name: github.com/spf13/afero
   version: 06b7e5f50606ecd49148a01a6008942d9b669217
   subpackages:
@@ -38,6 +42,20 @@ imports:
   version: 5ccb023bc27df288a957c5e994cd44fd19619465
 - name: github.com/spf13/viper
   version: 651d9d916abc3c3d6a91a12549495caba5edffd2
+- name: github.com/src-d/gcfg
+  version: f187355171c936ac84a82793659ebb4936bc1c23
+  subpackages:
+  - scanner
+  - token
+  - types
+- name: golang.org/x/crypto
+  version: 9477e0b78b9ac3d0b03822fd95422e2fe07627cd
+  subpackages:
+  - curve25519
+  - ed25519
+  - ed25519/internal/edwards25519
+  - ssh
+  - ssh/agent
 - name: golang.org/x/sys
   version: b699b7032584f0953262cb2788a0ca19bb494703
   subpackages:
@@ -49,6 +67,32 @@ imports:
   - unicode/norm
 - name: gopkg.in/src-d/go-git.v4
   version: 18f9bb53a0b3ded9cecf02bec1c08ed4833fb97c
+  subpackages:
+  - config
+  - diff
+  - plumbing
+  - plumbing/client
+  - plumbing/client/common
+  - plumbing/client/http
+  - plumbing/client/ssh
+  - plumbing/format/config
+  - plumbing/format/idxfile
+  - plumbing/format/index
+  - plumbing/format/objfile
+  - plumbing/format/packfile
+  - plumbing/format/packp
+  - plumbing/format/packp/advrefs
+  - plumbing/format/packp/pktline
+  - plumbing/format/packp/ulreq
+  - plumbing/storer
+  - storage/filesystem
+  - storage/filesystem/internal/dotgit
+  - storage/memory
+  - utils/binary
+  - utils/fs
+  - utils/fs/os
+- name: gopkg.in/warnings.v0
+  version: 8a331561fe74dadba6edfc59f3be66c22c3b065d
 - name: gopkg.in/yaml.v2
   version: a5b47d31c556af34a302ce5d659e6fea44d90de0
 testImports: []
