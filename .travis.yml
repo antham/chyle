@@ -1,0 +1,21 @@
+language: go
+
+sudo: required
+
+go:
+  - 1.7
+
+before_install:
+  - export PATH=$PATH:/tmp/
+  - go get github.com/onsi/gomega
+  - go get github.com/onsi/ginkgo
+  - go get github.com/Masterminds/glide
+  - go get github.com/alecthomas/gometalinter
+  - gometalinter --install --update
+
+install: glide install
+
+script: make test-all
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
