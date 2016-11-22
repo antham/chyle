@@ -59,21 +59,13 @@ func (a AuthorMatcher) Match(commit *git.Commit) bool {
 	return a.regexp.MatchString(commit.Author.String())
 }
 
-// NewMatchers create a filter
-func NewMatchers(matchers *[]Matcher) Matchers {
-	return *matchers
-}
-
-// Matchers contains matchers to be applied on every commit
-type Matchers []Matcher
-
 // Filter commits that don't fit any matchers
-func (m Matchers) Filter(commits *[]git.Commit) *[]git.Commit {
+func Filter(matchers *[]Matcher, commits *[]git.Commit) *[]git.Commit {
 	results := []git.Commit{}
 
 	for _, commit := range *commits {
 		add := true
-		for _, matcher := range m {
+		for _, matcher := range *matchers {
 			if !matcher.Match(&commit) {
 				add = false
 			}

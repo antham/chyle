@@ -63,8 +63,6 @@ func getCommitFromRef(ref string) *git.Commit {
 }
 
 func TestMatchersMergeCommits(t *testing.T) {
-	m := NewMatchers(&[]Matcher{MergeCommitMatcher{}})
-
 	commits := []git.Commit{}
 	commit := getCommitFromRef("HEAD")
 
@@ -78,7 +76,7 @@ func TestMatchersMergeCommits(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := m.Filter(&commits)
+	cs := Filter(&[]Matcher{MergeCommitMatcher{}}, &commits)
 
 	assert.Len(t, *cs, 2, "Must return 2 objects")
 	assert.Equal(t, (*cs)[0].Message, "Merge branch 'test1' into test\n", "Must return merge commit message")
@@ -86,8 +84,6 @@ func TestMatchersMergeCommits(t *testing.T) {
 }
 
 func TestMatchersRegularCommits(t *testing.T) {
-	m := NewMatchers(&[]Matcher{RegularCommitMatcher{}})
-
 	commits := []git.Commit{}
 	commit := getCommitFromRef("HEAD")
 
@@ -101,7 +97,7 @@ func TestMatchersRegularCommits(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := m.Filter(&commits)
+	cs := Filter(&[]Matcher{RegularCommitMatcher{}}, &commits)
 
 	assert.Len(t, *cs, 8, "Must return 8 objects")
 	assert.Equal(t, (*cs)[0].Message, "feat(file8) : new file 8\n\ncreate a new file 8\n", "Must return a commit message")
@@ -115,8 +111,6 @@ func TestMatchersWithCommitMessage(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	m := NewMatchers(&[]Matcher{MessageMatcher{re}})
-
 	commits := []git.Commit{}
 	commit := getCommitFromRef("HEAD")
 
@@ -130,7 +124,7 @@ func TestMatchersWithCommitMessage(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := m.Filter(&commits)
+	cs := Filter(&[]Matcher{MessageMatcher{re}}, &commits)
 
 	assert.Len(t, *cs, 2, "Must return 2 objects")
 	assert.Equal(t, (*cs)[0].Message, "feat(file8) : new file 8\n\ncreate a new file 8\n", "Must return a commit message")
@@ -144,8 +138,6 @@ func TestMatchersWithAuthor(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	m := NewMatchers(&[]Matcher{AuthorMatcher{re}})
-
 	commits := []git.Commit{}
 	commit := getCommitFromRef("HEAD")
 
@@ -159,7 +151,7 @@ func TestMatchersWithAuthor(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := m.Filter(&commits)
+	cs := Filter(&[]Matcher{AuthorMatcher{re}}, &commits)
 
 	assert.Len(t, *cs, 10, "Must return 10 objects")
 }
@@ -171,8 +163,6 @@ func TestMatchersWithCommitter(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	m := NewMatchers(&[]Matcher{CommitterMatcher{re}})
-
 	commits := []git.Commit{}
 	commit := getCommitFromRef("HEAD")
 
@@ -186,7 +176,7 @@ func TestMatchersWithCommitter(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := m.Filter(&commits)
+	cs := Filter(&[]Matcher{CommitterMatcher{re}}, &commits)
 
 	assert.Len(t, *cs, 10, "Must return 10 objects")
 }
