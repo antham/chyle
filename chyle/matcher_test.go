@@ -180,3 +180,35 @@ func TestMatchersWithCommitter(t *testing.T) {
 
 	assert.Len(t, *cs, 10, "Must return 10 objects")
 }
+
+func TestTransformCommitsToMap(t *testing.T) {
+	commits := []git.Commit{}
+	commit := getCommitFromRef("HEAD")
+
+	err := git.WalkCommitHistory(commit, func(c *git.Commit) error {
+		commits = append(commits, *c)
+
+		return nil
+	})
+
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	commitMaps := TransformCommitsToMap(&commits)
+
+	expected := map[string]interface{}{
+		"id":             commit.ID().String(),
+		"authorName":     commit.Author.Name,
+		"authorEmail":    commit.Author.Email,
+		"authorDate":     commit.Author.When.String(),
+		"committerName":  commit.Committer.Name,
+		"committerEmail": commit.Committer.Email,
+		"committerDate":  commit.Committer.When.String(),
+		"message":        commit.Message,
+		"isMerge":        false,
+	}
+
+	assert.Len(t, *commitMaps, 10, "Must contains all history")
+	assert.Equal(t, expected, (*commitMaps)[0], "Must return a map with some informations contained in commit")
+}

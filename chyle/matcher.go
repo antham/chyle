@@ -78,3 +78,26 @@ func Filter(matchers *[]Matcher, commits *[]git.Commit) *[]git.Commit {
 
 	return &results
 }
+
+// TransformCommitsToMap extract useful commits data in hash map table
+func TransformCommitsToMap(commits *[]git.Commit) *[]map[string]interface{} {
+	commitMaps := []map[string]interface{}{}
+
+	for _, c := range *commits {
+		commitMap := map[string]interface{}{
+			"id":             c.ID().String(),
+			"authorName":     c.Author.Name,
+			"authorEmail":    c.Author.Email,
+			"authorDate":     c.Author.When.String(),
+			"committerName":  c.Committer.Name,
+			"committerEmail": c.Committer.Email,
+			"committerDate":  c.Committer.When.String(),
+			"message":        c.Message,
+			"isMerge":        c.NumParents() == 2,
+		}
+
+		commitMaps = append(commitMaps, commitMap)
+	}
+
+	return &commitMaps
+}
