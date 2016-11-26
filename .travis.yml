@@ -10,7 +10,8 @@ before_install:
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo
   - go get github.com/Masterminds/glide
-  - go get github.com/alecthomas/gometalinter
+  - go get -u gopkg.in/alecthomas/gometalinter.v1
+  - mv $GOPATH/bin/gometalinter.v1 $GOPATH/bin/gometalinter
   - gometalinter --install --update
 
 install: glide install
