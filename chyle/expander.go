@@ -24,7 +24,7 @@ func NewJiraIssueExpanderFromPasswordAuth(username string, password string, URL 
 
 	res, err := c.Authentication.AcquireSessionCookie(username, password)
 
-	if err != nil || res == false {
+	if err != nil || !res {
 		return JiraIssueExpander{}, err
 	}
 
