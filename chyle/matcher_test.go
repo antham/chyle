@@ -212,3 +212,56 @@ func TestTransformCommitsToMap(t *testing.T) {
 	assert.Len(t, *commitMaps, 10, "Must contains all history")
 	assert.Equal(t, expected, (*commitMaps)[0], "Must return a map with some informations contained in commit")
 }
+
+func TestCreateMatchers(t *testing.T) {
+	r, err := CreateMatchers(map[string]string{
+		"numParents": "1",
+		"message":    ".*",
+		"author":     ".*",
+		"committer":  ".*",
+	})
+
+	assert.NoError(t, err, "Must contains no errors")
+	assert.Len(t, *r, 4, "Must return 4 matchers")
+}
+
+func TestCreateMatchersWithErrors(t *testing.T) {
+	type g struct {
+		s map[string]string
+		e string
+	}
+
+	datas := []g{
+		g{
+			map[string]string{"numParents": "whatever"},
+			`"numParent" is not an integer`,
+		},
+		g{
+			map[string]string{"numParents": "3"},
+			`"numParent" must be 0, 1 or 2, "3" given`,
+		},
+		g{
+			map[string]string{"message": "**"},
+			`"message" doesn't contain a valid regular expression`,
+		},
+		g{
+			map[string]string{"committer": "**"},
+			`"committer" doesn't contain a valid regular expression`,
+		},
+		g{
+			map[string]string{"author": "**"},
+			`"author" doesn't contain a valid regular expression`,
+		},
+		g{
+			map[string]string{"whatever": "**"},
+			`"whatever" is not a valid matcher structure`,
+		},
+	}
+
+	for _, d := range datas {
+		_, err := CreateMatchers(d.s)
+
+		assert.Error(t, err, "Must contains an error")
+		assert.EqualError(t, err, d.e, "Must match error string")
+	}
+}

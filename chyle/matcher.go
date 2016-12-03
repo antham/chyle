@@ -1,7 +1,9 @@
 package chyle
 
 import (
+	"fmt"
 	"regexp"
+	"strconv"
 
 	"gopkg.in/src-d/go-git.v4"
 )
@@ -100,4 +102,82 @@ func TransformCommitsToMap(commits *[]git.Commit) *[]map[string]interface{} {
 	}
 
 	return &commitMaps
+}
+
+func buildNumParentsMatcher(value string) (Matcher, error) {
+	vi, err := strconv.Atoi(value)
+
+	if err != nil {
+		return nil, fmt.Errorf(`"numParent" is not an integer`)
+	}
+
+	switch vi {
+	case 1, 0:
+		return RegularCommitMatcher{}, nil
+	case 2:
+		return MergeCommitMatcher{}, nil
+	}
+
+	return nil, fmt.Errorf(`"numParent" must be 0, 1 or 2, "%d" given`, vi)
+}
+
+func buildMessageMatcher(key string, value string) (Matcher, error) {
+	r, err := regexp.Compile(value)
+
+	if err != nil {
+		return nil, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
+	}
+
+	return MessageMatcher{r}, nil
+}
+
+func buildCommitterMatcher(key string, value string) (Matcher, error) {
+	r, err := regexp.Compile(value)
+
+	if err != nil {
+		return nil, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
+	}
+
+	return CommitterMatcher{r}, nil
+}
+
+func buildAuthorMatcher(key string, value string) (Matcher, error) {
+	r, err := regexp.Compile(value)
+
+	if err != nil {
+		return nil, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
+	}
+
+	return AuthorMatcher{r}, nil
+}
+
+// CreateMatchers build matchers from a config
+func CreateMatchers(matchers map[string]string) (*[]Matcher, error) {
+	results := []Matcher{}
+
+	for k, v := range matchers {
+		var m Matcher
+		var err error
+
+		switch k {
+		case "numParents":
+			m, err = buildNumParentsMatcher(v)
+		case "message":
+			m, err = buildMessageMatcher(k, v)
+		case "committer":
+			m, err = buildCommitterMatcher(k, v)
+		case "author":
+			m, err = buildAuthorMatcher(k, v)
+		default:
+			err = fmt.Errorf(`"%s" is not a valid matcher structure`, k)
+		}
+
+		if err != nil {
+			return &[]Matcher{}, err
+		}
+
+		results = append(results, m)
+	}
+
+	return &results, nil
 }
