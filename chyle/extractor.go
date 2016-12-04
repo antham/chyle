@@ -89,3 +89,33 @@ func Extract(extractors *[]Extracter, commitMaps *[]map[string]interface{}) (*[]
 
 	return &results, nil
 }
+
+// CreateExtractors build extracters from a config
+func CreateExtractors(extracters map[string]interface{}) (*[]Extracter, error) {
+	results := []Extracter{}
+
+	for dk, dv := range extracters {
+		e, ok := dv.(map[string]string)
+
+		if !ok {
+			return &[]Extracter{}, fmt.Errorf(`extractor "%s" must contains key=value string values`, dk)
+		}
+
+		for key, value := range e {
+			re, err := regexp.Compile(value)
+
+			if err != nil {
+				return &[]Extracter{}, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
+			}
+
+			results = append(results, RegexpExtracter{
+				dk,
+				key,
+				re,
+			})
+		}
+
+	}
+
+	return &results, nil
+}

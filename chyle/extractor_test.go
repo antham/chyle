@@ -83,3 +83,36 @@ func TestExtract(t *testing.T) {
 	assert.NoError(t, err, "Must return no error")
 	assert.Equal(t, expected, *results, "Must return extracted datas with old one")
 }
+
+func TestCreateExtractors(t *testing.T) {
+	e, err := CreateExtractors(
+		map[string]interface{}{
+			"id":         map[string]string{"test": ".*"},
+			"authorName": map[string]string{"test2": ".*"},
+		},
+	)
+
+	assert.NoError(t, err, "Must contains no errors")
+	assert.Len(t, *e, 2, "Must return 2 extractors")
+}
+
+func TestCreateExtractorsWithErrors(t *testing.T) {
+	type g struct {
+		s map[string]interface{}
+		e string
+	}
+
+	datas := []g{
+		g{
+			map[string]interface{}{"id": map[string]string{"test": "**"}},
+			`"test" doesn't contain a valid regular expression`,
+		},
+	}
+
+	for _, d := range datas {
+		_, err := CreateExtractors(d.s)
+
+		assert.Error(t, err, "Must contains an error")
+		assert.EqualError(t, err, d.e, "Must match error string")
+	}
+}
