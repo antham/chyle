@@ -153,3 +153,49 @@ func TestExpander(t *testing.T) {
 	assert.Equal(t, expected, *result, "Must return same struct than the one submitted")
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
+
+func TestCreateExpanders(t *testing.T) {
+	r, err := CreateExpanders(map[string]interface{}{
+		"jira": map[string]string{
+			"username": "test",
+			"password": "test",
+			"url":      "http://test.com",
+		},
+	})
+
+	assert.NoError(t, err, "Must contains no errors")
+	assert.Len(t, *r, 1, "Must return 1 expander")
+}
+
+func TestCreateExpandersWithErrors(t *testing.T) {
+	type g struct {
+		s map[string]interface{}
+		e string
+	}
+
+	datas := []g{
+		g{
+			map[string]interface{}{"whatever": map[string]string{"test": "test"}},
+			`"whatever" is not a valid expander structure`,
+		},
+		g{
+			map[string]interface{}{"jira": map[string]string{"test": "test"}},
+			`"username" must be defined in jira config`,
+		},
+		g{
+			map[string]interface{}{"jira": map[string]string{"username": "test"}},
+			`"password" must be defined in jira config`,
+		},
+		g{
+			map[string]interface{}{"jira": map[string]string{"username": "test", "password": "test"}},
+			`"url" must be defined in jira config`,
+		},
+	}
+
+	for _, d := range datas {
+		_, err := CreateExpanders(d.s)
+
+		assert.Error(t, err, "Must contains an error")
+		assert.EqualError(t, err, d.e, "Must match error string")
+	}
+}

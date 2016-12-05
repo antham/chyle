@@ -1,6 +1,9 @@
 package chyle
 
 import (
+	"fmt"
+	"net/url"
+
 	"github.com/andygrunwald/go-jira"
 )
 
@@ -81,6 +84,63 @@ func Expand(expanders *[]Expander, commitMaps *[]map[string]interface{}) (*[]map
 		}
 
 		results = append(results, *result)
+	}
+
+	return &results, nil
+}
+
+func buildJiraExpander(config map[string]string) (Expander, error) {
+	var username, password, rawURL string
+	var URL *url.URL
+	var ok bool
+
+	if username, ok = config["username"]; !ok {
+		return nil, fmt.Errorf(`"username" must be defined in jira config`)
+	}
+
+	if password, ok = config["password"]; !ok {
+		return nil, fmt.Errorf(`"password" must be defined in jira config`)
+	}
+
+	if rawURL, ok = config["url"]; !ok {
+		return nil, fmt.Errorf(`"url" must be defined in jira config`)
+	}
+
+	URL, err := url.Parse(rawURL)
+
+	if err != nil {
+		return nil, fmt.Errorf(`"%s" not a valid URL defined in jira config`, rawURL)
+	}
+
+	return NewJiraIssueExpanderFromPasswordAuth(username, password, URL.String())
+}
+
+// CreateExpanders build expanders from a config
+func CreateExpanders(expanders map[string]interface{}) (*[]Expander, error) {
+	results := []Expander{}
+
+	for dk, dv := range expanders {
+		var ex Expander
+		var err error
+
+		e, ok := dv.(map[string]string)
+
+		if !ok {
+			return &[]Expander{}, fmt.Errorf(`expander "%s" must contains key=value string values`, dk)
+		}
+
+		switch dk {
+		case "jira":
+			ex, err = buildJiraExpander(e)
+		default:
+			err = fmt.Errorf(`"%s" is not a valid expander structure`, dk)
+		}
+
+		if err != nil {
+			return &[]Expander{}, err
+		}
+
+		results = append(results, ex)
 	}
 
 	return &results, nil
