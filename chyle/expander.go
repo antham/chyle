@@ -11,7 +11,9 @@ type Expander interface {
 
 // JiraIssueExpander fetch data using jira issue api
 type JiraIssueExpander struct {
-	client *jira.Client
+	username string
+	password string
+	client   *jira.Client
 }
 
 // NewJiraIssueExpanderFromPasswordAuth create a new JiraIssueExpander
@@ -22,13 +24,18 @@ func NewJiraIssueExpanderFromPasswordAuth(username string, password string, URL 
 		return JiraIssueExpander{}, err
 	}
 
-	res, err := c.Authentication.AcquireSessionCookie(username, password)
+	return JiraIssueExpander{username, password, c}, nil
+}
+
+// Authenticate acquire a new jira session cookie
+func (j JiraIssueExpander) Authenticate() (bool, error) {
+	res, err := j.client.Authentication.AcquireSessionCookie(j.username, j.password)
 
 	if err != nil || !res {
-		return JiraIssueExpander{}, err
+		return false, err
 	}
 
-	return JiraIssueExpander{c}, nil
+	return true, nil
 }
 
 // Expand fecth remote jira service if a jiraIssueId is defined to fetch issue datas

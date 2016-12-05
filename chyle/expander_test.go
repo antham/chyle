@@ -26,7 +26,11 @@ func TestJiraExpander(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	j := JiraIssueExpander{jiraClient}
+	j, err := NewJiraIssueExpanderFromPasswordAuth("test", "test", "http://test.com")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	j.client = jiraClient
 
 	result, err := j.Expand(&map[string]interface{}{"test": "test", "jiraIssueId": "10000"})
 
@@ -61,7 +65,11 @@ func TestJiraExpanderWithNoJiraIssueIdDefined(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	j := JiraIssueExpander{jiraClient}
+	j, err := NewJiraIssueExpanderFromPasswordAuth("test", "test", "http://test.com")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	j.client = jiraClient
 
 	result, err := j.Expand(&map[string]interface{}{"test": "test"})
 
@@ -95,8 +103,14 @@ func TestExpander(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
+	j, err := NewJiraIssueExpanderFromPasswordAuth("test", "test", "http://test.com")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	j.client = jiraClient
+
 	expanders := []Expander{
-		JiraIssueExpander{jiraClient},
+		j,
 	}
 
 	commitMaps := []map[string]interface{}{
