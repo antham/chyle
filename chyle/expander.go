@@ -38,7 +38,7 @@ func (j JiraIssueExpander) Authenticate() (bool, error) {
 	return true, nil
 }
 
-// Expand fecth remote jira service if a jiraIssueId is defined to fetch issue datas
+// Expand fetch remote jira service if a jiraIssueId is defined to fetch issue datas
 func (j JiraIssueExpander) Expand(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
 
