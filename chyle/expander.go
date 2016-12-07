@@ -89,30 +89,32 @@ func Expand(expanders *[]Expander, commitMaps *[]map[string]interface{}) (*[]map
 	return &results, nil
 }
 
-func buildJiraExpander(config map[string]string) (Expander, error) {
-	var username, password, rawURL string
+func buildJiraExpander(config map[string]interface{}) (Expander, error) {
+	datas := map[string]string{}
 	var URL *url.URL
 	var ok bool
 
-	if username, ok = config["username"]; !ok {
-		return nil, fmt.Errorf(`"username" must be defined in jira config`)
+	for _, k := range []string{"username", "password", "url"} {
+		var v string
+
+		if _, ok = config[k]; !ok {
+			return nil, fmt.Errorf(`"%s" must be defined in jira config`, k)
+		}
+
+		if v, ok = config[k].(string); !ok {
+			return nil, fmt.Errorf(`"%s" must be a string`, k)
+		}
+
+		datas[k] = v
 	}
 
-	if password, ok = config["password"]; !ok {
-		return nil, fmt.Errorf(`"password" must be defined in jira config`)
-	}
-
-	if rawURL, ok = config["url"]; !ok {
-		return nil, fmt.Errorf(`"url" must be defined in jira config`)
-	}
-
-	URL, err := url.Parse(rawURL)
+	URL, err := url.Parse(datas["url"])
 
 	if err != nil {
-		return nil, fmt.Errorf(`"%s" not a valid URL defined in jira config`, rawURL)
+		return nil, fmt.Errorf(`"%s" not a valid URL defined in jira config`, datas["url"])
 	}
 
-	return NewJiraIssueExpanderFromPasswordAuth(username, password, URL.String())
+	return NewJiraIssueExpanderFromPasswordAuth(datas["username"], datas["password"], URL.String())
 }
 
 // CreateExpanders build expanders from a config
@@ -123,7 +125,7 @@ func CreateExpanders(expanders map[string]interface{}) (*[]Expander, error) {
 		var ex Expander
 		var err error
 
-		e, ok := dv.(map[string]string)
+		e, ok := dv.(map[string]interface{})
 
 		if !ok {
 			return &[]Expander{}, fmt.Errorf(`expander "%s" must contains key=value string values`, dk)

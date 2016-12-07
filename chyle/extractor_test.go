@@ -87,8 +87,8 @@ func TestExtract(t *testing.T) {
 func TestCreateExtractors(t *testing.T) {
 	e, err := CreateExtractors(
 		map[string]interface{}{
-			"id":         map[string]string{"test": ".*"},
-			"authorName": map[string]string{"test2": ".*"},
+			"id":         map[string]interface{}{"test": ".*"},
+			"authorName": map[string]interface{}{"test2": ".*"},
 		},
 	)
 
@@ -104,7 +104,7 @@ func TestCreateExtractorsWithErrors(t *testing.T) {
 
 	datas := []g{
 		g{
-			map[string]interface{}{"id": map[string]string{"test": "**"}},
+			map[string]interface{}{"id": map[string]interface{}{"test": "**"}},
 			`"test" doesn't contain a valid regular expression`,
 		},
 	}

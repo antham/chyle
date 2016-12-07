@@ -62,7 +62,7 @@ func CreateSenders(senders map[string]interface{}) (*[]Sender, error) {
 		var ex Sender
 		var err error
 
-		e, ok := dv.(map[string]string)
+		e, ok := dv.(map[string]interface{})
 
 		if !ok {
 			return &[]Sender{}, fmt.Errorf(`sender "%s" must contains key=value string values`, dk)
@@ -71,7 +71,13 @@ func CreateSenders(senders map[string]interface{}) (*[]Sender, error) {
 		switch dk {
 		case "stdout":
 			if v, ok := e["format"]; ok {
-				ex, err = NewStdoutSender(v)
+				s, ok := v.(string)
+
+				if !ok {
+					return &[]Sender{}, fmt.Errorf(`extractor "%s" is not a string`, s)
+				}
+
+				ex, err = NewStdoutSender(s)
 			} else {
 				err = fmt.Errorf(`"format" key must be defined`)
 			}

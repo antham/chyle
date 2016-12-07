@@ -65,7 +65,7 @@ func TestSend(t *testing.T) {
 
 func TestCreateSenders(t *testing.T) {
 	r, err := CreateSenders(map[string]interface{}{
-		"stdout": map[string]string{
+		"stdout": map[string]interface{}{
 			"format": "json",
 		},
 	})
@@ -82,15 +82,15 @@ func TestCreateSendersWithErrors(t *testing.T) {
 
 	datas := []g{
 		g{
-			map[string]interface{}{"whatever": map[string]string{"test": "test"}},
+			map[string]interface{}{"whatever": map[string]interface{}{"test": "test"}},
 			`"whatever" is not a valid sender structure`,
 		},
 		g{
-			map[string]interface{}{"stdout": map[string]string{"test": "test"}},
+			map[string]interface{}{"stdout": map[string]interface{}{"test": "test"}},
 			`"format" key must be defined`,
 		},
 		g{
-			map[string]interface{}{"stdout": map[string]string{"format": "test"}},
+			map[string]interface{}{"stdout": map[string]interface{}{"format": "test"}},
 			`"test" format does not exist`,
 		},
 	}

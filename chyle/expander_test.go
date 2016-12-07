@@ -156,7 +156,7 @@ func TestExpander(t *testing.T) {
 
 func TestCreateExpanders(t *testing.T) {
 	r, err := CreateExpanders(map[string]interface{}{
-		"jira": map[string]string{
+		"jira": map[string]interface{}{
 			"username": "test",
 			"password": "test",
 			"url":      "http://test.com",
@@ -175,19 +175,19 @@ func TestCreateExpandersWithErrors(t *testing.T) {
 
 	datas := []g{
 		g{
-			map[string]interface{}{"whatever": map[string]string{"test": "test"}},
+			map[string]interface{}{"whatever": map[string]interface{}{"test": "test"}},
 			`"whatever" is not a valid expander structure`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]string{"test": "test"}},
+			map[string]interface{}{"jira": map[string]interface{}{"test": "test"}},
 			`"username" must be defined in jira config`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]string{"username": "test"}},
+			map[string]interface{}{"jira": map[string]interface{}{"username": "test"}},
 			`"password" must be defined in jira config`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]string{"username": "test", "password": "test"}},
+			map[string]interface{}{"jira": map[string]interface{}{"username": "test", "password": "test"}},
 			`"url" must be defined in jira config`,
 		},
 	}

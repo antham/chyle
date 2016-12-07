@@ -95,14 +95,20 @@ func CreateExtractors(extracters map[string]interface{}) (*[]Extracter, error) {
 	results := []Extracter{}
 
 	for dk, dv := range extracters {
-		e, ok := dv.(map[string]string)
+		e, ok := dv.(map[string]interface{})
 
 		if !ok {
 			return &[]Extracter{}, fmt.Errorf(`extractor "%s" must contains key=value string values`, dk)
 		}
 
 		for key, value := range e {
-			re, err := regexp.Compile(value)
+			s, ok := value.(string)
+
+			if !ok {
+				return &[]Extracter{}, fmt.Errorf(`extractor "%s" is not a string`, s)
+			}
+
+			re, err := regexp.Compile(s)
 
 			if err != nil {
 				return &[]Extracter{}, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
