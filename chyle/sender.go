@@ -27,7 +27,7 @@ func NewStdoutSender(format string) (StdoutSender, error) {
 			os.Stdout,
 		}, nil
 	default:
-		return StdoutSender{}, fmt.Errorf("\"%s\" format does not exists", format)
+		return StdoutSender{}, fmt.Errorf("\"%s\" format does not exist", format)
 	}
 }
 
@@ -52,4 +52,39 @@ func Send(senders *[]Sender, commitMaps *[]map[string]interface{}) error {
 	}
 
 	return nil
+}
+
+// CreateSenders build senders from a config
+func CreateSenders(senders map[string]interface{}) (*[]Sender, error) {
+	results := []Sender{}
+
+	for dk, dv := range senders {
+		var ex Sender
+		var err error
+
+		e, ok := dv.(map[string]string)
+
+		if !ok {
+			return &[]Sender{}, fmt.Errorf(`sender "%s" must contains key=value string values`, dk)
+		}
+
+		switch dk {
+		case "stdout":
+			if v, ok := e["format"]; ok {
+				ex, err = NewStdoutSender(v)
+			} else {
+				err = fmt.Errorf(`"format" key must be defined`)
+			}
+		default:
+			err = fmt.Errorf(`"%s" is not a valid sender structure`, dk)
+		}
+
+		if err != nil {
+			return &[]Sender{}, err
+		}
+
+		results = append(results, ex)
+	}
+
+	return &results, nil
 }
