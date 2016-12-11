@@ -1,0 +1,10 @@
+[matchers]
+numParents=1
+
+[extractors]
+[extractors.message]
+subject="(.{1,50})"
+
+[senders]
+[senders.stdout]
+format="json"
