@@ -9,6 +9,10 @@ fi
 # Configure name
 
 # Init
-rm -rf test > /dev/null
-git init test
-cd test || exit 1
+rm -rf test > /dev/null;
+git init test;
+
+cd test || exit 1;
+
+git config --local user.name "whatever";
+git config --local user.email "whatever@example.com";
