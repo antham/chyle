@@ -28,7 +28,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.chyle.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file to use")
 }
 
 func initConfig() {
@@ -36,8 +36,6 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
-	viper.SetConfigName(".chyle")
-	viper.AddConfigPath("$HOME")
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
