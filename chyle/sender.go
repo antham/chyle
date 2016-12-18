@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/spf13/viper"
 )
 
 // Sender define where the date must be sent
@@ -55,34 +57,21 @@ func Send(senders *[]Sender, commitMaps *[]map[string]interface{}) error {
 }
 
 // CreateSenders build senders from a config
-func CreateSenders(senders map[string]interface{}) (*[]Sender, error) {
+func CreateSenders(config *viper.Viper) (*[]Sender, error) {
 	results := []Sender{}
 
-	for dk, dv := range senders {
+	for sectionKey := range config.GetStringMap("senders") {
 		var ex Sender
 		var err error
-
-		e, ok := dv.(map[string]interface{})
-
-		if !ok {
-			return &[]Sender{}, fmt.Errorf(`sender "%s" must contains key=value string values`, dk)
-		}
-
-		switch dk {
+		switch sectionKey {
 		case "stdout":
-			if v, ok := e["format"]; ok {
-				s, ok := v.(string)
-
-				if !ok {
-					return &[]Sender{}, fmt.Errorf(`extractor "%s" is not a string`, s)
-				}
-
-				ex, err = NewStdoutSender(s)
-			} else {
+			if !config.IsSet("senders.stdout.format") {
 				err = fmt.Errorf(`"format" key must be defined`)
 			}
+
+			ex, err = NewStdoutSender(config.GetString("senders.stdout.format"))
 		default:
-			err = fmt.Errorf(`"%s" is not a valid sender structure`, dk)
+			err = fmt.Errorf(`"%s" is not a valid sender structure`, sectionKey)
 		}
 
 		if err != nil {

@@ -34,7 +34,7 @@ func buildProcess(viper *viper.Viper) (*process, error) {
 		return nil, err
 	}
 
-	s, err := CreateSenders(viper.GetStringMap("senders"))
+	s, err := CreateSenders(viper)
 
 	if err != nil {
 		return nil, err

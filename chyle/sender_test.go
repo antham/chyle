@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/spf13/viper"
 )
 
 func TestNewStdoutSender(t *testing.T) {
@@ -64,11 +66,13 @@ func TestSend(t *testing.T) {
 }
 
 func TestCreateSenders(t *testing.T) {
-	r, err := CreateSenders(map[string]interface{}{
+	v := viper.New()
+	v.Set("senders", map[string]interface{}{
 		"stdout": map[string]interface{}{
 			"format": "json",
 		},
 	})
+	r, err := CreateSenders(v)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *r, 1, "Must return 1 expander")
@@ -86,17 +90,16 @@ func TestCreateSendersWithErrors(t *testing.T) {
 			`"whatever" is not a valid sender structure`,
 		},
 		g{
-			map[string]interface{}{"stdout": map[string]interface{}{"test": "test"}},
-			`"format" key must be defined`,
-		},
-		g{
 			map[string]interface{}{"stdout": map[string]interface{}{"format": "test"}},
 			`"test" format does not exist`,
 		},
 	}
 
 	for _, d := range datas {
-		_, err := CreateSenders(d.s)
+		v := viper.New()
+		v.Set("senders", d.s)
+
+		_, err := CreateSenders(v)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, d.e, "Must match error string")
