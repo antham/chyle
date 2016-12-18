@@ -7,10 +7,11 @@ import (
 
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 // resolveRef give hash commit for a given string reference
-func resolveRef(refCommit string, repository *git.Repository) (*git.Commit, error) {
+func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, error) {
 	hash := plumbing.Hash{}
 
 	if strings.ToLower(refCommit) == "head" {
@@ -21,10 +22,10 @@ func resolveRef(refCommit string, repository *git.Repository) (*git.Commit, erro
 		}
 	}
 
-	iter, err := repository.Refs()
+	iter, err := repository.References()
 
 	if err != nil {
-		return &git.Commit{}, err
+		return &object.Commit{}, err
 	}
 
 	err = iter.ForEach(func(ref *plumbing.Reference) error {
@@ -45,12 +46,12 @@ func resolveRef(refCommit string, repository *git.Repository) (*git.Commit, erro
 		return repository.Commit(hash)
 	}
 
-	return &git.Commit{}, fmt.Errorf(`Can't find reference "%s"`, refCommit)
+	return &object.Commit{}, fmt.Errorf(`Can't find reference "%s"`, refCommit)
 }
 
 // fetchCommits retrieves commits between a reference range
-func fetchCommits(repoPath string, fromRef string, toRef string) (*[]git.Commit, error) {
-	commits := []git.Commit{}
+func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Commit, error) {
+	commits := []object.Commit{}
 	repo, err := git.NewFilesystemRepository(repoPath + "/.git/")
 
 	if err != nil {
@@ -60,16 +61,16 @@ func fetchCommits(repoPath string, fromRef string, toRef string) (*[]git.Commit,
 	fromCommit, err := resolveRef(fromRef, repo)
 
 	if err != nil {
-		return &[]git.Commit{}, err
+		return &[]object.Commit{}, err
 	}
 
 	toCommit, err := resolveRef(toRef, repo)
 
 	if err != nil {
-		return &[]git.Commit{}, err
+		return &[]object.Commit{}, err
 	}
 
-	_ = git.WalkCommitHistory(toCommit, func(c *git.Commit) error {
+	_ = object.WalkCommitHistory(toCommit, func(c *object.Commit) error {
 		commits = append(commits, *c)
 
 		if c.ID() == fromCommit.ID() {

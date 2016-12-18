@@ -6,12 +6,12 @@ import (
 	"strconv"
 
 	"github.com/spf13/viper"
-	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 // Matcher describe a way of applying a matcher against a commit
 type Matcher interface {
-	Match(*git.Commit) bool
+	Match(*object.Commit) bool
 }
 
 // MergeCommitMatcher match merge commit message
@@ -19,7 +19,7 @@ type MergeCommitMatcher struct {
 }
 
 // Match is valid if commit is a merge commit
-func (m MergeCommitMatcher) Match(commit *git.Commit) bool {
+func (m MergeCommitMatcher) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 2
 }
 
@@ -28,7 +28,7 @@ type RegularCommitMatcher struct {
 }
 
 // Match is valid if commit is not a merge commit
-func (r RegularCommitMatcher) Match(commit *git.Commit) bool {
+func (r RegularCommitMatcher) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 1 || commit.NumParents() == 0
 }
 
@@ -38,7 +38,7 @@ type MessageMatcher struct {
 }
 
 // Match apply a regexp against commit message
-func (m MessageMatcher) Match(commit *git.Commit) bool {
+func (m MessageMatcher) Match(commit *object.Commit) bool {
 	return m.regexp.MatchString(commit.Message)
 }
 
@@ -48,7 +48,7 @@ type CommitterMatcher struct {
 }
 
 // Match apply a regexp against commit committer field
-func (c CommitterMatcher) Match(commit *git.Commit) bool {
+func (c CommitterMatcher) Match(commit *object.Commit) bool {
 	return c.regexp.MatchString(commit.Committer.String())
 }
 
@@ -58,13 +58,13 @@ type AuthorMatcher struct {
 }
 
 // Match apply a regexp against commit author field
-func (a AuthorMatcher) Match(commit *git.Commit) bool {
+func (a AuthorMatcher) Match(commit *object.Commit) bool {
 	return a.regexp.MatchString(commit.Author.String())
 }
 
 // Filter commits that don't fit any matchers
-func Filter(matchers *[]Matcher, commits *[]git.Commit) *[]git.Commit {
-	results := []git.Commit{}
+func Filter(matchers *[]Matcher, commits *[]object.Commit) *[]object.Commit {
+	results := []object.Commit{}
 
 	for _, commit := range *commits {
 		add := true
@@ -83,7 +83,7 @@ func Filter(matchers *[]Matcher, commits *[]git.Commit) *[]git.Commit {
 }
 
 // TransformCommitsToMap extract useful commits data in hash map table
-func TransformCommitsToMap(commits *[]git.Commit) *[]map[string]interface{} {
+func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	commitMaps := []map[string]interface{}{}
 
 	for _, c := range *commits {

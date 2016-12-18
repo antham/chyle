@@ -2,7 +2,7 @@ package chyle
 
 import (
 	"github.com/spf13/viper"
-	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 // process represents all configuration operations defined
@@ -49,7 +49,7 @@ func buildProcess(viper *viper.Viper) (*process, error) {
 }
 
 // proceed extracts datas from a set of commits
-func proceed(process *process, commits *[]git.Commit) error {
+func proceed(process *process, commits *[]object.Commit) error {
 	comExt, err := Extract(process.extractors, TransformCommitsToMap(Filter(process.matchers, commits)))
 
 	if err != nil {

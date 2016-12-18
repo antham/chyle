@@ -8,11 +8,11 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
-func getCommitFromRef(ref string) *git.Commit {
+func getCommitFromRef(ref string) *object.Commit {
 	cmd := exec.Command("git", "rev-parse", ref)
 	cmd.Dir = "test"
 
@@ -33,10 +33,10 @@ func getCommitFromRef(ref string) *git.Commit {
 }
 
 func TestMatchersMergeCommits(t *testing.T) {
-	commits := []git.Commit{}
+	commits := []object.Commit{}
 	commit := getCommitFromRef("HEAD")
 
-	err := git.WalkCommitHistory(commit, func(c *git.Commit) error {
+	err := object.WalkCommitHistory(commit, func(c *object.Commit) error {
 		commits = append(commits, *c)
 
 		return nil
@@ -54,10 +54,10 @@ func TestMatchersMergeCommits(t *testing.T) {
 }
 
 func TestMatchersRegularCommits(t *testing.T) {
-	commits := []git.Commit{}
+	commits := []object.Commit{}
 	commit := getCommitFromRef("HEAD")
 
-	err := git.WalkCommitHistory(commit, func(c *git.Commit) error {
+	err := object.WalkCommitHistory(commit, func(c *object.Commit) error {
 		commits = append(commits, *c)
 
 		return nil
@@ -81,10 +81,10 @@ func TestMatchersWithCommitMessage(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	commits := []git.Commit{}
+	commits := []object.Commit{}
 	commit := getCommitFromRef("HEAD")
 
-	err = git.WalkCommitHistory(commit, func(c *git.Commit) error {
+	err = object.WalkCommitHistory(commit, func(c *object.Commit) error {
 		commits = append(commits, *c)
 
 		return nil
@@ -108,10 +108,10 @@ func TestMatchersWithAuthor(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	commits := []git.Commit{}
+	commits := []object.Commit{}
 	commit := getCommitFromRef("HEAD")
 
-	err = git.WalkCommitHistory(commit, func(c *git.Commit) error {
+	err = object.WalkCommitHistory(commit, func(c *object.Commit) error {
 		commits = append(commits, *c)
 
 		return nil
@@ -133,10 +133,10 @@ func TestMatchersWithCommitter(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	commits := []git.Commit{}
+	commits := []object.Commit{}
 	commit := getCommitFromRef("HEAD")
 
-	err = git.WalkCommitHistory(commit, func(c *git.Commit) error {
+	err = object.WalkCommitHistory(commit, func(c *object.Commit) error {
 		commits = append(commits, *c)
 
 		return nil
@@ -152,10 +152,10 @@ func TestMatchersWithCommitter(t *testing.T) {
 }
 
 func TestTransformCommitsToMap(t *testing.T) {
-	commits := []git.Commit{}
+	commits := []object.Commit{}
 	commit := getCommitFromRef("HEAD")
 
-	err := git.WalkCommitHistory(commit, func(c *git.Commit) error {
+	err := object.WalkCommitHistory(commit, func(c *object.Commit) error {
 		commits = append(commits, *c)
 
 		return nil
