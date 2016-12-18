@@ -16,7 +16,7 @@ type process struct {
 
 // buildProcess creates process entity from defined configuration
 func buildProcess(viper *viper.Viper) (*process, error) {
-	m, err := CreateMatchers(viper.GetStringMapString("matchers"))
+	m, err := CreateMatchers(viper)
 
 	if err != nil {
 		return nil, err

@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/spf13/viper"
 	"gopkg.in/src-d/go-git.v4"
 )
 
@@ -152,10 +153,10 @@ func buildAuthorMatcher(key string, value string) (Matcher, error) {
 }
 
 // CreateMatchers build matchers from a config
-func CreateMatchers(matchers map[string]string) (*[]Matcher, error) {
+func CreateMatchers(config *viper.Viper) (*[]Matcher, error) {
 	results := []Matcher{}
 
-	for k, v := range matchers {
+	for k, v := range config.GetStringMapString("matchers") {
 		var m Matcher
 		var err error
 

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -183,12 +184,15 @@ func TestTransformCommitsToMap(t *testing.T) {
 }
 
 func TestCreateMatchers(t *testing.T) {
-	r, err := CreateMatchers(map[string]string{
+	v := viper.New()
+	v.Set("matchers", map[string]string{
 		"numParents": "1",
 		"message":    ".*",
 		"author":     ".*",
 		"committer":  ".*",
 	})
+
+	r, err := CreateMatchers(v)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *r, 4, "Must return 4 matchers")
@@ -228,7 +232,10 @@ func TestCreateMatchersWithErrors(t *testing.T) {
 	}
 
 	for _, d := range datas {
-		_, err := CreateMatchers(d.s)
+		v := viper.New()
+		v.Set("matchers", d.s)
+
+		_, err := CreateMatchers(v)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, d.e, "Must match error string")
