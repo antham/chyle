@@ -99,22 +99,22 @@ func Expand(expanders *[]Expander, commitMaps *[]map[string]interface{}) (*[]map
 	return &results, nil
 }
 
-func buildJiraExpander(credentials map[string]string, keys map[string]string) (Expander, error) {
+func buildJiraExpander(config *viper.Viper) (Expander, error) {
 	var URL *url.URL
 
 	for _, k := range []string{"username", "password", "url"} {
-		if _, ok := credentials[k]; !ok {
+		if !config.IsSet("expanders.jira.credentials." + k) {
 			return nil, fmt.Errorf(`"%s" must be defined in jira config`, k)
 		}
 	}
 
-	URL, err := url.Parse(credentials["url"])
+	URL, err := url.Parse(config.GetString("expanders.jira.credentials.url"))
 
 	if err != nil {
-		return nil, fmt.Errorf(`"%s" not a valid URL defined in jira config`, credentials["url"])
+		return nil, fmt.Errorf(`"%s" not a valid URL defined in jira config`, config.GetString("expanders.jira.credentials.url"))
 	}
 
-	return NewJiraIssueExpanderFromPasswordAuth(http.Client{}, credentials["username"], credentials["password"], URL.String(), keys)
+	return NewJiraIssueExpanderFromPasswordAuth(http.Client{}, config.GetString("expanders.jira.credentials.username"), config.GetString("expanders.jira.credentials.password"), URL.String(), config.GetStringMapString("expanders.jira.keys"))
 }
 
 // CreateExpanders build expanders from a config
@@ -131,7 +131,7 @@ func CreateExpanders(config *viper.Viper) (*[]Expander, error) {
 				return nil, fmt.Errorf(`"credentials" and "keys" key must be defined`)
 			}
 
-			ex, err = buildJiraExpander(config.GetStringMapString("expanders.jira.credentials"), config.GetStringMapString("expanders.jira.keys"))
+			ex, err = buildJiraExpander(config)
 		default:
 			err = fmt.Errorf(`"%s" is not a valid expander structure`, k)
 		}
