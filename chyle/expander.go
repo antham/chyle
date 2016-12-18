@@ -59,7 +59,11 @@ func (j JiraIssueExpander) Expand(commitMap *map[string]interface{}) (*map[strin
 	}
 
 	buf := bytes.NewBuffer([]byte{})
-	rep.Write(buf)
+	err = rep.Write(buf)
+
+	if err != nil {
+		return commitMap, err
+	}
 
 	for identifier, key := range j.keys {
 		if gjson.Get(buf.String(), key).Exists() {
