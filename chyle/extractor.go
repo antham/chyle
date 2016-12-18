@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+
+	"github.com/spf13/viper"
 )
 
 // Extracter describe a way to extract data from a commit hashmap summary
@@ -91,31 +93,19 @@ func Extract(extractors *[]Extracter, commitMaps *[]map[string]interface{}) (*[]
 }
 
 // CreateExtractors build extracters from a config
-func CreateExtractors(extracters map[string]interface{}) (*[]Extracter, error) {
+func CreateExtractors(config *viper.Viper) (*[]Extracter, error) {
 	results := []Extracter{}
 
-	for dk, dv := range extracters {
-		e, ok := dv.(map[string]interface{})
-
-		if !ok {
-			return &[]Extracter{}, fmt.Errorf(`extractor "%s" must contains key=value string values`, dk)
-		}
-
-		for key, value := range e {
-			s, ok := value.(string)
-
-			if !ok {
-				return &[]Extracter{}, fmt.Errorf(`extractor "%s" is not a string`, s)
-			}
-
-			re, err := regexp.Compile(s)
+	for sectionKey := range config.GetStringMap("extractors") {
+		for key, value := range config.GetStringMapString("extractors." + sectionKey) {
+			re, err := regexp.Compile(value)
 
 			if err != nil {
 				return &[]Extracter{}, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
 			}
 
 			results = append(results, RegexpExtracter{
-				dk,
+				sectionKey,
 				key,
 				re,
 			})

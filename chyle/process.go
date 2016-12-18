@@ -22,7 +22,7 @@ func buildProcess(viper *viper.Viper) (*process, error) {
 		return nil, err
 	}
 
-	ext, err := CreateExtractors(viper.GetStringMap("extractors"))
+	ext, err := CreateExtractors(viper)
 
 	if err != nil {
 		return nil, err

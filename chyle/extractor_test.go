@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -85,12 +86,13 @@ func TestExtract(t *testing.T) {
 }
 
 func TestCreateExtractors(t *testing.T) {
-	e, err := CreateExtractors(
-		map[string]interface{}{
-			"id":         map[string]interface{}{"test": ".*"},
-			"authorName": map[string]interface{}{"test2": ".*"},
-		},
-	)
+	v := viper.New()
+	v.Set("extractors", map[string]interface{}{
+		"id":         map[string]interface{}{"test": ".*"},
+		"authorName": map[string]interface{}{"test2": ".*"},
+	})
+
+	e, err := CreateExtractors(v)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *e, 2, "Must return 2 extractors")
@@ -110,7 +112,10 @@ func TestCreateExtractorsWithErrors(t *testing.T) {
 	}
 
 	for _, d := range datas {
-		_, err := CreateExtractors(d.s)
+		v := viper.New()
+		v.Set("extractors", d.s)
+
+		_, err := CreateExtractors(v)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, d.e, "Must match error string")
