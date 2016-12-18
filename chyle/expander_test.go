@@ -4,8 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/andygrunwald/go-jira"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v0"
 )
@@ -20,29 +19,17 @@ func TestJiraExpander(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	jiraClient, err := jira.NewClient(client, "http://test.com")
-
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
-	j, err := NewJiraIssueExpanderFromPasswordAuth("test", "test", "http://test.com")
+	j, err := NewJiraIssueExpanderFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
 
 	assert.NoError(t, err, "Must return no errors")
-
-	j.client = jiraClient
 
 	result, err := j.Expand(&map[string]interface{}{"test": "test", "jiraIssueId": "10000"})
 
 	expected := map[string]interface{}{
-		"test":        "test",
-		"jiraIssueId": "10000",
-		"jiraIssue": &jira.Issue{
-			Expand: "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
-			ID:     "10000",
-			Self:   "http://test.com/jira/rest/api/2/issue/10000",
-			Key:    "EX-1",
-		}}
+		"test":         "test",
+		"jiraIssueId":  "10000",
+		"jiraIssueKey": "EX-1",
+	}
 
 	assert.NoError(t, err, "Must return no errors")
 	assert.Equal(t, expected, *result, "Must return same struct than the one submitted")
@@ -59,17 +46,9 @@ func TestJiraExpanderWithNoJiraIssueIdDefined(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	jiraClient, err := jira.NewClient(client, "http://test.com")
-
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
-	j, err := NewJiraIssueExpanderFromPasswordAuth("test", "test", "http://test.com")
+	j, err := NewJiraIssueExpanderFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
 
 	assert.NoError(t, err, "Must return no errors")
-
-	j.client = jiraClient
 
 	result, err := j.Expand(&map[string]interface{}{"test": "test"})
 
@@ -97,17 +76,9 @@ func TestExpander(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	jiraClient, err := jira.NewClient(client, "http://test.com")
-
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
-	j, err := NewJiraIssueExpanderFromPasswordAuth("test", "test", "http://test.com")
+	j, err := NewJiraIssueExpanderFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
 
 	assert.NoError(t, err, "Must return no errors")
-
-	j.client = jiraClient
 
 	expanders := []Expander{
 		j,
@@ -128,24 +99,14 @@ func TestExpander(t *testing.T) {
 
 	expected := []map[string]interface{}{
 		map[string]interface{}{
-			"test":        "test1",
-			"jiraIssueId": "10000",
-			"jiraIssue": &jira.Issue{
-				Expand: "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
-				ID:     "10000",
-				Self:   "http://test.com/jira/rest/api/2/issue/10000",
-				Key:    "EX-1",
-			},
+			"test":         "test1",
+			"jiraIssueId":  "10000",
+			"jiraIssueKey": "EX-1",
 		},
 		map[string]interface{}{
-			"test":        "test2",
-			"jiraIssueId": "ABC-123",
-			"jiraIssue": &jira.Issue{
-				Expand: "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
-				ID:     "10001",
-				Self:   "http://test.com/jira/rest/api/2/issue/10001",
-				Key:    "ABC-123",
-			},
+			"test":         "test2",
+			"jiraIssueId":  "ABC-123",
+			"jiraIssueKey": "ABC-123",
 		},
 	}
 
@@ -155,13 +116,21 @@ func TestExpander(t *testing.T) {
 }
 
 func TestCreateExpanders(t *testing.T) {
-	r, err := CreateExpanders(map[string]interface{}{
+	v := viper.New()
+	v.Set("expanders", map[string]interface{}{
 		"jira": map[string]interface{}{
-			"username": "test",
-			"password": "test",
-			"url":      "http://test.com",
+			"credentials": map[string]interface{}{
+				"username": "test",
+				"password": "test",
+				"url":      "http://test.com",
+			},
+			"keys": map[string]interface{}{
+				"jiraIssueKey": "key",
+			},
 		},
 	})
+
+	r, err := CreateExpanders(v)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *r, 1, "Must return 1 expander")
@@ -175,25 +144,28 @@ func TestCreateExpandersWithErrors(t *testing.T) {
 
 	datas := []g{
 		g{
-			map[string]interface{}{"whatever": map[string]interface{}{"test": "test"}},
-			`"whatever" is not a valid expander structure`,
+			map[string]interface{}{"jira": map[string]interface{}{"whatever": map[string]interface{}{"test": "test"}}},
+			`"credentials" and "keys" key must be defined`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]interface{}{"test": "test"}},
+			map[string]interface{}{"jira": map[string]interface{}{"credentials": map[string]interface{}{"test": "test"}, "keys": map[string]interface{}{}}},
 			`"username" must be defined in jira config`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]interface{}{"username": "test"}},
+			map[string]interface{}{"jira": map[string]interface{}{"credentials": map[string]interface{}{"username": "test"}, "keys": map[string]interface{}{}}},
 			`"password" must be defined in jira config`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]interface{}{"username": "test", "password": "test"}},
+			map[string]interface{}{"jira": map[string]interface{}{"credentials": map[string]interface{}{"username": "test", "password": "test"}, "keys": map[string]interface{}{}}},
 			`"url" must be defined in jira config`,
 		},
 	}
 
 	for _, d := range datas {
-		_, err := CreateExpanders(d.s)
+		v := viper.New()
+		v.Set("expanders", d.s)
+
+		_, err := CreateExpanders(v)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, d.e, "Must match error string")

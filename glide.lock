@@ -1,16 +1,8 @@
-hash: 6eda9c370d444c9b89576acad61411559f66e52b5c51a9127c1da09104ce1f75
-updated: 2016-11-23T23:19:23.880102223+01:00
+hash: 9362d5b6a660e03ab85aca5de354a1f7c4d1ea1223fdb50e818b621ea86fe918
+updated: 2016-12-18T22:19:14.393687499+01:00
 imports:
-- name: github.com/andygrunwald/go-jira
-  version: 9d1f282f93af41553ddb53b0116a8cdb75b4837a
-- name: github.com/fatih/structs
-  version: dc3312cb1a4513a366c4c9e622ad55c32df12ed3
 - name: github.com/fsnotify/fsnotify
   version: f12c6236fe7b5cf6bcf30e5935d08cb079d78334
-- name: github.com/google/go-querystring
-  version: 9235644dd9e52eeae6fa48efd539fdc351a0af53
-  subpackages:
-  - query
 - name: github.com/hashicorp/hcl
   version: ef8133da8cda503718a74741312bf50821e6de79
   subpackages:
@@ -65,6 +57,10 @@ imports:
   - scanner
   - token
   - types
+- name: github.com/tidwall/gjson
+  version: b0e589ad0b7ff467fad157cc07b1381ea0a9708e
+- name: github.com/tidwall/match
+  version: 173748da739a410c5b0b813b956f89ff94730b4c
 - name: github.com/trivago/tgo
   version: 4a656addb20609ba4cb4d20219a2f6c27aeb142c
   subpackages:
@@ -89,31 +85,36 @@ imports:
 - name: gopkg.in/h2non/gock.v0
   version: 0ad9c55bec42c49b394bca98d4bcff7f4a82843c
 - name: gopkg.in/src-d/go-git.v4
-  version: 18f9bb53a0b3ded9cecf02bec1c08ed4833fb97c
+  version: 60cf153c71feb258cc77d1fcf4498d5b72280589
   subpackages:
   - config
-  - diff
   - plumbing
-  - plumbing/client
-  - plumbing/client/common
-  - plumbing/client/http
-  - plumbing/client/ssh
   - plumbing/format/config
   - plumbing/format/idxfile
   - plumbing/format/index
   - plumbing/format/objfile
   - plumbing/format/packfile
-  - plumbing/format/packp
-  - plumbing/format/packp/advrefs
-  - plumbing/format/packp/pktline
-  - plumbing/format/packp/ulreq
+  - plumbing/format/pktline
+  - plumbing/object
+  - plumbing/protocol/packp
+  - plumbing/protocol/packp/capability
+  - plumbing/protocol/packp/sideband
   - plumbing/storer
+  - plumbing/transport
+  - plumbing/transport/client
+  - plumbing/transport/file
+  - plumbing/transport/git
+  - plumbing/transport/http
+  - plumbing/transport/internal/common
+  - plumbing/transport/ssh
   - storage/filesystem
   - storage/filesystem/internal/dotgit
   - storage/memory
   - utils/binary
+  - utils/diff
   - utils/fs
   - utils/fs/os
+  - utils/ioutil
 - name: gopkg.in/warnings.v0
   version: 8a331561fe74dadba6edfc59f3be66c22c3b065d
 - name: gopkg.in/yaml.v2

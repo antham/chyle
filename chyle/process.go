@@ -28,7 +28,7 @@ func buildProcess(viper *viper.Viper) (*process, error) {
 		return nil, err
 	}
 
-	exp, err := CreateExpanders(viper.GetStringMap("expanders"))
+	exp, err := CreateExpanders(viper)
 
 	if err != nil {
 		return nil, err

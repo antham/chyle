@@ -1,10 +1,13 @@
 package chyle
 
 import (
+	"bytes"
 	"fmt"
+	"net/http"
 	"net/url"
 
-	"github.com/andygrunwald/go-jira"
+	"github.com/spf13/viper"
+	"github.com/tidwall/gjson"
 )
 
 // Expander extends data from commit hashmap with data picked from third part service
@@ -14,31 +17,16 @@ type Expander interface {
 
 // JiraIssueExpander fetch data using jira issue api
 type JiraIssueExpander struct {
+	client   http.Client
 	username string
 	password string
-	client   *jira.Client
+	URL      string
+	keys     map[string]string
 }
 
 // NewJiraIssueExpanderFromPasswordAuth create a new JiraIssueExpander
-func NewJiraIssueExpanderFromPasswordAuth(username string, password string, URL string) (JiraIssueExpander, error) {
-	c, err := jira.NewClient(nil, URL)
-
-	if err != nil {
-		return JiraIssueExpander{}, err
-	}
-
-	return JiraIssueExpander{username, password, c}, nil
-}
-
-// Authenticate acquire a new jira session cookie
-func (j JiraIssueExpander) Authenticate() (bool, error) {
-	res, err := j.client.Authentication.AcquireSessionCookie(j.username, j.password)
-
-	if err != nil || !res {
-		return false, err
-	}
-
-	return true, nil
+func NewJiraIssueExpanderFromPasswordAuth(client http.Client, username string, password string, URL string, keys map[string]string) (JiraIssueExpander, error) {
+	return JiraIssueExpander{client, username, password, URL, keys}, nil
 }
 
 // Expand fetch remote jira service if a jiraIssueId is defined to fetch issue datas
@@ -55,13 +43,31 @@ func (j JiraIssueExpander) Expand(commitMap *map[string]interface{}) (*map[strin
 		return commitMap, nil
 	}
 
-	issue, _, err := j.client.Issue.Get(ID)
+	req, err := http.NewRequest("GET", j.URL+"/rest/api/2/issue/"+ID, nil)
 
 	if err != nil {
 		return commitMap, err
 	}
 
-	(*commitMap)["jiraIssue"] = issue
+	req.SetBasicAuth(j.username, j.password)
+	req.Header.Set("Content-Type", "application/json")
+
+	rep, err := j.client.Do(req)
+
+	if err != nil {
+		return commitMap, err
+	}
+
+	buf := bytes.NewBuffer([]byte{})
+	rep.Write(buf)
+
+	for identifier, key := range j.keys {
+		if gjson.Get(buf.String(), key).Exists() {
+			(*commitMap)[identifier] = gjson.Get(buf.String(), key).Value()
+		} else {
+			(*commitMap)[identifier] = nil
+		}
+	}
 
 	return commitMap, nil
 }
@@ -89,53 +95,41 @@ func Expand(expanders *[]Expander, commitMaps *[]map[string]interface{}) (*[]map
 	return &results, nil
 }
 
-func buildJiraExpander(config map[string]interface{}) (Expander, error) {
-	datas := map[string]string{}
+func buildJiraExpander(credentials map[string]string, keys map[string]string) (Expander, error) {
 	var URL *url.URL
-	var ok bool
 
 	for _, k := range []string{"username", "password", "url"} {
-		var v string
-
-		if _, ok = config[k]; !ok {
+		if _, ok := credentials[k]; !ok {
 			return nil, fmt.Errorf(`"%s" must be defined in jira config`, k)
 		}
-
-		if v, ok = config[k].(string); !ok {
-			return nil, fmt.Errorf(`"%s" must be a string`, k)
-		}
-
-		datas[k] = v
 	}
 
-	URL, err := url.Parse(datas["url"])
+	URL, err := url.Parse(credentials["url"])
 
 	if err != nil {
-		return nil, fmt.Errorf(`"%s" not a valid URL defined in jira config`, datas["url"])
+		return nil, fmt.Errorf(`"%s" not a valid URL defined in jira config`, credentials["url"])
 	}
 
-	return NewJiraIssueExpanderFromPasswordAuth(datas["username"], datas["password"], URL.String())
+	return NewJiraIssueExpanderFromPasswordAuth(http.Client{}, credentials["username"], credentials["password"], URL.String(), keys)
 }
 
 // CreateExpanders build expanders from a config
-func CreateExpanders(expanders map[string]interface{}) (*[]Expander, error) {
+func CreateExpanders(config *viper.Viper) (*[]Expander, error) {
 	results := []Expander{}
 
-	for dk, dv := range expanders {
+	for k := range config.GetStringMap("expanders") {
 		var ex Expander
 		var err error
 
-		e, ok := dv.(map[string]interface{})
-
-		if !ok {
-			return &[]Expander{}, fmt.Errorf(`expander "%s" must contains key=value string values`, dk)
-		}
-
-		switch dk {
+		switch k {
 		case "jira":
-			ex, err = buildJiraExpander(e)
+			if !config.IsSet("expanders.jira.credentials") || !config.IsSet("expanders.jira.keys") {
+				return nil, fmt.Errorf(`"credentials" and "keys" key must be defined`)
+			}
+
+			ex, err = buildJiraExpander(config.GetStringMapString("expanders.jira.credentials"), config.GetStringMapString("expanders.jira.keys"))
 		default:
-			err = fmt.Errorf(`"%s" is not a valid expander structure`, dk)
+			err = fmt.Errorf(`"%s" is not a valid expander structure`, k)
 		}
 
 		if err != nil {
