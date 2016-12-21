@@ -29,7 +29,7 @@ func CreateSenders(config *viper.Viper) (*[]Sender, error) {
 	results := []Sender{}
 
 	for sectionKey := range config.GetStringMap("senders") {
-		var ex Sender
+		var se Sender
 		var err error
 		switch sectionKey {
 		case "stdout":
@@ -37,7 +37,9 @@ func CreateSenders(config *viper.Viper) (*[]Sender, error) {
 				err = fmt.Errorf(`"format" key must be defined`)
 			}
 
-			ex, err = NewStdoutSender(config.GetString("senders.stdout.format"))
+			se, err = NewStdoutSender(config.GetString("senders.stdout.format"))
+		case "github":
+			se, err = buildGithubReleaseSender(config)
 		default:
 			err = fmt.Errorf(`"%s" is not a valid sender structure`, sectionKey)
 		}
@@ -46,7 +48,7 @@ func CreateSenders(config *viper.Viper) (*[]Sender, error) {
 			return &[]Sender{}, err
 		}
 
-		results = append(results, ex)
+		results = append(results, se)
 	}
 
 	return &results, nil
