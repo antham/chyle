@@ -44,7 +44,5 @@ func initConfig() {
 
 	envTree = &e
 
-	if debug {
-		chyle.EnableDebugging()
-	}
+	chyle.EnableDebugging = debug
 }
