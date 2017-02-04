@@ -165,30 +165,18 @@ func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 			}
 
 			m, err = buildNumParentsMatcher(i)
-		case "MESSAGE":
+		case "MESSAGE", "COMMITTER", "AUTHOR":
 			s, err = config.FindString(k)
 
 			if err != nil {
 				break
 			}
 
-			m, err = buildMessageMatcher(k, s)
-		case "COMMITTER":
-			s, err = config.FindString(k)
-
-			if err != nil {
-				break
-			}
-
-			m, err = buildCommitterMatcher(k, s)
-		case "AUTHOR":
-			s, err = config.FindString(k)
-
-			if err != nil {
-				break
-			}
-
-			m, err = buildAuthorMatcher(k, s)
+			m, err = map[string]func(string, string) (Matcher, error){
+				"MESSAGE":   buildMessageMatcher,
+				"COMMITTER": buildCommitterMatcher,
+				"AUTHOR":    buildAuthorMatcher,
+			}[k](k, s)
 		default:
 			err = fmt.Errorf(`"%s" is not a valid matcher structure`, k)
 		}
