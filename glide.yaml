@@ -1,8 +1,6 @@
 package: github.com/antham/chyle
 import:
 - package: github.com/spf13/cobra
-- package: gopkg.in/src-d/go-git.v4
-  version: ^4.0.0-rc4
 - package: github.com/Sirupsen/logrus
   version: ^0.11.0
 - package: github.com/trivago/tgo
@@ -13,3 +11,4 @@ import:
 - package: github.com/tidwall/gjson
 - package: github.com/antham/envh
   version: ^1.0.1
+- package: srcd.works/go-git.v4

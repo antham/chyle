@@ -1,7 +1,7 @@
 package chyle
 
 import (
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"srcd.works/go-git.v4/plumbing/object"
 
 	"github.com/antham/envh"
 )

@@ -9,7 +9,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/src-d/go-git.v4/plumbing"
+	"srcd.works/go-git.v4/plumbing"
 
 	"github.com/antham/envh"
 )

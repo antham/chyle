@@ -5,9 +5,9 @@ import (
 	"io"
 	"strings"
 
-	"gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/plumbing"
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"srcd.works/go-git.v4"
+	"srcd.works/go-git.v4/plumbing"
+	"srcd.works/go-git.v4/plumbing/object"
 )
 
 // resolveRef give hash commit for a given string reference
@@ -52,7 +52,8 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 // fetchCommits retrieves commits between a reference range
 func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Commit, error) {
 	commits := []object.Commit{}
-	repo, err := git.NewFilesystemRepository(repoPath + "/.git/")
+
+	repo, err := git.PlainOpen(repoPath)
 
 	if err != nil {
 		return nil, err

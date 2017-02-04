@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/antham/envh"
-	"gopkg.in/src-d/go-git.v4"
+	"srcd.works/go-git.v4"
 )
 
 var envs map[string]string
@@ -37,7 +37,7 @@ func setup() {
 		os.Exit(1)
 	}
 
-	repo, err = git.NewFilesystemRepository(path + "/test/.git/")
+	repo, err = git.PlainOpen(path + "/test")
 
 	if err != nil {
 		fmt.Println(err)
