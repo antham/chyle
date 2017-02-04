@@ -89,14 +89,14 @@ func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	for _, c := range *commits {
 		commitMap := map[string]interface{}{
 			"id":             c.ID().String(),
-			"authorname":     c.Author.Name,
-			"authoremail":    c.Author.Email,
-			"authordate":     c.Author.When.String(),
-			"committername":  c.Committer.Name,
-			"committeremail": c.Committer.Email,
-			"committerdate":  c.Committer.When.String(),
+			"authorName":     c.Author.Name,
+			"authorEmail":    c.Author.Email,
+			"authorDate":     c.Author.When.String(),
+			"committerName":  c.Committer.Name,
+			"committerEmail": c.Committer.Email,
+			"committerDate":  c.Committer.When.String(),
 			"message":        c.Message,
-			"ismerge":        c.NumParents() == 2,
+			"isMerge":        c.NumParents() == 2,
 		}
 
 		commitMaps = append(commitMaps, commitMap)

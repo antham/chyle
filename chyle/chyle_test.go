@@ -22,7 +22,9 @@ func TestBuildChangelog(t *testing.T) {
 	}
 
 	setenv("CHYLE_MATCHERS_NUMPARENTS", "1")
-	setenv("CHYLE_EXTRACTORS_MESSAGE_SUBJECT", "(.{1,50})")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_ORIGKEY", "message")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_DESTKEY", "subject")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_REG", "(.{1,50})")
 	setenv("CHYLE_SENDERS_STDOUT_FORMAT", "json")
 
 	f, err := ioutil.TempFile(p+"/test", "test")
@@ -50,12 +52,12 @@ func TestBuildChangelog(t *testing.T) {
 
 	type Data struct {
 		ID             string `json:"id"`
-		AuthorDate     string `json:"authordate"`
-		AuthorEmail    string `json:"authoremail"`
-		AuthorName     string `json:"authorname"`
-		IsMerge        bool   `json:"ismerge"`
-		CommitterEmail string `json:"committeremail"`
-		CommitterName  string `json:"committername"`
+		AuthorDate     string `json:"authorDate"`
+		AuthorEmail    string `json:"authorEmail"`
+		AuthorName     string `json:"authorName"`
+		IsMerge        bool   `json:"isMerge"`
+		CommitterEmail string `json:"committerEmail"`
+		CommitterName  string `json:"committerName"`
 		Message        string `json:"message"`
 		Subject        string `json:"subject"`
 	}

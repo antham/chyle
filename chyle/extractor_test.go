@@ -89,8 +89,13 @@ func TestExtract(t *testing.T) {
 func TestCreateExtractors(t *testing.T) {
 	restoreEnvs()
 
-	setenv("EXTRACTORS_ID_TEST", ".*")
-	setenv("EXTRACTORS_AUTHORNAME_TEST2", ".*")
+	setenv("EXTRACTORS_ID_ORIGKEY", "id")
+	setenv("EXTRACTORS_ID_DESTKEY", "test")
+	setenv("EXTRACTORS_ID_REG", ".*")
+
+	setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "authorName")
+	setenv("EXTRACTORS_AUTHORNAME_DESTKEY", "test2")
+	setenv("EXTRACTORS_AUTHORNAME_REG", ".*")
 
 	config, err := envh.NewEnvTree("^EXTRACTORS", "_")
 
@@ -105,13 +110,32 @@ func TestCreateExtractors(t *testing.T) {
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *e, 2, "Must return 2 extractors")
 
-	assert.Equal(t, (*e)[0].(RegexpExtracter).index, "id", "Must return first component after extractor variable")
-	assert.Equal(t, (*e)[0].(RegexpExtracter).identifier, "test", "Must return second component after extractor variable")
-	assert.Equal(t, (*e)[0].(RegexpExtracter).re, regexp.MustCompile(".*"), "Must return value as regexp")
+	expected := map[string]map[string]string{
+		"id": map[string]string{
+			"index":      "id",
+			"identifier": "test",
+			"regexp":     ".*",
+		},
+		"authorName": map[string]string{
+			"index":      "authorName",
+			"identifier": "test2",
+			"regexp":     ".*",
+		},
+	}
 
-	assert.Equal(t, (*e)[1].(RegexpExtracter).index, "authorname", "Must return first component after extractor variable")
-	assert.Equal(t, (*e)[1].(RegexpExtracter).identifier, "test2", "Must return second component after extractor variable")
-	assert.Equal(t, (*e)[1].(RegexpExtracter).re, regexp.MustCompile(".*"), "Must return value as regexp")
+	for i := 0; i < 2; i++ {
+		index := (*e)[0].(RegexpExtracter).index
+
+		v, ok := expected[index]
+
+		if !ok {
+			assert.Fail(t, "Index must exists in expected", "Key must exists")
+		}
+
+		assert.Equal(t, (*e)[0].(RegexpExtracter).index, v["index"], "Must return first component after extractor variable")
+		assert.Equal(t, (*e)[0].(RegexpExtracter).identifier, v["identifier"], "Must return second component after extractor variable")
+		assert.Equal(t, (*e)[0].(RegexpExtracter).re, regexp.MustCompile(v["regexp"]), "Must return value as regexp")
+	}
 }
 
 func TestCreateExtractorsWithErrors(t *testing.T) {
@@ -123,9 +147,30 @@ func TestCreateExtractorsWithErrors(t *testing.T) {
 	tests := []g{
 		g{
 			func() {
-				setenv("EXTRACTORS_AUTHORNAME_TEST", "*")
+				setenv("EXTRACTORS_AUTHORNAME_TEST", "")
 			},
-			`"*" is not a valid regular expression defined for "AUTHORNAME" in "EXTRACTORS" config`,
+			`An environment variable suffixed with "ORIGKEY" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_ORIGKEY`,
+		},
+		g{
+			func() {
+				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
+			},
+			`An environment variable suffixed with "DESTKEY" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_DESTKEY`,
+		},
+		g{
+			func() {
+				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
+				setenv("EXTRACTORS_AUTHORNAME_DESTKEY", "test")
+			},
+			`An environment variable suffixed with "REG" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_REG`,
+		},
+		g{
+			func() {
+				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
+				setenv("EXTRACTORS_AUTHORNAME_DESTKEY", "test")
+				setenv("EXTRACTORS_AUTHORNAME_REG", "*")
+			},
+			`"*" is not a valid regular expression defined for "EXTRACTORS_AUTHORNAME_REG" key`,
 		},
 	}
 

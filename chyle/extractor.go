@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/antham/envh"
 )
@@ -98,31 +97,33 @@ func CreateExtractors(config *envh.EnvTree) (*[]Extracter, error) {
 	results := []Extracter{}
 
 	for _, identifier := range config.GetChildrenKeys() {
-		keys, err := config.FindChildrenKeys(identifier)
+		subConfig, err := config.FindSubTree(identifier)
 
 		if err != nil {
 			return &results, err
 		}
 
-		for _, key := range keys {
-			v, err := config.FindString(identifier, key)
+		datas := map[string]string{}
+
+		for _, v := range []string{"ORIGKEY", "DESTKEY", "REG"} {
+			datas[v], err = subConfig.FindString(v)
 
 			if err != nil {
-				return &results, err
+				return &results, fmt.Errorf(`An environment variable suffixed with "%s" must be defined with "%s", like EXTRACTORS_%s_%s`, v, identifier, identifier, v)
 			}
-
-			re, err := regexp.Compile(v)
-
-			if err != nil {
-				return &[]Extracter{}, fmt.Errorf(`"%s" is not a valid regular expression defined for "%s" in "EXTRACTORS" config`, v, identifier)
-			}
-
-			results = append(results, RegexpExtracter{
-				strings.ToLower(identifier),
-				strings.ToLower(key),
-				re,
-			})
 		}
+
+		re, err := regexp.Compile(datas["REG"])
+
+		if err != nil {
+			return &[]Extracter{}, fmt.Errorf(`"%s" is not a valid regular expression defined for "EXTRACTORS_%s_%s" key`, datas["REG"], identifier, "REG")
+		}
+
+		results = append(results, RegexpExtracter{
+			datas["ORIGKEY"],
+			datas["DESTKEY"],
+			re,
+		})
 	}
 
 	return &results, nil

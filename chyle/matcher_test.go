@@ -170,14 +170,14 @@ func TestTransformCommitsToMap(t *testing.T) {
 
 	expected := map[string]interface{}{
 		"id":             commit.ID().String(),
-		"authorname":     commit.Author.Name,
-		"authoremail":    commit.Author.Email,
-		"authordate":     commit.Author.When.String(),
-		"committername":  commit.Committer.Name,
-		"committeremail": commit.Committer.Email,
-		"committerdate":  commit.Committer.When.String(),
+		"authorName":     commit.Author.Name,
+		"authorEmail":    commit.Author.Email,
+		"authorDate":     commit.Author.When.String(),
+		"committerName":  commit.Committer.Name,
+		"committerEmail": commit.Committer.Email,
+		"committerDate":  commit.Committer.When.String(),
 		"message":        commit.Message,
-		"ismerge":        false,
+		"isMerge":        false,
 	}
 
 	assert.Len(t, *commitMaps, 10, "Must contains all history")
