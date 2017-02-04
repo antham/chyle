@@ -120,7 +120,8 @@ func TestCreateExpanders(t *testing.T) {
 	setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "test")
 	setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "test")
 	setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
-	setenv("EXPANDERS_JIRA_KEYS_JIRAISSUEKEY", "key")
+	setenv("EXPANDERS_JIRA_KEYS_JIRATICKETDESCRIPTION_DESTKEY", "jiraTicketDescription")
+	setenv("EXPANDERS_JIRA_KEYS_JIRATICKETDESCRIPTION_FIELD", "fields.summary")
 
 	config, err := envh.NewEnvTree("^EXPANDERS", "_")
 
@@ -175,6 +176,32 @@ func TestCreateExpandersWithErrors(t *testing.T) {
 				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "url")
 			},
 			`"url" is not a valid absolute URL defined in "JIRA" config`,
+		},
+		g{
+			func() {
+				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
+			},
+			`No "EXPANDERS_JIRA_KEYS" key found`,
+		},
+		g{
+			func() {
+				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
+				setenv("EXPANDERS_JIRA_KEYS_TEST", "test")
+			},
+			`An environment variable suffixed with "DESTKEY" must be defined with "TEST", like EXPANDERS_JIRA_KEYS_TEST_DESTKEY`,
+		},
+		g{
+			func() {
+				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
+				setenv("EXPANDERS_JIRA_KEYS_TEST_DESTKEY", "test")
+			},
+			`An environment variable suffixed with "FIELD" must be defined with "TEST", like EXPANDERS_JIRA_KEYS_TEST_FIELD`,
 		},
 	}
 
