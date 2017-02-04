@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	tmpl "html/template"
-
-	"github.com/spf13/viper"
 )
 
 func populateTemplate(ID string, template string, data interface{}) (string, error) {
@@ -24,14 +22,4 @@ func populateTemplate(ID string, template string, data interface{}) (string, err
 	}
 
 	return b.String(), nil
-}
-
-func checkArguments(arguments []string, config *viper.Viper) error {
-	for _, key := range arguments {
-		if !config.IsSet(key) {
-			return fmt.Errorf(`"%s" must be defined`, key)
-		}
-	}
-
-	return nil
 }
