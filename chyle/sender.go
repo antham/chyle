@@ -29,6 +29,7 @@ func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
 	results := []Sender{}
 
 	var se Sender
+	var subConfig envh.EnvTree
 	var s string
 	var err error
 
@@ -43,7 +44,7 @@ func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
 
 			se, err = NewStdoutSender(s)
 		case "GITHUB":
-			subConfig, err := config.FindSubTree("GITHUB")
+			subConfig, err = config.FindSubTree("GITHUB")
 
 			if err != nil {
 				break
