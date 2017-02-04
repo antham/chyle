@@ -1,8 +1,9 @@
 package chyle
 
 import (
-	"github.com/spf13/viper"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
+
+	"github.com/antham/envh"
 )
 
 // process represents all configuration operations defined
@@ -15,36 +16,49 @@ type process struct {
 }
 
 // buildProcess creates process entity from defined configuration
-func buildProcess(viper *viper.Viper) (*process, error) {
-	m, err := CreateMatchers(viper)
+func buildProcess(config *envh.EnvTree) (*process, error) {
+	matchers := &[]Matcher{}
+	extractors := &[]Extracter{}
+	expanders := &[]Expander{}
+	senders := &[]Sender{}
 
-	if err != nil {
-		return nil, err
+	if subConfig, err := config.FindSubTree("CHYLE", "MATCHERS"); err == nil {
+		matchers, err = CreateMatchers(&subConfig)
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	ext, err := CreateExtractors(viper)
+	if subConfig, err := config.FindSubTree("CHYLE", "EXTRACTORS"); err == nil {
+		extractors, err = CreateExtractors(&subConfig)
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	exp, err := CreateExpanders(viper)
+	if subConfig, err := config.FindSubTree("CHYLE", "EXPANDERS"); err == nil {
+		expanders, err = CreateExpanders(&subConfig)
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	s, err := CreateSenders(viper)
+	if subConfig, err := config.FindSubTree("CHYLE", "SENDERS"); err == nil {
+		senders, err = CreateSenders(&subConfig)
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &process{
-		m,
-		ext,
-		exp,
-		s,
+		matchers,
+		extractors,
+		expanders,
+		senders,
 	}, nil
 }
 

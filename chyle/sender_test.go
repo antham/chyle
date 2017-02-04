@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/spf13/viper"
+	"github.com/antham/envh"
 )
 
 func TestSend(t *testing.T) {
@@ -32,13 +32,18 @@ func TestSend(t *testing.T) {
 }
 
 func TestCreateSenders(t *testing.T) {
-	v := viper.New()
-	v.Set("senders", map[string]interface{}{
-		"stdout": map[string]interface{}{
-			"format": "json",
-		},
-	})
-	r, err := CreateSenders(v)
+	restoreEnvs()
+	setenv("SENDERS_STDOUT_FORMAT", "json")
+
+	config, err := envh.NewEnvTree("^SENDERS", "_")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	subConfig, err := config.FindSubTree("SENDERS")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	r, err := CreateSenders(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *r, 1, "Must return 1 expander")
@@ -46,28 +51,40 @@ func TestCreateSenders(t *testing.T) {
 
 func TestCreateSendersWithErrors(t *testing.T) {
 	type g struct {
-		s map[string]interface{}
+		f func()
 		e string
 	}
 
-	datas := []g{
+	tests := []g{
 		g{
-			map[string]interface{}{"whatever": map[string]interface{}{"test": "test"}},
-			`"whatever" is not a valid sender structure`,
+			func() {
+				setenv("SENDERS_WHATEVER", "test")
+			},
+			`"WHATEVER" is not a valid sender structure`,
 		},
 		g{
-			map[string]interface{}{"stdout": map[string]interface{}{"format": "test"}},
+			func() {
+				setenv("SENDERS_STDOUT_FORMAT", "test")
+			},
 			`"test" format does not exist`,
 		},
 	}
 
-	for _, d := range datas {
-		v := viper.New()
-		v.Set("senders", d.s)
+	for _, test := range tests {
+		restoreEnvs()
+		test.f()
 
-		_, err := CreateSenders(v)
+		config, err := envh.NewEnvTree("^SENDERS", "_")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		subConfig, err := config.FindSubTree("SENDERS")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		_, err = CreateSenders(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, d.e, "Must match error string")
+		assert.EqualError(t, err, test.e, "Must match error string")
 	}
 }

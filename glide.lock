@@ -1,6 +1,8 @@
-hash: 9362d5b6a660e03ab85aca5de354a1f7c4d1ea1223fdb50e818b621ea86fe918
-updated: 2016-12-18T22:19:14.393687499+01:00
+hash: f43475bfea6174047bcdaa279586f1deea86e0a7b8590dfe430ac48f6e4aba49
+updated: 2017-02-04T18:14:41.779660236+01:00
 imports:
+- name: github.com/antham/envh
+  version: aab851b3bca5a17c82382ff3499217c16c6e0441
 - name: github.com/fsnotify/fsnotify
   version: f12c6236fe7b5cf6bcf30e5935d08cb079d78334
 - name: github.com/hashicorp/hcl

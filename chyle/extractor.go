@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 
-	"github.com/spf13/viper"
+	"github.com/antham/envh"
 )
 
 // Extracter describe a way to extract data from a commit hashmap summary
@@ -93,24 +94,35 @@ func Extract(extractors *[]Extracter, commitMaps *[]map[string]interface{}) (*[]
 }
 
 // CreateExtractors build extracters from a config
-func CreateExtractors(config *viper.Viper) (*[]Extracter, error) {
+func CreateExtractors(config *envh.EnvTree) (*[]Extracter, error) {
 	results := []Extracter{}
 
-	for sectionKey := range config.GetStringMap("extractors") {
-		for key, value := range config.GetStringMapString("extractors." + sectionKey) {
-			re, err := regexp.Compile(value)
+	for _, identifier := range config.GetChildrenKeys() {
+		keys, err := config.FindChildrenKeys(identifier)
+
+		if err != nil {
+			return &results, err
+		}
+
+		for _, key := range keys {
+			v, err := config.FindString(identifier, key)
 
 			if err != nil {
-				return &[]Extracter{}, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
+				return &results, err
+			}
+
+			re, err := regexp.Compile(v)
+
+			if err != nil {
+				return &[]Extracter{}, fmt.Errorf(`"%s" is not a valid regular expression defined for "%s" in "EXTRACTORS" config`, v, identifier)
 			}
 
 			results = append(results, RegexpExtracter{
-				sectionKey,
-				key,
+				strings.ToLower(identifier),
+				strings.ToLower(key),
 				re,
 			})
 		}
-
 	}
 
 	return &results, nil

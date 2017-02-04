@@ -11,4 +11,5 @@ import:
 - package: gopkg.in/h2non/gock.v0
   version: ^1.0.3
 - package: github.com/tidwall/gjson
-- package: github.com/spf13/viper
+- package: github.com/antham/envh
+  version: ^1.0.1

@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v0"
+
+	"github.com/antham/envh"
 )
 
 func TestJiraExpander(t *testing.T) {
@@ -116,21 +117,20 @@ func TestExpander(t *testing.T) {
 }
 
 func TestCreateExpanders(t *testing.T) {
-	v := viper.New()
-	v.Set("expanders", map[string]interface{}{
-		"jira": map[string]interface{}{
-			"credentials": map[string]interface{}{
-				"username": "test",
-				"password": "test",
-				"url":      "http://test.com",
-			},
-			"keys": map[string]interface{}{
-				"jiraIssueKey": "key",
-			},
-		},
-	})
+	setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "test")
+	setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "test")
+	setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
+	setenv("EXPANDERS_JIRA_KEYS_JIRAISSUEKEY", "key")
 
-	r, err := CreateExpanders(v)
+	config, err := envh.NewEnvTree("^EXPANDERS", "_")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	subConfig, err := config.FindSubTree("EXPANDERS")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	r, err := CreateExpanders(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *r, 1, "Must return 1 expander")
@@ -138,36 +138,61 @@ func TestCreateExpanders(t *testing.T) {
 
 func TestCreateExpandersWithErrors(t *testing.T) {
 	type g struct {
-		s map[string]interface{}
+		f func()
 		e string
 	}
 
-	datas := []g{
+	tests := []g{
 		g{
-			map[string]interface{}{"jira": map[string]interface{}{"whatever": map[string]interface{}{"test": "test"}}},
-			`"credentials" and "keys" key must be defined`,
+			func() {
+				setenv("EXPANDERS_TEST", "")
+			},
+			`"TEST" is not a valid expander structure`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]interface{}{"credentials": map[string]interface{}{"test": "test"}, "keys": map[string]interface{}{}}},
-			`"username" must be defined in jira config`,
+			func() {
+				setenv("EXPANDERS_JIRA_CREDENTIALS", "test")
+			},
+			`"USERNAME" variable not found in "JIRA" config`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]interface{}{"credentials": map[string]interface{}{"username": "test"}, "keys": map[string]interface{}{}}},
-			`"password" must be defined in jira config`,
+			func() {
+				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
+			},
+			`"PASSWORD" variable not found in "JIRA" config`,
 		},
 		g{
-			map[string]interface{}{"jira": map[string]interface{}{"credentials": map[string]interface{}{"username": "test", "password": "test"}, "keys": map[string]interface{}{}}},
-			`"url" must be defined in jira config`,
+			func() {
+				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
+			},
+			`"URL" variable not found in "JIRA" config`,
+		},
+		g{
+			func() {
+				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "url")
+			},
+			`"url" is not a valid absolute URL defined in "JIRA" config`,
 		},
 	}
 
-	for _, d := range datas {
-		v := viper.New()
-		v.Set("expanders", d.s)
+	for _, test := range tests {
+		restoreEnvs()
+		test.f()
 
-		_, err := CreateExpanders(v)
+		config, err := envh.NewEnvTree("^EXPANDERS", "_")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		subConfig, err := config.FindSubTree("EXPANDERS")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		_, err = CreateExpanders(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, d.e, "Must match error string")
+		assert.EqualError(t, err, test.e, "Must match error string")
 	}
 }

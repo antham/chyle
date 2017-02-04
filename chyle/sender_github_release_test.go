@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v0"
+
+	"github.com/antham/envh"
 )
 
 func TestGithubReleaseSender(t *testing.T) {
@@ -62,15 +63,26 @@ func TestGithubReleaseSender(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	v := viper.New()
-	v.Set("senders.github.template", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
-	v.Set("senders.github.tag", "v1.0.0")
-	v.Set("senders.github.name", "TEST")
-	v.Set("senders.github.credentials.owner", "test")
-	v.Set("senders.github.repository.name", "test")
-	v.Set("senders.github.credentials.oauthtoken", "d41d8cd98f00b204e9800998ecf8427e")
+	restoreEnvs()
+	setenv("SENDERS_GITHUB_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
+	setenv("SENDERS_GITHUB_TAG", "v1.0.0")
+	setenv("SENDERS_GITHUB_NAME", "TEST")
+	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
+	setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
+	setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 
-	m, err := buildGithubReleaseSender(v)
+	config, err := envh.NewEnvTree("SENDERS", "_")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	subConfig, err := config.FindSubTree("SENDERS", "GITHUB")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	m, err := buildGithubReleaseSender(&subConfig)
+
+	assert.NoError(t, err, "Must return no errors")
+
 	s := m.(GithubReleaseSender)
 	s.client = *client
 

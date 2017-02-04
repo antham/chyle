@@ -3,13 +3,15 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+
+	"github.com/antham/chyle/chyle"
+	"github.com/antham/envh"
 )
 
-var cfgFile string
+var envTree *envh.EnvTree
+var debug bool
 
 // RootCmd represents initial cobra command
 var RootCmd = &cobra.Command{
@@ -29,19 +31,20 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file to use")
+	RootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debugging")
 }
 
 func initConfig() {
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
+	e, err :=  envh.NewEnvTree("CHYLE", "_")
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
 	}
 
-	viper.SetEnvPrefix("CHYLE")
-	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	envTree = &e
 
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Can't read %s", cfgFile)
+	if debug {
+		chyle.EnableDebugging()
 	}
 }

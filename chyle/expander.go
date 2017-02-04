@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/spf13/viper"
+	"github.com/antham/envh"
 	"github.com/tidwall/gjson"
 )
 
@@ -99,39 +99,57 @@ func Expand(expanders *[]Expander, commitMaps *[]map[string]interface{}) (*[]map
 	return &results, nil
 }
 
-func buildJiraExpander(config *viper.Viper) (Expander, error) {
-	var URL *url.URL
+func buildJiraExpander(config *envh.EnvTree) (Expander, error) {
+	datas := map[string]string{}
+	keyValues := map[string]string{}
 
-	for _, k := range []string{"username", "password", "url"} {
-		if !config.IsSet("expanders.jira.credentials." + k) {
-			return nil, fmt.Errorf(`"%s" must be defined in jira config`, k)
+	for _, k := range []string{"USERNAME", "PASSWORD", "URL"} {
+		v, err := config.FindString("CREDENTIALS", k)
+
+		if err != nil {
+			return nil, fmt.Errorf(`"%s" variable not found in "JIRA" config`, k)
 		}
+
+		datas[k] = v
 	}
 
-	URL, err := url.Parse(config.GetString("expanders.jira.credentials.url"))
+	_, err := url.ParseRequestURI(datas["URL"])
 
 	if err != nil {
-		return nil, fmt.Errorf(`"%s" not a valid URL defined in jira config`, config.GetString("expanders.jira.credentials.url"))
+		return nil, fmt.Errorf(`"%s" is not a valid absolute URL defined in "JIRA" config`, datas["URL"])
 	}
 
-	return NewJiraIssueExpanderFromPasswordAuth(http.Client{}, config.GetString("expanders.jira.credentials.username"), config.GetString("expanders.jira.credentials.password"), URL.String(), config.GetStringMapString("expanders.jira.keys"))
+	for _, k := range config.GetChildrenKeys() {
+		v, err := config.FindString(k)
+
+		if err != nil {
+			return nil, err
+		}
+
+		keyValues[k] = v
+	}
+
+	return NewJiraIssueExpanderFromPasswordAuth(http.Client{}, datas["USERNAME"], datas["PASSWORD"], datas["URL"], keyValues)
 }
 
 // CreateExpanders build expanders from a config
-func CreateExpanders(config *viper.Viper) (*[]Expander, error) {
+func CreateExpanders(config *envh.EnvTree) (*[]Expander, error) {
 	results := []Expander{}
 
-	for k := range config.GetStringMap("expanders") {
-		var ex Expander
-		var err error
+	var ex Expander
+	var err error
+	var subConfig envh.EnvTree
 
+	for _, k := range config.GetChildrenKeys() {
 		switch k {
-		case "jira":
-			if !config.IsSet("expanders.jira.credentials") || !config.IsSet("expanders.jira.keys") {
-				return nil, fmt.Errorf(`"credentials" and "keys" key must be defined`)
+		case "JIRA":
+			subConfig, err = config.FindSubTree("JIRA")
+
+			if err != nil {
+				break
 			}
 
-			ex, err = buildJiraExpander(config)
+			ex, err = buildJiraExpander(&subConfig)
 		default:
 			err = fmt.Errorf(`"%s" is not a valid expander structure`, k)
 		}

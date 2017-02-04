@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/antham/chyle/chyle"
 )
@@ -38,7 +37,7 @@ Changelog creation follows this process :
 			return
 		}
 
-		err = chyle.BuildChangelog(path, viper.GetViper(), args[0], args[1])
+		err = chyle.BuildChangelog(path, envTree, args[0], args[1])
 
 		if err != nil {
 			fmt.Println(err)

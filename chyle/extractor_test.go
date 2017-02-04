@@ -4,8 +4,9 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/antham/envh"
 )
 
 func TestExtract(t *testing.T) {
@@ -86,38 +87,63 @@ func TestExtract(t *testing.T) {
 }
 
 func TestCreateExtractors(t *testing.T) {
-	v := viper.New()
-	v.Set("extractors", map[string]interface{}{
-		"id":         map[string]interface{}{"test": ".*"},
-		"authorName": map[string]interface{}{"test2": ".*"},
-	})
+	restoreEnvs()
 
-	e, err := CreateExtractors(v)
+	setenv("EXTRACTORS_ID_TEST", ".*")
+	setenv("EXTRACTORS_AUTHORNAME_TEST2", ".*")
+
+	config, err := envh.NewEnvTree("^EXTRACTORS", "_")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	subConfig, err := config.FindSubTree("EXTRACTORS")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	e, err := CreateExtractors(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *e, 2, "Must return 2 extractors")
+
+	assert.Equal(t, (*e)[0].(RegexpExtracter).index, "id", "Must return first component after extractor variable")
+	assert.Equal(t, (*e)[0].(RegexpExtracter).identifier, "test", "Must return second component after extractor variable")
+	assert.Equal(t, (*e)[0].(RegexpExtracter).re, regexp.MustCompile(".*"), "Must return value as regexp")
+
+	assert.Equal(t, (*e)[1].(RegexpExtracter).index, "authorname", "Must return first component after extractor variable")
+	assert.Equal(t, (*e)[1].(RegexpExtracter).identifier, "test2", "Must return second component after extractor variable")
+	assert.Equal(t, (*e)[1].(RegexpExtracter).re, regexp.MustCompile(".*"), "Must return value as regexp")
 }
 
 func TestCreateExtractorsWithErrors(t *testing.T) {
 	type g struct {
-		s map[string]interface{}
+		f func()
 		e string
 	}
 
-	datas := []g{
+	tests := []g{
 		g{
-			map[string]interface{}{"id": map[string]interface{}{"test": "**"}},
-			`"test" doesn't contain a valid regular expression`,
+			func() {
+				setenv("EXTRACTORS_AUTHORNAME_TEST", "*")
+			},
+			`"*" is not a valid regular expression defined for "AUTHORNAME" in "EXTRACTORS" config`,
 		},
 	}
 
-	for _, d := range datas {
-		v := viper.New()
-		v.Set("extractors", d.s)
+	for _, test := range tests {
+		restoreEnvs()
+		test.f()
 
-		_, err := CreateExtractors(v)
+		config, err := envh.NewEnvTree("^EXTRACTORS", "_")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		subConfig, err := config.FindSubTree("EXTRACTORS")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		_, err = CreateExtractors(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, d.e, "Must match error string")
+		assert.EqualError(t, err, test.e, "Must match error string")
 	}
 }

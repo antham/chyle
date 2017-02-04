@@ -3,10 +3,10 @@ package chyle
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 
-	"github.com/spf13/viper"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
+
+	"github.com/antham/envh"
 )
 
 // Matcher describe a way of applying a matcher against a commit
@@ -89,14 +89,14 @@ func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	for _, c := range *commits {
 		commitMap := map[string]interface{}{
 			"id":             c.ID().String(),
-			"authorName":     c.Author.Name,
-			"authorEmail":    c.Author.Email,
-			"authorDate":     c.Author.When.String(),
-			"committerName":  c.Committer.Name,
-			"committerEmail": c.Committer.Email,
-			"committerDate":  c.Committer.When.String(),
+			"authorname":     c.Author.Name,
+			"authoremail":    c.Author.Email,
+			"authordate":     c.Author.When.String(),
+			"committername":  c.Committer.Name,
+			"committeremail": c.Committer.Email,
+			"committerdate":  c.Committer.When.String(),
 			"message":        c.Message,
-			"isMerge":        c.NumParents() == 2,
+			"ismerge":        c.NumParents() == 2,
 		}
 
 		commitMaps = append(commitMaps, commitMap)
@@ -105,21 +105,15 @@ func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	return &commitMaps
 }
 
-func buildNumParentsMatcher(value string) (Matcher, error) {
-	vi, err := strconv.Atoi(value)
-
-	if err != nil {
-		return nil, fmt.Errorf(`"numParent" is not an integer`)
-	}
-
-	switch vi {
+func buildNumParentsMatcher(value int) (Matcher, error) {
+	switch value {
 	case 1, 0:
 		return RegularCommitMatcher{}, nil
 	case 2:
 		return MergeCommitMatcher{}, nil
 	}
 
-	return nil, fmt.Errorf(`"numParent" must be 0, 1 or 2, "%d" given`, vi)
+	return nil, fmt.Errorf(`"NUMPARENTS" must be 0, 1 or 2, "%d" given`, value)
 }
 
 func buildMessageMatcher(key string, value string) (Matcher, error) {
@@ -153,22 +147,48 @@ func buildAuthorMatcher(key string, value string) (Matcher, error) {
 }
 
 // CreateMatchers build matchers from a config
-func CreateMatchers(config *viper.Viper) (*[]Matcher, error) {
+func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 	results := []Matcher{}
 
-	for k, v := range config.GetStringMapString("matchers") {
-		var m Matcher
-		var err error
+	var m Matcher
+	var i int
+	var s string
+	var err error
 
+	for _, k := range config.GetChildrenKeys() {
 		switch k {
-		case "numParents":
-			m, err = buildNumParentsMatcher(v)
-		case "message":
-			m, err = buildMessageMatcher(k, v)
-		case "committer":
-			m, err = buildCommitterMatcher(k, v)
-		case "author":
-			m, err = buildAuthorMatcher(k, v)
+		case "NUMPARENTS":
+			i, err = config.FindInt(k)
+
+			if err != nil {
+				break
+			}
+
+			m, err = buildNumParentsMatcher(i)
+		case "MESSAGE":
+			s, err = config.FindString(k)
+
+			if err != nil {
+				break
+			}
+
+			m, err = buildMessageMatcher(k, s)
+		case "COMMITTER":
+			s, err = config.FindString(k)
+
+			if err != nil {
+				break
+			}
+
+			m, err = buildCommitterMatcher(k, s)
+		case "AUTHOR":
+			s, err = config.FindString(k)
+
+			if err != nil {
+				break
+			}
+
+			m, err = buildAuthorMatcher(k, s)
 		default:
 			err = fmt.Errorf(`"%s" is not a valid matcher structure`, k)
 		}

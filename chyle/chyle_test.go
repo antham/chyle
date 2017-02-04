@@ -8,9 +8,10 @@ import (
 	"testing"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/src-d/go-git.v4/plumbing"
+
+	"github.com/antham/envh"
 )
 
 func TestBuildChangelog(t *testing.T) {
@@ -20,13 +21,9 @@ func TestBuildChangelog(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	v := viper.New()
-	v.SetConfigFile(p + "/../features/chyle.toml")
-	err = v.ReadInConfig()
-
-	if err != nil {
-		logrus.Fatal(err)
-	}
+	setenv("CHYLE_MATCHERS_NUMPARENTS", "1")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_SUBJECT", "(.{1,50})")
+	setenv("CHYLE_SENDERS_STDOUT_FORMAT", "json")
 
 	f, err := ioutil.TempFile(p+"/test", "test")
 
@@ -37,7 +34,15 @@ func TestBuildChangelog(t *testing.T) {
 	oldStdout := os.Stdout
 	os.Stdout = f
 
-	err = BuildChangelog(p+"/test", v, "test2", "head")
+	config, err := envh.NewEnvTree("CHYLE", "_")
+
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	err = BuildChangelog(p+"/test", &config, "test2", "head")
+
+	assert.NoError(t, err, "Must build changelog without errors")
 
 	os.Stdout = oldStdout
 
@@ -45,12 +50,12 @@ func TestBuildChangelog(t *testing.T) {
 
 	type Data struct {
 		ID             string `json:"id"`
-		AuthorDate     string `json:"authorDate"`
-		AuthorEmail    string `json:"authorEmail"`
-		AuthorName     string `json:"authorName"`
-		IsMerge        bool   `json:"isMerge"`
-		CommitterEmail string `json:"committerEmail"`
-		CommitterName  string `json:"committerName"`
+		AuthorDate     string `json:"authordate"`
+		AuthorEmail    string `json:"authoremail"`
+		AuthorName     string `json:"authorname"`
+		IsMerge        bool   `json:"ismerge"`
+		CommitterEmail string `json:"committeremail"`
+		CommitterName  string `json:"committername"`
 		Message        string `json:"message"`
 		Subject        string `json:"subject"`
 	}
@@ -60,10 +65,7 @@ func TestBuildChangelog(t *testing.T) {
 	j := json.NewDecoder(bytes.NewBuffer(b))
 	err = j.Decode(&results)
 
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
+	assert.NoError(t, err, "Must decode json without errors")
 	assert.Len(t, results, 7, "Must contains 7 entries")
 
 	subjectExpected := []string{

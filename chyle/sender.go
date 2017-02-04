@@ -3,7 +3,7 @@ package chyle
 import (
 	"fmt"
 
-	"github.com/spf13/viper"
+	"github.com/antham/envh"
 )
 
 // Sender define where the date must be sent
@@ -25,23 +25,33 @@ func Send(senders *[]Sender, commitMaps *[]map[string]interface{}) error {
 }
 
 // CreateSenders build senders from a config
-func CreateSenders(config *viper.Viper) (*[]Sender, error) {
+func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
 	results := []Sender{}
 
-	for sectionKey := range config.GetStringMap("senders") {
-		var se Sender
-		var err error
-		switch sectionKey {
-		case "stdout":
-			if !config.IsSet("senders.stdout.format") {
-				err = fmt.Errorf(`"format" key must be defined`)
+	var se Sender
+	var s string
+	var err error
+
+	for _, k := range config.GetChildrenKeys() {
+		switch k {
+		case "STDOUT":
+			s, err = config.FindString(k, "FORMAT")
+
+			if err != nil {
+				break
 			}
 
-			se, err = NewStdoutSender(config.GetString("senders.stdout.format"))
-		case "github":
-			se, err = buildGithubReleaseSender(config)
+			se, err = NewStdoutSender(s)
+		case "GITHUB":
+			subConfig, err := config.FindSubTree("GITHUB")
+
+			if err != nil {
+				break
+			}
+
+			se, err = buildGithubReleaseSender(&subConfig)
 		default:
-			err = fmt.Errorf(`"%s" is not a valid sender structure`, sectionKey)
+			err = fmt.Errorf(`"%s" is not a valid sender structure`, k)
 		}
 
 		if err != nil {

@@ -6,10 +6,11 @@ import (
 	"testing"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
+
+	"github.com/antham/envh"
 )
 
 func getCommitFromRef(ref string) *object.Commit {
@@ -169,14 +170,14 @@ func TestTransformCommitsToMap(t *testing.T) {
 
 	expected := map[string]interface{}{
 		"id":             commit.ID().String(),
-		"authorName":     commit.Author.Name,
-		"authorEmail":    commit.Author.Email,
-		"authorDate":     commit.Author.When.String(),
-		"committerName":  commit.Committer.Name,
-		"committerEmail": commit.Committer.Email,
-		"committerDate":  commit.Committer.When.String(),
+		"authorname":     commit.Author.Name,
+		"authoremail":    commit.Author.Email,
+		"authordate":     commit.Author.When.String(),
+		"committername":  commit.Committer.Name,
+		"committeremail": commit.Committer.Email,
+		"committerdate":  commit.Committer.When.String(),
 		"message":        commit.Message,
-		"isMerge":        false,
+		"ismerge":        false,
 	}
 
 	assert.Len(t, *commitMaps, 10, "Must contains all history")
@@ -184,15 +185,21 @@ func TestTransformCommitsToMap(t *testing.T) {
 }
 
 func TestCreateMatchers(t *testing.T) {
-	v := viper.New()
-	v.Set("matchers", map[string]string{
-		"numParents": "1",
-		"message":    ".*",
-		"author":     ".*",
-		"committer":  ".*",
-	})
+	restoreEnvs()
+	setenv("MATCHERS_NUMPARENTS", "1")
+	setenv("MATCHERS_MESSAGE", ".*")
+	setenv("MATCHERS_AUTHOR", ".*")
+	setenv("MATCHERS_COMMITTER", ".*")
 
-	r, err := CreateMatchers(v)
+	config, err := envh.NewEnvTree("^MATCHERS", "_")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	subConfig, err := config.FindSubTree("MATCHERS")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	r, err := CreateMatchers(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *r, 4, "Must return 4 matchers")
@@ -200,44 +207,58 @@ func TestCreateMatchers(t *testing.T) {
 
 func TestCreateMatchersWithErrors(t *testing.T) {
 	type g struct {
-		s map[string]string
+		f func()
 		e string
 	}
 
-	datas := []g{
+	tests := []g{
 		g{
-			map[string]string{"numParents": "whatever"},
-			`"numParent" is not an integer`,
+			func() {
+				setenv("MATCHERS_TEST", "")
+			},
+			`"TEST" is not a valid matcher structure`,
 		},
 		g{
-			map[string]string{"numParents": "3"},
-			`"numParent" must be 0, 1 or 2, "3" given`,
+			func() {
+				setenv("MATCHERS_NUMPARENTS", "3")
+			},
+			`"NUMPARENTS" must be 0, 1 or 2, "3" given`,
 		},
 		g{
-			map[string]string{"message": "**"},
-			`"message" doesn't contain a valid regular expression`,
+			func() {
+				setenv("MATCHERS_MESSAGE", "*")
+			},
+			`"MESSAGE" doesn't contain a valid regular expression`,
 		},
 		g{
-			map[string]string{"committer": "**"},
-			`"committer" doesn't contain a valid regular expression`,
+			func() {
+				setenv("MATCHERS_COMMITTER", "*")
+			},
+			`"COMMITTER" doesn't contain a valid regular expression`,
 		},
 		g{
-			map[string]string{"author": "**"},
-			`"author" doesn't contain a valid regular expression`,
-		},
-		g{
-			map[string]string{"whatever": "**"},
-			`"whatever" is not a valid matcher structure`,
+			func() {
+				setenv("MATCHERS_AUTHOR", "*")
+			},
+			`"AUTHOR" doesn't contain a valid regular expression`,
 		},
 	}
 
-	for _, d := range datas {
-		v := viper.New()
-		v.Set("matchers", d.s)
+	for _, test := range tests {
+		restoreEnvs()
+		test.f()
 
-		_, err := CreateMatchers(v)
+		config, err := envh.NewEnvTree("^MATCHERS", "_")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		subConfig, err := config.FindSubTree("MATCHERS")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		_, err = CreateMatchers(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, d.e, "Must match error string")
+		assert.EqualError(t, err, test.e, "Must match error string")
 	}
 }
