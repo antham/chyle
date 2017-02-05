@@ -1,6 +1,7 @@
 package chyle
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -10,6 +11,23 @@ import (
 
 	"github.com/antham/envh"
 )
+
+func createTestGithubReleaseSender(t *testing.T) GithubReleaseSender {
+
+	config, err := envh.NewEnvTree("SENDERS", "_")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	subConfig, err := config.FindSubTree("SENDERS", "GITHUB")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	releaser, err := buildGithubReleaseSender(&subConfig)
+
+	assert.NoError(t, err, "Must return no errors")
+
+	return releaser.(GithubReleaseSender)
+}
 
 func TestGithubReleaseSender(t *testing.T) {
 	defer gock.Off()
@@ -38,22 +56,8 @@ func TestGithubReleaseSender(t *testing.T) {
 	setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 
-	config, err := envh.NewEnvTree("SENDERS", "_")
-
-	assert.NoError(t, err, "Must return no errors")
-
-	subConfig, err := config.FindSubTree("SENDERS", "GITHUB")
-
-	assert.NoError(t, err, "Must return no errors")
-
-	m, err := buildGithubReleaseSender(&subConfig)
-
-	assert.NoError(t, err, "Must return no errors")
-
-	s := m.(GithubReleaseSender)
+	s := createTestGithubReleaseSender(t)
 	s.client = *client
-
-	assert.NoError(t, err, "Must return no errors")
 
 	c := []map[string]interface{}{}
 	c = append(c, map[string]interface{}{"test": "Hello world !"})
@@ -61,6 +65,40 @@ func TestGithubReleaseSender(t *testing.T) {
 	err = s.Send(&c)
 
 	assert.NoError(t, err, "Must return no errors")
+	assert.True(t, gock.IsDone(), "Must have no pending requests")
+}
+
+func TestGithubReleaseSenderWithWrongCredentials(t *testing.T) {
+	defer gock.Off()
+
+	gock.New("https://api.github.com").
+		Post("/repos/test/test/releases").
+		MatchHeader("Authorization", "token d0b934ea223577f7e5cc6599e40b1822").
+		MatchHeader("Content-Type", "application/json").
+		HeaderPresent("Accept").
+		JSON(GithubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
+		ReplyError(fmt.Errorf("an error occured"))
+
+	client := &http.Client{Transport: &http.Transport{}}
+	gock.InterceptClient(client)
+
+	restoreEnvs()
+	setenv("SENDERS_GITHUB_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
+	setenv("SENDERS_GITHUB_TAG", "v1.0.0")
+	setenv("SENDERS_GITHUB_NAME", "TEST")
+	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
+	setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
+	setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d0b934ea223577f7e5cc6599e40b1822")
+
+	s := createTestGithubReleaseSender(t)
+	s.client = *client
+
+	c := []map[string]interface{}{}
+	c = append(c, map[string]interface{}{"test": "Hello world !"})
+
+	err := s.Send(&c)
+
+	assert.EqualError(t, err, "sender issue : can't create github release, Post https://api.github.com/repos/test/test/releases: an error occured", "Must return an error when api response something wrong")
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 

@@ -68,7 +68,7 @@ func (j GithubReleaseSender) createRelease(body []byte) error {
 	rep, err := j.client.Do(req)
 
 	if err != nil {
-		return err
+		return ErrSenderFailed{fmt.Sprintf("can't create github release, %s", err.Error())}
 	}
 
 	defer func() {
@@ -89,7 +89,7 @@ func (j GithubReleaseSender) createRelease(body []byte) error {
 		b = "can't fetch github response"
 	}
 
-	return fmt.Errorf("Can't create github release : %s", b)
+	return ErrSenderFailed{fmt.Sprintf("can't create github release, %s", b)}
 }
 
 // Send push changelog to github release
