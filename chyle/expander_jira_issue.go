@@ -29,14 +29,14 @@ func NewJiraIssueExpanderFromPasswordAuth(client http.Client, username string, p
 func (j JiraIssueExpander) Expand(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
 
-	if data, ok := (*commitMap)["jiraIssueId"]; ok {
+	if data, ok := (*commitMap)["jiraIssueId"]; true {
+		if !ok {
+			return commitMap, nil
+		}
+
 		if data, ok := data.(string); ok {
 			ID = data
 		}
-	}
-
-	if ID == "" {
-		return commitMap, nil
 	}
 
 	req, err := http.NewRequest("GET", j.URL+"/rest/api/2/issue/"+ID, nil)
@@ -62,10 +62,10 @@ func (j JiraIssueExpander) Expand(commitMap *map[string]interface{}) (*map[strin
 	}
 
 	for identifier, key := range j.keys {
+		(*commitMap)[identifier] = nil
+
 		if gjson.Get(buf.String(), key).Exists() {
 			(*commitMap)[identifier] = gjson.Get(buf.String(), key).Value()
-		} else {
-			(*commitMap)[identifier] = nil
 		}
 	}
 
