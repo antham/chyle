@@ -42,6 +42,8 @@ func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
 				break
 			}
 
+			debug(`Sender STDOUT "FORMAT" defined with value "%s"`, s)
+
 			se, err = NewStdoutSender(s)
 		case "GITHUB":
 			subConfig, err = config.FindSubTree("GITHUB")

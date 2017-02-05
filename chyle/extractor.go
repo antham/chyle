@@ -119,6 +119,10 @@ func CreateExtractors(config *envh.EnvTree) (*[]Extracter, error) {
 			return &[]Extracter{}, fmt.Errorf(`"%s" is not a valid regular expression defined for "EXTRACTORS_%s_%s" key`, datas["REG"], identifier, "REG")
 		}
 
+		debug(`Extractor "%s" "ORIGKEY" defined with value "%s"`, identifier, datas["ORIGKEY"])
+		debug(`Extractor "%s" "DESTKEY" defined with value "%s"`, identifier, datas["DESTKEY"])
+		debug(`Extractor "%s" "REG" defined with value "%s"`, identifier, datas["REG"])
+
 		results = append(results, RegexpExtracter{
 			datas["ORIGKEY"],
 			datas["DESTKEY"],

@@ -121,6 +121,8 @@ func buildGithubReleaseSender(config *envh.EnvTree) (Sender, error) {
 			return nil, err
 		}
 
+		debug(`Sender GITHUB "%s" defined with value "%s"`, strings.Join(keyChain, `" "`), v)
+
 		c[strings.Join(keyChain, "_")] = v
 	}
 

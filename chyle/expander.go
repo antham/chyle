@@ -119,6 +119,10 @@ func buildJiraExpander(config *envh.EnvTree) (Expander, error) {
 		return nil, fmt.Errorf(`"%s" is not a valid absolute URL defined in "JIRA" config`, datas["URL"])
 	}
 
+	debug(`Expander "USERNAME" defined with value "%s"`, datas["USERNAME"])
+	debug(`Expander "PASSWORD" defined`)
+	debug(`Expander "URL" defined with value "%s"`, datas["URL"])
+
 	keys, err := config.FindChildrenKeys("KEYS")
 
 	if err != nil {
@@ -137,6 +141,8 @@ func buildJiraExpander(config *envh.EnvTree) (Expander, error) {
 		if err != nil {
 			return nil, fmt.Errorf(`An environment variable suffixed with "FIELD" must be defined with "%s", like EXPANDERS_JIRA_KEYS_%s_FIELD`, k, k)
 		}
+
+		debug(`Expander KEY "%s" defined with value "%s"`, key, value)
 
 		keyValues[key] = value
 	}

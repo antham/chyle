@@ -164,6 +164,8 @@ func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 				break
 			}
 
+			debug(`Matcher "%s" defined with value "%d"`, k, i)
+
 			m, err = buildNumParentsMatcher(i)
 		case "MESSAGE", "COMMITTER", "AUTHOR":
 			s, err = config.FindString(k)
@@ -171,6 +173,8 @@ func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 			if err != nil {
 				break
 			}
+
+			debug(`Matcher "%s" defined with value "%s"`, k, s)
 
 			m, err = map[string]func(string, string) (Matcher, error){
 				"MESSAGE":   buildMessageMatcher,
