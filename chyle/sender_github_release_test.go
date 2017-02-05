@@ -63,3 +63,19 @@ func TestGithubReleaseSender(t *testing.T) {
 	assert.NoError(t, err, "Must return no errors")
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
+
+func TestGithubReleaseSenderBuildBody(t *testing.T) {
+	client := http.Client{Transport: &http.Transport{}}
+
+	s, err := NewGithubReleaseSenderFromOAuth(client, map[string]string{"TEMPLATE": "{{TEST}}}"})
+
+	assert.NoError(t, err, "Must return no errors")
+
+	c := []map[string]interface{}{}
+	c = append(c, map[string]interface{}{"test": "Hello world !"})
+
+	datas, err := s.buildBody(&c)
+
+	assert.Empty(t, datas, "Must return no datas")
+	assert.EqualError(t, err, `check your template is well-formed : template: github-release-template:1: function "TEST" not defined`, "Must return a template error")
+}
