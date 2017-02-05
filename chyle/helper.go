@@ -2,7 +2,6 @@ package chyle
 
 import (
 	"bytes"
-	"fmt"
 	tmpl "html/template"
 	"log"
 	"os"
@@ -19,7 +18,7 @@ func populateTemplate(ID string, template string, data interface{}) (string, err
 	t, err := t.Parse(template)
 
 	if err != nil {
-		return "", fmt.Errorf("Check your template is well-formed : %s", err.Error())
+		return "", ErrTemplateMalformed{err}
 	}
 
 	b := bytes.Buffer{}

@@ -18,7 +18,7 @@ func TestPopulateTemplate(t *testing.T) {
 func TestPopulateTemplateWithABadTemplate(t *testing.T) {
 	_, err := populateTemplate("test", "{{.test", map[string]string{"test": "Hello world !"})
 
-	assert.EqualError(t, err, "Check your template is well-formed : template: test:1: unclosed action", "Must return an error when template is not well-formed")
+	assert.EqualError(t, err, "check your template is well-formed : template: test:1: unclosed action", "Must return an error when template is not well-formed")
 }
 
 func TestDebug(t *testing.T) {
