@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 
 	"github.com/antham/chyle/chyle"
@@ -23,27 +20,15 @@ Changelog creation follows this process :
 4 - contact third part services to retrieve additional informations from extracted datas
 5 - send result to third part services`,
 	Run: func(cmd *cobra.Command, args []string) {
-		path, err := os.Getwd()
+		err := chyle.BuildChangelog(envTree)
 
 		if err != nil {
-			fmt.Println(err)
+			failure(err)
 
-			return
+			exitError()
 		}
 
-		if len(args) < 2 {
-			fmt.Println("Must provides 2 arguments")
-
-			return
-		}
-
-		err = chyle.BuildChangelog(path, envTree, args[0], args[1])
-
-		if err != nil {
-			fmt.Println(err)
-
-			return
-		}
+		exitSuccess()
 	},
 }
 

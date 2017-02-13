@@ -12,3 +12,5 @@ import:
 - package: github.com/antham/envh
   version: ^1.0.1
 - package: srcd.works/go-git.v4
+- package: github.com/fatih/color
+  version: ^1.3.0

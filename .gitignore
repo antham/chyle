@@ -29,3 +29,4 @@ _testmain.go
 # external packages folder
 vendor/
 chyle/test/*
+/cmd/test/

@@ -21,6 +21,9 @@ func TestBuildChangelog(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
+	setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
+	setenv("CHYLE_GIT_REFERENCE_FROM", "test2")
+	setenv("CHYLE_GIT_REFERENCE_TO", "head")
 	setenv("CHYLE_MATCHERS_NUMPARENTS", "1")
 	setenv("CHYLE_EXTRACTORS_MESSAGE_ORIGKEY", "message")
 	setenv("CHYLE_EXTRACTORS_MESSAGE_DESTKEY", "subject")
@@ -42,7 +45,7 @@ func TestBuildChangelog(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	err = BuildChangelog(p+"/test", &config, "test2", "head")
+	err = BuildChangelog(&config)
 
 	assert.NoError(t, err, "Must build changelog without errors")
 

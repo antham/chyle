@@ -35,7 +35,7 @@ func init() {
 }
 
 func initConfig() {
-	e, err :=  envh.NewEnvTree("CHYLE", "_")
+	e, err := envh.NewEnvTree("CHYLE", "_")
 
 	if err != nil {
 		fmt.Println(err)
