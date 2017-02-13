@@ -27,10 +27,52 @@ CHYLE_MATCHERS_AUTHOR | A regexp that will be matched against an author field of
 
 ### Extractors
 
-Extractors defined from which commit field to extract datas, what to extract and under which name to store the extracted value.
+Extractors defined from which commit field to extract datas, what to extract and under which name to store the extracted value, you can defined as many extractors you want.
+
+You need to define those 3 values below in order to set an extractor, replace * with a name convenient to you.
 
 Name | Value
 ------------ | -------------
-CHYLE_EXTRACTORS_MESSAGE_ORIGKEY | A commit field from which we want to extract datas (id, authorName, authorEmail, authorDate, committerName, committerEmail, committerMessage, type)
-CHYLE_EXTRACTORS_MESSAGE_DESTKEY | A name for the key which will receive the extracted value
-CHYLE_EXTRACTORS_MESSAGE_REG | A regexp used to extract a data
+CHYLE_EXTRACTORS_*_ORIGKEY | A commit field from which we want to extract datas (id, authorName, authorEmail, authorDate, committerName, committerEmail, committerMessage, type)
+CHYLE_EXTRACTORS_*_DESTKEY | A name for the key which will receive the extracted value
+CHYLE_EXTRACTORS_*_REG | A regexp used to extract a data
+
+### Expanders
+
+Expanders request remote api to enrich your commit payload with datas.
+
+#### Jira ticket api
+
+You need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * with a name convenient to you, you can get as many value as you want.
+
+Name | Value
+------------ | -------------
+CHYLE_EXPANDERS_JIRA_CREDENTIALS_URL | It's the endpoint of you remote jira access point
+CHYLE_EXPANDERS_JIRA_CREDENTIALS_USERNAME | Jira username
+CHYLE_EXPANDERS_JIRA_CREDENTIALS_PASSWORD | Jira password
+CHYLE_EXPANDERS_JIRA_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
+CHYLE_EXPANDERS_JIRA_KEYS_*_FIELD | The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")
+
+### Senders
+
+Senders are called when all operations are done on payload to render final result.
+
+#### Stdout
+
+Dump result to stdout
+
+Name | Value
+------------ | -------------
+CHYLE_SENDERS_STDOUT_FORMAT | Only json is supported at the moment
+
+#### Github release api
+
+It creates a new release in github with a template from datas you harvested, if tag exists already it will fail.
+
+Name | Value
+------------ | -------------
+CHYLE_SENDERS_GITHUB_TEMPLATE | It uses golang template syntax to produce a changelog from you commits
+CHYLE_SENDERS_GITHUB_TAG | Release tag to create
+CHYLE_SENDERS_GITHUB_CREDENTIALS_OWNER | Github owner
+CHYLE_SENDERS_GITHUB_REPOSITORY_NAME | Github repository where we will publish the release
+CHYLE_SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN | Github oauth token used to publish a release
