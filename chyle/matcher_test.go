@@ -177,7 +177,7 @@ func TestTransformCommitsToMap(t *testing.T) {
 		"committerEmail": commit.Committer.Email,
 		"committerDate":  commit.Committer.When.String(),
 		"message":        commit.Message,
-		"isMerge":        false,
+		"type":           "regular",
 	}
 
 	assert.Len(t, *commitMaps, 10, "Must contains all history")

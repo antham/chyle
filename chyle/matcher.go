@@ -86,7 +86,16 @@ func Filter(matchers *[]Matcher, commits *[]object.Commit) *[]object.Commit {
 func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	commitMaps := []map[string]interface{}{}
 
+	var kind string
+
 	for _, c := range *commits {
+		switch c.NumParents() {
+		case 0, 1:
+			kind = "regular"
+		case 2:
+			kind = "merge"
+		}
+
 		commitMap := map[string]interface{}{
 			"id":             c.ID().String(),
 			"authorName":     c.Author.Name,
@@ -96,7 +105,7 @@ func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 			"committerEmail": c.Committer.Email,
 			"committerDate":  c.Committer.When.String(),
 			"message":        c.Message,
-			"isMerge":        c.NumParents() == 2,
+			"type":           kind,
 		}
 
 		commitMaps = append(commitMaps, commitMap)

@@ -31,6 +31,6 @@ Extractors defined from which commit field to extract datas, what to extract and
 
 Name | Value
 ------------ | -------------
-CHYLE_EXTRACTORS_MESSAGE_ORIGKEY | A commit field from which we want to extract datas (id, authorName, authorEmail, authorDate, committerName, committerEmail, committerMessage)
+CHYLE_EXTRACTORS_MESSAGE_ORIGKEY | A commit field from which we want to extract datas (id, authorName, authorEmail, authorDate, committerName, committerEmail, committerMessage, type)
 CHYLE_EXTRACTORS_MESSAGE_DESTKEY | A name for the key which will receive the extracted value
 CHYLE_EXTRACTORS_MESSAGE_REG | A regexp used to extract a data

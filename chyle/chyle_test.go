@@ -58,7 +58,7 @@ func TestBuildChangelog(t *testing.T) {
 		AuthorDate     string `json:"authorDate"`
 		AuthorEmail    string `json:"authorEmail"`
 		AuthorName     string `json:"authorName"`
-		IsMerge        bool   `json:"isMerge"`
+		Type           string `json:"type"`
 		CommitterEmail string `json:"committerEmail"`
 		CommitterName  string `json:"committerName"`
 		Message        string `json:"message"`
@@ -95,6 +95,6 @@ func TestBuildChangelog(t *testing.T) {
 		assert.Equal(t, c.Committer.Name, r.CommitterName, "Must contains committer name")
 		assert.Equal(t, c.Committer.Email, r.CommitterEmail, "Must contains committer email")
 		assert.Equal(t, subjectExpected[i], r.Subject, "Must contains a subject field")
-		assert.False(t, r.IsMerge, false)
+		assert.Equal(t, r.Type, "regular", "Must have a commit type")
 	}
 }
