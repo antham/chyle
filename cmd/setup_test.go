@@ -11,7 +11,6 @@ import (
 var envs map[string]string
 
 func TestMain(m *testing.M) {
-	fmt.Println("fu")
 	saveExistingEnvs()
 	code := m.Run()
 	os.Exit(code)

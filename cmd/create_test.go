@@ -85,31 +85,25 @@ func TestCreateWithErrors(t *testing.T) {
 
 	fixtures := map[string]func(){
 		"Check you defined CHYLE_GIT_REPOSITORY_PATH": func() {
-			restoreEnvs()
 		},
 		"Check you defined CHYLE_GIT_REFERENCE_FROM": func() {
-			restoreEnvs()
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 		},
 		"Check you defined CHYLE_GIT_REFERENCE_TO": func() {
-			restoreEnvs()
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 		},
 		"repository not exists": func() {
-			restoreEnvs()
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
 		},
 		"Can't find reference \"ref1\"": func() {
-			restoreEnvs()
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
 		},
 		"Can't find reference \"ref2\"": func() {
-			restoreEnvs()
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "HEAD")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
@@ -128,6 +122,7 @@ func TestCreateWithErrors(t *testing.T) {
 				w.Done()
 			}()
 
+			restoreEnvs()
 			fun()
 
 			os.Args = []string{"", "create"}
