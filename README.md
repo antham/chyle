@@ -14,6 +14,16 @@ Download from release page according to your architecture chyle binary : https:/
 
 You need afterwards to configure each module through environments variables, their are activated when you configure environments variables they need to work.
 
+### General config
+
+We need to define first, where the repository stand and which git range with want to target.
+
+Name | Value
+------------ | -------------
+CHYLE_GIT_REPOSITORY_PATH | Path where your repository is
+CHYLE_GIT_REFERENCE_FROM | Git beginning reference of your range, could be an id, HEAD or a branch
+CHYLE_GIT_REFERENCE_TO | Git end reference of your range, could be an id, HEAD or a branch
+
 ### Matchers
 
 Matchers filters commits according to criterias.
@@ -42,6 +52,14 @@ CHYLE_EXTRACTORS_*_REG | A regexp used to extract a data
 Expanders request remote api to enrich your commit payload with datas.
 
 #### Jira ticket api
+
+First, you need to use an extractor to define a "jiraIssueId" key ot extract jira ticket id, let's consider our id is in commit message we would add as environment variable.
+
+Name | Value
+------------ | -------------
+CHYLE_EXTRACTORS_JIRA_ORIGKEY | message
+CHYLE_EXTRACTORS_JIRA_DESTKEY | jiraIssueId
+CHYLE_EXTRACTORS_JIRA_REG | "(\w+-\d+)"
 
 You need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * with a name convenient to you, you can get as many value as you want.
 
