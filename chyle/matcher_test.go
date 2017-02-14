@@ -186,7 +186,7 @@ func TestTransformCommitsToMap(t *testing.T) {
 
 func TestCreateMatchers(t *testing.T) {
 	restoreEnvs()
-	setenv("MATCHERS_NUMPARENTS", "1")
+	setenv("MATCHERS_TYPE", "regular")
 	setenv("MATCHERS_MESSAGE", ".*")
 	setenv("MATCHERS_AUTHOR", ".*")
 	setenv("MATCHERS_COMMITTER", ".*")
@@ -220,9 +220,9 @@ func TestCreateMatchersWithErrors(t *testing.T) {
 		},
 		g{
 			func() {
-				setenv("MATCHERS_NUMPARENTS", "3")
+				setenv("MATCHERS_TYPE", "test")
 			},
-			`"NUMPARENTS" must be 0, 1 or 2, "3" given`,
+			`"TYPE" must be "regular" or "merge", "test" given`,
 		},
 		g{
 			func() {

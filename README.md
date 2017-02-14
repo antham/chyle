@@ -20,7 +20,7 @@ Matchers filters commits according to criterias.
 
 Name | Value
 ------------ | -------------
-CHYLE_MATCHERS_NUMPARENTS | A number of parents a commit have, 1 will be a regular commit, 2 will be a merge cmmit
+CHYLE_MATCHERS_TYPE | A type matched by commit, "merge" is merge a merge commit, "regular" represents usual commits
 CHYLE_MATCHERS_MESSAGE | A regexp that will be matched against a commit message
 CHYLE_MATCHERS_COMMITTER | A regexp that will be matched against a committer field of a commit
 CHYLE_MATCHERS_AUTHOR | A regexp that will be matched against an author field of a commit

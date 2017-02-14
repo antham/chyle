@@ -114,15 +114,15 @@ func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	return &commitMaps
 }
 
-func buildNumParentsMatcher(value int) (Matcher, error) {
+func buildTypeMatcher(key string, value string) (Matcher, error) {
 	switch value {
-	case 1, 0:
+	case "regular":
 		return RegularCommitMatcher{}, nil
-	case 2:
+	case "merge":
 		return MergeCommitMatcher{}, nil
 	}
 
-	return nil, fmt.Errorf(`"NUMPARENTS" must be 0, 1 or 2, "%d" given`, value)
+	return nil, fmt.Errorf(`"%s" must be "regular" or "merge", "%s" given`, key, value)
 }
 
 func buildMessageMatcher(key string, value string) (Matcher, error) {
@@ -160,23 +160,12 @@ func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 	results := []Matcher{}
 
 	var m Matcher
-	var i int
 	var s string
 	var err error
 
 	for _, k := range config.GetChildrenKeys() {
 		switch k {
-		case "NUMPARENTS":
-			i, err = config.FindInt(k)
-
-			if err != nil {
-				break
-			}
-
-			debug(`Matcher "%s" defined with value "%d"`, k, i)
-
-			m, err = buildNumParentsMatcher(i)
-		case "MESSAGE", "COMMITTER", "AUTHOR":
+		case "MESSAGE", "COMMITTER", "AUTHOR", "TYPE":
 			s, err = config.FindString(k)
 
 			if err != nil {
@@ -189,6 +178,7 @@ func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 				"MESSAGE":   buildMessageMatcher,
 				"COMMITTER": buildCommitterMatcher,
 				"AUTHOR":    buildAuthorMatcher,
+				"TYPE":      buildTypeMatcher,
 			}[k](k, s)
 		default:
 			err = fmt.Errorf(`"%s" is not a valid matcher structure`, k)

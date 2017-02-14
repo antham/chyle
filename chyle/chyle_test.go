@@ -24,7 +24,7 @@ func TestBuildChangelog(t *testing.T) {
 	setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
 	setenv("CHYLE_GIT_REFERENCE_FROM", "test2")
 	setenv("CHYLE_GIT_REFERENCE_TO", "head")
-	setenv("CHYLE_MATCHERS_NUMPARENTS", "1")
+	setenv("CHYLE_MATCHERS_TYPE", "regular")
 	setenv("CHYLE_EXTRACTORS_MESSAGE_ORIGKEY", "message")
 	setenv("CHYLE_EXTRACTORS_MESSAGE_DESTKEY", "subject")
 	setenv("CHYLE_EXTRACTORS_MESSAGE_REG", "(.{1,50})")
