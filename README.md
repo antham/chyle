@@ -6,23 +6,23 @@ Chyle produces a changelog from a git repository.
 
 ## How it works ?
 
-Chyle fetch a range of commits using given criterias from a git repository. From those commits you can extract relevant datas from commit message, author, etc... , those datas are added to original datas fetched from commits. We can afterwards contact a external apis to enrich our payload with various useful datas (currently only jira is added). Finally, we can publish what we harvested to an external api for instance (currently only github release is added) or stdout.
+Chyle fetch a range of commits using given criterias from a git repository. From those commits you can extract relevant datas like commit message, author, and so on, and add it to original payload. We can afterwards, contact an external apis to enrich our payload with various useful datas (currently only jira ticket api is added). Finally, we can publish what we harvested to an external api for instance (currently only github release is added) and/or stdout.
 
 ## Setup
 
 Download from release page according to your architecture chyle binary : https://github.com/antham/chyle/releases
 
-You need afterwards to configure each module through environments variables, their are activated when you configure environments variables they need to work.
+You need afterwards to configure each module through environments variables : their are activated when you configure at least one environment variable they need to work.
 
 ### General config
 
-We need to define first, where the repository stand and which git range with want to target.
+We need to define first, where the repository stand and which git range we want to target.
 
 Name | Value
 ------------ | -------------
-CHYLE_GIT_REPOSITORY_PATH | Path where your repository is
-CHYLE_GIT_REFERENCE_FROM | Git beginning reference of your range, could be an id, HEAD or a branch
-CHYLE_GIT_REFERENCE_TO | Git end reference of your range, could be an id, HEAD or a branch
+CHYLE_GIT_REPOSITORY_PATH | Path where your repository stand
+CHYLE_GIT_REFERENCE_FROM | Git reference starting your range, could be an id, HEAD or a branch
+CHYLE_GIT_REFERENCE_TO | Git reference ending your range, could be an id, HEAD or a branch
 
 ### Matchers
 
@@ -30,7 +30,7 @@ Matchers filters commits according to criterias.
 
 Name | Value
 ------------ | -------------
-CHYLE_MATCHERS_TYPE | A type matched by commit, "merge" is merge a merge commit, "regular" represents usual commits
+CHYLE_MATCHERS_TYPE | Match commit by type, "merge" represents a merge commit, "regular" represents a usual commit (not merge)
 CHYLE_MATCHERS_MESSAGE | A regexp that will be matched against a commit message
 CHYLE_MATCHERS_COMMITTER | A regexp that will be matched against a committer field of a commit
 CHYLE_MATCHERS_AUTHOR | A regexp that will be matched against an author field of a commit
