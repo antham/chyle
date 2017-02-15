@@ -54,7 +54,7 @@ func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
 
 			se, err = buildGithubReleaseSender(&subConfig)
 		default:
-			err = fmt.Errorf(`"%s" is not a valid sender structure`, k)
+			err = fmt.Errorf(`a wrong sender key containing "%s" was defined`, k)
 		}
 
 		if err != nil {

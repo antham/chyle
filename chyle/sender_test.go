@@ -60,7 +60,7 @@ func TestCreateSendersWithErrors(t *testing.T) {
 			func() {
 				setenv("SENDERS_WHATEVER", "test")
 			},
-			`"WHATEVER" is not a valid sender structure`,
+			`a wrong sender key containing "WHATEVER" was defined`,
 		},
 		g{
 			func() {

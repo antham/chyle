@@ -81,7 +81,7 @@ func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 				"TYPE":      buildTypeMatcher,
 			}[k](k, s)
 		default:
-			err = fmt.Errorf(`"%s" is not a valid matcher structure`, k)
+			err = fmt.Errorf(`a wrong matcher key containing "%s" was defined`, k)
 		}
 
 		if err != nil {

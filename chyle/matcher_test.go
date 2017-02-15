@@ -216,7 +216,7 @@ func TestCreateMatchersWithErrors(t *testing.T) {
 			func() {
 				setenv("MATCHERS_TEST", "")
 			},
-			`"TEST" is not a valid matcher structure`,
+			`a wrong matcher key containing "TEST" was defined`,
 		},
 		g{
 			func() {

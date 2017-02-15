@@ -96,7 +96,7 @@ func TestCreateExpandersWithErrors(t *testing.T) {
 			func() {
 				setenv("EXPANDERS_TEST", "")
 			},
-			`"TEST" is not a valid expander structure`,
+			`a wrong expander key containing "TEST" was defined`,
 		},
 	}
 

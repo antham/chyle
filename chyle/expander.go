@@ -53,7 +53,7 @@ func CreateExpanders(config *envh.EnvTree) (*[]Expander, error) {
 
 			ex, err = buildJiraExpander(&subConfig)
 		default:
-			err = fmt.Errorf(`"%s" is not a valid expander structure`, k)
+			err = fmt.Errorf(`a wrong expander key containing "%s" was defined`, k)
 		}
 
 		if err != nil {
