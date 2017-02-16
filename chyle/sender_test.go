@@ -46,7 +46,7 @@ func TestCreateSenders(t *testing.T) {
 	r, err := CreateSenders(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
-	assert.Len(t, *r, 1, "Must return 1 expander")
+	assert.Len(t, *r, 1, "Must return 1 decorator")
 }
 
 func TestCreateSendersWithErrors(t *testing.T) {

@@ -11,8 +11,8 @@ import (
 	"github.com/antham/envh"
 )
 
-// JiraIssueExpander fetch data using jira issue api
-type JiraIssueExpander struct {
+// JiraIssueDecorator fetch data using jira issue api
+type JiraIssueDecorator struct {
 	client   http.Client
 	username string
 	password string
@@ -20,13 +20,13 @@ type JiraIssueExpander struct {
 	keys     map[string]string
 }
 
-// NewJiraIssueExpanderFromPasswordAuth create a new JiraIssueExpander
-func NewJiraIssueExpanderFromPasswordAuth(client http.Client, username string, password string, URL string, keys map[string]string) (JiraIssueExpander, error) {
-	return JiraIssueExpander{client, username, password, URL, keys}, nil
+// NewJiraIssueDecoratorFromPasswordAuth create a new JiraIssueDecorator
+func NewJiraIssueDecoratorFromPasswordAuth(client http.Client, username string, password string, URL string, keys map[string]string) (JiraIssueDecorator, error) {
+	return JiraIssueDecorator{client, username, password, URL, keys}, nil
 }
 
-// Expand fetch remote jira service if a jiraIssueId is defined to fetch issue datas
-func (j JiraIssueExpander) Expand(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+// Decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
+func (j JiraIssueDecorator) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
 
 	if data, ok := (*commitMap)["jiraIssueId"]; true {
@@ -72,7 +72,7 @@ func (j JiraIssueExpander) Expand(commitMap *map[string]interface{}) (*map[strin
 	return commitMap, nil
 }
 
-func buildJiraExpander(config *envh.EnvTree) (Expander, error) {
+func buildJiraDecorator(config *envh.EnvTree) (Decorater, error) {
 	datas := map[string]string{}
 	keyValues := map[string]string{}
 
@@ -92,33 +92,33 @@ func buildJiraExpander(config *envh.EnvTree) (Expander, error) {
 		return nil, fmt.Errorf(`"%s" is not a valid absolute URL defined in "JIRA" config`, datas["URL"])
 	}
 
-	debug(`Expander "USERNAME" defined with value "%s"`, datas["USERNAME"])
-	debug(`Expander "PASSWORD" defined`)
-	debug(`Expander "URL" defined with value "%s"`, datas["URL"])
+	debug(`Decorator "USERNAME" defined with value "%s"`, datas["USERNAME"])
+	debug(`Decorator "PASSWORD" defined`)
+	debug(`Decorator "URL" defined with value "%s"`, datas["URL"])
 
 	keys, err := config.FindChildrenKeys("KEYS")
 
 	if err != nil {
-		return nil, fmt.Errorf(`No "EXPANDERS_JIRA_KEYS" key found`)
+		return nil, fmt.Errorf(`No "DECORATORS_JIRA_KEYS" key found`)
 	}
 
 	for _, k := range keys {
 		key, err := config.FindString("KEYS", k, "DESTKEY")
 
 		if err != nil {
-			return nil, fmt.Errorf(`An environment variable suffixed with "DESTKEY" must be defined with "%s", like EXPANDERS_JIRA_KEYS_%s_DESTKEY`, k, k)
+			return nil, fmt.Errorf(`An environment variable suffixed with "DESTKEY" must be defined with "%s", like DECORATORS_JIRA_KEYS_%s_DESTKEY`, k, k)
 		}
 
 		value, err := config.FindString("KEYS", k, "FIELD")
 
 		if err != nil {
-			return nil, fmt.Errorf(`An environment variable suffixed with "FIELD" must be defined with "%s", like EXPANDERS_JIRA_KEYS_%s_FIELD`, k, k)
+			return nil, fmt.Errorf(`An environment variable suffixed with "FIELD" must be defined with "%s", like DECORATORS_JIRA_KEYS_%s_FIELD`, k, k)
 		}
 
-		debug(`Expander KEY "%s" defined with value "%s"`, key, value)
+		debug(`Decorator KEY "%s" defined with value "%s"`, key, value)
 
 		keyValues[key] = value
 	}
 
-	return NewJiraIssueExpanderFromPasswordAuth(http.Client{}, datas["USERNAME"], datas["PASSWORD"], datas["URL"], keyValues)
+	return NewJiraIssueDecoratorFromPasswordAuth(http.Client{}, datas["USERNAME"], datas["PASSWORD"], datas["URL"], keyValues)
 }

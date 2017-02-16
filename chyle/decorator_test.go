@@ -10,7 +10,7 @@ import (
 	"github.com/antham/envh"
 )
 
-func TestExpander(t *testing.T) {
+func TestDecorator(t *testing.T) {
 	defer gock.Off()
 
 	gock.New("http://test.com/rest/api/2/issue/10000").
@@ -24,11 +24,11 @@ func TestExpander(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j, err := NewJiraIssueExpanderFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
+	j, err := NewJiraIssueDecoratorFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
 
 	assert.NoError(t, err, "Must return no errors")
 
-	expanders := []Expander{
+	decorators := []Decorater{
 		j,
 	}
 
@@ -43,7 +43,7 @@ func TestExpander(t *testing.T) {
 		},
 	}
 
-	result, err := Expand(&expanders, &commitMaps)
+	result, err := Decorate(&decorators, &commitMaps)
 
 	expected := []map[string]interface{}{
 		map[string]interface{}{
@@ -63,29 +63,29 @@ func TestExpander(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestCreateExpanders(t *testing.T) {
+func TestCreateDecorators(t *testing.T) {
 	restoreEnvs()
-	setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "test")
-	setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "test")
-	setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
-	setenv("EXPANDERS_JIRA_KEYS_JIRATICKETDESCRIPTION_DESTKEY", "jiraTicketDescription")
-	setenv("EXPANDERS_JIRA_KEYS_JIRATICKETDESCRIPTION_FIELD", "fields.summary")
+	setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "test")
+	setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "test")
+	setenv("DECORATORS_JIRA_CREDENTIALS_URL", "http://test.com")
+	setenv("DECORATORS_JIRA_KEYS_JIRATICKETDESCRIPTION_DESTKEY", "jiraTicketDescription")
+	setenv("DECORATORS_JIRA_KEYS_JIRATICKETDESCRIPTION_FIELD", "fields.summary")
 
-	config, err := envh.NewEnvTree("^EXPANDERS", "_")
-
-	assert.NoError(t, err, "Must return no errors")
-
-	subConfig, err := config.FindSubTree("EXPANDERS")
+	config, err := envh.NewEnvTree("^DECORATORS", "_")
 
 	assert.NoError(t, err, "Must return no errors")
 
-	r, err := CreateExpanders(&subConfig)
+	subConfig, err := config.FindSubTree("DECORATORS")
+
+	assert.NoError(t, err, "Must return no errors")
+
+	r, err := CreateDecorators(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
-	assert.Len(t, *r, 1, "Must return 1 expander")
+	assert.Len(t, *r, 1, "Must return 1 decorator")
 }
 
-func TestCreateExpandersWithErrors(t *testing.T) {
+func TestCreateDecoratorsWithErrors(t *testing.T) {
 	type g struct {
 		f func()
 		e string
@@ -94,9 +94,9 @@ func TestCreateExpandersWithErrors(t *testing.T) {
 	tests := []g{
 		g{
 			func() {
-				setenv("EXPANDERS_TEST", "")
+				setenv("DECORATORS_TEST", "")
 			},
-			`a wrong expander key containing "TEST" was defined`,
+			`a wrong decorator key containing "TEST" was defined`,
 		},
 	}
 
@@ -104,15 +104,15 @@ func TestCreateExpandersWithErrors(t *testing.T) {
 		restoreEnvs()
 		test.f()
 
-		config, err := envh.NewEnvTree("^EXPANDERS", "_")
+		config, err := envh.NewEnvTree("^DECORATORS", "_")
 
 		assert.NoError(t, err, "Must return no errors")
 
-		subConfig, err := config.FindSubTree("EXPANDERS")
+		subConfig, err := config.FindSubTree("DECORATORS")
 
 		assert.NoError(t, err, "Must return no errors")
 
-		_, err = CreateExpanders(&subConfig)
+		_, err = CreateDecorators(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, test.e, "Must match error string")

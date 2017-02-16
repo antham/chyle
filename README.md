@@ -19,7 +19,7 @@ You need afterwards to configure each module through environments variables : th
 * [General config](#general-config)
 * [Matchers](#matchers)
 * [Extractors](#extractors)
-* [Expanders](#expanders)
+* [Decorators](#decorators)
   * [Jira ticket api](#jira-ticket-api)
 * [Senders](#senders)
   * [Stdout](#stdout)
@@ -58,9 +58,9 @@ CHYLE_EXTRACTORS_*_ORIGKEY | A commit field from which we want to extract datas 
 CHYLE_EXTRACTORS_*_DESTKEY | A name for the key which will receive the extracted value
 CHYLE_EXTRACTORS_*_REG | A regexp used to extract a data
 
-### Expanders
+### Decorators
 
-Expanders request remote api to enrich your commit payload with datas.
+Decorators request remote api to enrich your commit payload with datas.
 
 #### Jira ticket api
 
@@ -76,11 +76,11 @@ You need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * w
 
 Name | Value
 ------------ | -------------
-CHYLE_EXPANDERS_JIRA_CREDENTIALS_URL | It's the endpoint of you remote jira access point
-CHYLE_EXPANDERS_JIRA_CREDENTIALS_USERNAME | Jira username
-CHYLE_EXPANDERS_JIRA_CREDENTIALS_PASSWORD | Jira password
-CHYLE_EXPANDERS_JIRA_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
-CHYLE_EXPANDERS_JIRA_KEYS_*_FIELD | The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")
+CHYLE_DECORATORS_JIRA_CREDENTIALS_URL | It's the endpoint of you remote jira access point
+CHYLE_DECORATORS_JIRA_CREDENTIALS_USERNAME | Jira username
+CHYLE_DECORATORS_JIRA_CREDENTIALS_PASSWORD | Jira password
+CHYLE_DECORATORS_JIRA_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
+CHYLE_DECORATORS_JIRA_KEYS_*_FIELD | The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")
 
 ### Senders
 

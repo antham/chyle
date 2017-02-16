@@ -11,7 +11,7 @@ import (
 type process struct {
 	matchers   *[]Matcher
 	extractors *[]Extracter
-	expanders  *[]Expander
+	decorators *[]Decorater
 	senders    *[]Sender
 }
 
@@ -19,7 +19,7 @@ type process struct {
 func buildProcess(config *envh.EnvTree) (*process, error) {
 	matchers := &[]Matcher{}
 	extractors := &[]Extracter{}
-	expanders := &[]Expander{}
+	decorators := &[]Decorater{}
 	senders := &[]Sender{}
 
 	if subConfig, err := config.FindSubTree("CHYLE", "MATCHERS"); err == nil {
@@ -38,8 +38,8 @@ func buildProcess(config *envh.EnvTree) (*process, error) {
 		}
 	}
 
-	if subConfig, err := config.FindSubTree("CHYLE", "EXPANDERS"); err == nil {
-		expanders, err = CreateExpanders(&subConfig)
+	if subConfig, err := config.FindSubTree("CHYLE", "DECORATORS"); err == nil {
+		decorators, err = CreateDecorators(&subConfig)
 
 		if err != nil {
 			return nil, err
@@ -57,7 +57,7 @@ func buildProcess(config *envh.EnvTree) (*process, error) {
 	return &process{
 		matchers,
 		extractors,
-		expanders,
+		decorators,
 		senders,
 	}, nil
 }
@@ -71,7 +71,7 @@ func proceed(process *process, commits *[]object.Commit) error {
 		return err
 	}
 
-	comExp, err := Expand(process.expanders, comExt)
+	comExp, err := Decorate(process.decorators, comExt)
 
 	if err != nil {
 		return err

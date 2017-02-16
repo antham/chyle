@@ -10,7 +10,7 @@ import (
 	"github.com/antham/envh"
 )
 
-func TestJiraExpander(t *testing.T) {
+func TestJiraDecorator(t *testing.T) {
 	defer gock.Off()
 
 	gock.New("http://test.com/rest/api/2/issue/10000").
@@ -20,11 +20,11 @@ func TestJiraExpander(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j, err := NewJiraIssueExpanderFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
+	j, err := NewJiraIssueDecoratorFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
 
 	assert.NoError(t, err, "Must return no errors")
 
-	result, err := j.Expand(&map[string]interface{}{"test": "test", "jiraIssueId": "10000"})
+	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": "10000"})
 
 	expected := map[string]interface{}{
 		"test":         "test",
@@ -37,7 +37,7 @@ func TestJiraExpander(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestJiraExpanderWithNoJiraIssueIdDefined(t *testing.T) {
+func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 	defer gock.Off()
 
 	gock.New("http://test.com/rest/api/2/issue/10000").
@@ -47,11 +47,11 @@ func TestJiraExpanderWithNoJiraIssueIdDefined(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j, err := NewJiraIssueExpanderFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
+	j, err := NewJiraIssueDecoratorFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
 
 	assert.NoError(t, err, "Must return no errors")
 
-	result, err := j.Expand(&map[string]interface{}{"test": "test"})
+	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
 
 	expected := map[string]interface{}{
 		"test": "test",
@@ -62,7 +62,7 @@ func TestJiraExpanderWithNoJiraIssueIdDefined(t *testing.T) {
 	assert.False(t, gock.IsDone(), "Must have one pending request")
 }
 
-func TestCreateJiraExpanderWithErrors(t *testing.T) {
+func TestCreateJiraDecoratorWithErrors(t *testing.T) {
 	type g struct {
 		f func()
 		e string
@@ -71,56 +71,56 @@ func TestCreateJiraExpanderWithErrors(t *testing.T) {
 	tests := []g{
 		g{
 			func() {
-				setenv("EXPANDERS_JIRA_CREDENTIALS", "test")
+				setenv("DECORATORS_JIRA_CREDENTIALS", "test")
 			},
 			`"USERNAME" variable not found in "JIRA" config`,
 		},
 		g{
 			func() {
-				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
 			},
 			`"PASSWORD" variable not found in "JIRA" config`,
 		},
 		g{
 			func() {
-				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
 			},
 			`"URL" variable not found in "JIRA" config`,
 		},
 		g{
 			func() {
-				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "url")
+				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("DECORATORS_JIRA_CREDENTIALS_URL", "url")
 			},
 			`"url" is not a valid absolute URL defined in "JIRA" config`,
 		},
 		g{
 			func() {
-				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
+				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("DECORATORS_JIRA_CREDENTIALS_URL", "http://test.com")
 			},
-			`No "EXPANDERS_JIRA_KEYS" key found`,
+			`No "DECORATORS_JIRA_KEYS" key found`,
 		},
 		g{
 			func() {
-				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
-				setenv("EXPANDERS_JIRA_KEYS_TEST", "test")
+				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("DECORATORS_JIRA_CREDENTIALS_URL", "http://test.com")
+				setenv("DECORATORS_JIRA_KEYS_TEST", "test")
 			},
-			`An environment variable suffixed with "DESTKEY" must be defined with "TEST", like EXPANDERS_JIRA_KEYS_TEST_DESTKEY`,
+			`An environment variable suffixed with "DESTKEY" must be defined with "TEST", like DECORATORS_JIRA_KEYS_TEST_DESTKEY`,
 		},
 		g{
 			func() {
-				setenv("EXPANDERS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_PASSWORD", "password")
-				setenv("EXPANDERS_JIRA_CREDENTIALS_URL", "http://test.com")
-				setenv("EXPANDERS_JIRA_KEYS_TEST_DESTKEY", "test")
+				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
+				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
+				setenv("DECORATORS_JIRA_CREDENTIALS_URL", "http://test.com")
+				setenv("DECORATORS_JIRA_KEYS_TEST_DESTKEY", "test")
 			},
-			`An environment variable suffixed with "FIELD" must be defined with "TEST", like EXPANDERS_JIRA_KEYS_TEST_FIELD`,
+			`An environment variable suffixed with "FIELD" must be defined with "TEST", like DECORATORS_JIRA_KEYS_TEST_FIELD`,
 		},
 	}
 
@@ -128,15 +128,15 @@ func TestCreateJiraExpanderWithErrors(t *testing.T) {
 		restoreEnvs()
 		test.f()
 
-		config, err := envh.NewEnvTree("^EXPANDERS", "_")
+		config, err := envh.NewEnvTree("^DECORATORS", "_")
 
 		assert.NoError(t, err, "Must return no errors")
 
-		subConfig, err := config.FindSubTree("EXPANDERS")
+		subConfig, err := config.FindSubTree("DECORATORS")
 
 		assert.NoError(t, err, "Must return no errors")
 
-		_, err = CreateExpanders(&subConfig)
+		_, err = CreateDecorators(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, test.e, "Must match error string")

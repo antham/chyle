@@ -39,9 +39,9 @@ func TestBuildProcessWithWrongEnvironmentsVariables(t *testing.T) {
 		},
 		g{
 			func() {
-				setenv("CHYLE_EXPANDERS_WHATEVER", "test")
+				setenv("CHYLE_DECORATORS_WHATEVER", "test")
 			},
-			`a wrong expander key containing "WHATEVER" was defined`,
+			`a wrong decorator key containing "WHATEVER" was defined`,
 		},
 		g{
 			func() {
