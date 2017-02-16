@@ -118,7 +118,7 @@ func buildGithubReleaseSender(config *envh.EnvTree) (Sender, error) {
 		v, err := config.FindString(keyChain...)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf(`missing "SENDERS_GITHUB_%s"`, strings.Join(keyChain, "_"))
 		}
 
 		debug(`Sender GITHUB "%s" defined with value "%s"`, strings.Join(keyChain, `" "`), v)

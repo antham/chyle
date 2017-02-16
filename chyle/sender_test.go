@@ -33,20 +33,37 @@ func TestSend(t *testing.T) {
 
 func TestCreateSenders(t *testing.T) {
 	restoreEnvs()
-	setenv("SENDERS_STDOUT_FORMAT", "json")
 
-	config, err := envh.NewEnvTree("^SENDERS", "_")
+	tests := []func(){
+		func() {
+			setenv("SENDERS_STDOUT_FORMAT", "json")
+		},
+		func() {
+			setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
+			setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
+			setenv("SENDERS_GITHUB_TAGNAME", "test")
+			setenv("SENDERS_GITHUB_TEMPLATE", "test")
+			setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
+		},
+	}
 
-	assert.NoError(t, err, "Must return no errors")
+	for _, f := range tests {
+		restoreEnvs()
+		f()
 
-	subConfig, err := config.FindSubTree("SENDERS")
+		config, err := envh.NewEnvTree("^SENDERS", "_")
 
-	assert.NoError(t, err, "Must return no errors")
+		assert.NoError(t, err, "Must return no errors")
 
-	r, err := CreateSenders(&subConfig)
+		subConfig, err := config.FindSubTree("SENDERS")
 
-	assert.NoError(t, err, "Must contains no errors")
-	assert.Len(t, *r, 1, "Must return 1 decorator")
+		assert.NoError(t, err, "Must return no errors")
+
+		r, err := CreateSenders(&subConfig)
+
+		assert.NoError(t, err, "Must contains no errors")
+		assert.Len(t, *r, 1, "Must return 1 decorator")
+	}
 }
 
 func TestCreateSendersWithErrors(t *testing.T) {
@@ -64,9 +81,15 @@ func TestCreateSendersWithErrors(t *testing.T) {
 		},
 		g{
 			func() {
-				setenv("SENDERS_STDOUT_FORMAT", "test")
+				setenv("SENDERS_STDOUT", "test")
 			},
-			`"test" format does not exist`,
+			`missing "SENDERS_STDOUT_FORMAT"`,
+		},
+		g{
+			func() {
+				setenv("SENDERS_GITHUB", "test")
+			},
+			`missing "SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN"`,
 		},
 	}
 

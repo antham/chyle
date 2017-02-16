@@ -117,3 +117,68 @@ func TestGithubReleaseSenderBuildBody(t *testing.T) {
 	assert.Empty(t, datas, "Must return no datas")
 	assert.EqualError(t, err, `check your template is well-formed : template: github-release-template:1: function "TEST" not defined`, "Must return a template error")
 }
+
+func TestGithubReleaseSendersWithErrors(t *testing.T) {
+	type g struct {
+		f func()
+		e string
+	}
+
+	tests := []g{
+		g{
+			func() {
+				setenv("SENDERS_GITHUB", "test")
+			},
+			`missing "SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN"`,
+		},
+		g{
+			func() {
+				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
+			},
+			`missing "SENDERS_GITHUB_CREDENTIALS_OWNER"`,
+		},
+		g{
+			func() {
+				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
+				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
+			},
+			`missing "SENDERS_GITHUB_TAGNAME"`,
+		},
+		g{
+			func() {
+				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
+				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("SENDERS_GITHUB_TAGNAME", "test")
+			},
+			`missing "SENDERS_GITHUB_TEMPLATE"`,
+		},
+		g{
+			func() {
+				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
+				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("SENDERS_GITHUB_TAGNAME", "test")
+				setenv("SENDERS_GITHUB_TEMPLATE", "test")
+
+			},
+			`missing "SENDERS_GITHUB_REPOSITORY_NAME"`,
+		},
+	}
+
+	for _, test := range tests {
+		restoreEnvs()
+		test.f()
+
+		config, err := envh.NewEnvTree("^SENDERS", "_")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		subConfig, err := config.FindSubTree("SENDERS", "GITHUB")
+
+		assert.NoError(t, err, "Must return no errors")
+
+		_, err = buildGithubReleaseSender(&subConfig)
+
+		assert.Error(t, err, "Must contains an error")
+		assert.EqualError(t, err, test.e, "Must match error string")
+	}
+}

@@ -39,6 +39,8 @@ func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
 			s, err = config.FindString(k, "FORMAT")
 
 			if err != nil {
+				err = fmt.Errorf(`missing "SENDERS_STDOUT_FORMAT"`)
+
 				break
 			}
 
