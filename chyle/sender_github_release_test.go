@@ -50,7 +50,7 @@ func TestGithubReleaseSender(t *testing.T) {
 
 	restoreEnvs()
 	setenv("SENDERS_GITHUB_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
-	setenv("SENDERS_GITHUB_TAG", "v1.0.0")
+	setenv("SENDERS_GITHUB_TAGNAME", "v1.0.0")
 	setenv("SENDERS_GITHUB_NAME", "TEST")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
 	setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
@@ -84,7 +84,7 @@ func TestGithubReleaseSenderWithWrongCredentials(t *testing.T) {
 
 	restoreEnvs()
 	setenv("SENDERS_GITHUB_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
-	setenv("SENDERS_GITHUB_TAG", "v1.0.0")
+	setenv("SENDERS_GITHUB_TAGNAME", "v1.0.0")
 	setenv("SENDERS_GITHUB_NAME", "TEST")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
 	setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")

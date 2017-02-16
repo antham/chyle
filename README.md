@@ -14,6 +14,17 @@ Download from release page according to your architecture chyle binary : https:/
 
 You need afterwards to configure each module through environments variables : their are activated when you configure at least one environment variable they need to work.
 
+### Summary
+
+* [General config](#general-config)
+* [Matchers](#matchers)
+* [Extractors](#extractors)
+* [Expanders](#expanders)
+  * [Jira ticket api](#jira-ticket-api)
+* [Senders](#senders)
+  * [Stdout](#stdout)
+  * [Github release api](#github-release-api)
+
 ### General config
 
 We need to define first, where the repository stand and which git range we want to target.
@@ -85,12 +96,13 @@ CHYLE_SENDERS_STDOUT_FORMAT | Only json is supported at the moment
 
 #### Github release api
 
-It creates a new release in github with a template from datas you harvested, if tag exists already it will fail.
+It creates a new release in [github](https://developer.github.com/v3/repos/releases/#create-a-release) with a template from datas you harvested, if tag exists already it will fail.
 
 Name | Value
 ------------ | -------------
 CHYLE_SENDERS_GITHUB_TEMPLATE | It uses golang template syntax to produce a changelog from you commits
-CHYLE_SENDERS_GITHUB_TAG | Release tag to create
+CHYLE_SENDERS_GITHUB_TAGNAME | Release tag to create
 CHYLE_SENDERS_GITHUB_CREDENTIALS_OWNER | Github owner
 CHYLE_SENDERS_GITHUB_REPOSITORY_NAME | Github repository where we will publish the release
 CHYLE_SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN | Github oauth token used to publish a release
+CHYLE_SENDERS_GITHUB_NAME | Release title (optional)

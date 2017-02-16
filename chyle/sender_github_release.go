@@ -43,7 +43,7 @@ func (j GithubReleaseSender) buildBody(commitMap *[]map[string]interface{}) ([]b
 	}
 
 	release := GithubRelease{
-		TagName: j.config["TAG"],
+		TagName: j.config["TAGNAME"],
 		Name:    j.config["NAME"],
 		Body:    body,
 	}
@@ -111,7 +111,7 @@ func buildGithubReleaseSender(config *envh.EnvTree) (Sender, error) {
 	for _, keyChain := range [][]string{
 		[]string{"CREDENTIALS", "OAUTHTOKEN"},
 		[]string{"CREDENTIALS", "OWNER"},
-		[]string{"TAG"},
+		[]string{"TAGNAME"},
 		[]string{"TEMPLATE"},
 		[]string{"REPOSITORY", "NAME"},
 	} {
