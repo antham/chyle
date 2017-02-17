@@ -93,3 +93,53 @@ func TestBuildChangelog(t *testing.T) {
 		assert.Equal(t, r.Type, "regular", "Must have a commit type")
 	}
 }
+
+func TestBuildChangelogWithErrors(t *testing.T) {
+	p, err := os.Getwd()
+
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
+	type g struct {
+		f      func()
+		errStr string
+	}
+
+	tests := []g{
+		g{
+			func() {
+			},
+			"Check you defined CHYLE_GIT_REPOSITORY_PATH",
+		},
+		g{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
+			},
+			"Check you defined CHYLE_GIT_REFERENCE_FROM",
+		},
+		g{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "test2")
+			},
+			"Check you defined CHYLE_GIT_REFERENCE_TO",
+		},
+	}
+
+	for _, test := range tests {
+		restoreEnvs()
+		test.f()
+
+		config, err := envh.NewEnvTree("CHYLE", "_")
+
+		if err != nil {
+			logrus.Fatal(err)
+		}
+
+		err = BuildChangelog(&config)
+
+		assert.Error(t, err, "Must return an error")
+		assert.EqualError(t, err, test.errStr, "Must return an error")
+	}
+}

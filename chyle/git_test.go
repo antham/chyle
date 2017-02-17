@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"srcd.works/go-git.v4"
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
@@ -40,6 +42,29 @@ func TestResolveRef(t *testing.T) {
 
 	for _, test := range tests {
 		test.f(resolveRef(test.ref, repo))
+	}
+}
+
+func TestResolveRefWithErrors(t *testing.T) {
+	type g struct {
+		ref  string
+		repo *git.Repository
+		f    func(*object.Commit, error)
+	}
+
+	tests := []g{
+		g{
+			"whatever",
+			repo,
+			func(o *object.Commit, err error) {
+				assert.Error(t, err, "Must return an error")
+				assert.EqualError(t, err, `Can't find reference "whatever"`, "Must return an error")
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test.f(resolveRef(test.ref, test.repo))
 	}
 }
 
