@@ -13,8 +13,8 @@ import (
 	"github.com/antham/envh"
 )
 
-// GithubRelease follows https://developer.github.com/v3/repos/releases/#create-a-release
-type GithubRelease struct {
+// githubRelease follows https://developer.github.com/v3/repos/releases/#create-a-release
+type githubRelease struct {
 	TagName          string `json:"tag_name"`
 	TargetCommittish string `json:"target_commitish,omitempty"`
 	Name             string `json:"name"`
@@ -23,26 +23,26 @@ type GithubRelease struct {
 	PreRelease       bool   `json:"prerelease,omitempty"`
 }
 
-// GithubReleaseSender fetch data using jira issue api
-type GithubReleaseSender struct {
+// githubReleaseSender fetch data using jira issue api
+type githubReleaseSender struct {
 	client http.Client
 	config map[string]string
 }
 
-// NewGithubReleaseSenderFromOAuth create a new GithubReleaseSender
-func NewGithubReleaseSenderFromOAuth(client http.Client, config map[string]string) (GithubReleaseSender, error) {
-	return GithubReleaseSender{client, config}, nil
+// newGithubReleaseSenderFromOAuth create a new githubReleaseSender
+func newGithubReleaseSenderFromOAuth(client http.Client, config map[string]string) (githubReleaseSender, error) {
+	return githubReleaseSender{client, config}, nil
 }
 
 // buildBody create a request body from commit map
-func (j GithubReleaseSender) buildBody(commitMap *[]map[string]interface{}) ([]byte, error) {
+func (j githubReleaseSender) buildBody(commitMap *[]map[string]interface{}) ([]byte, error) {
 	body, err := populateTemplate("github-release-template", j.config["TEMPLATE"], commitMap)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	release := GithubRelease{
+	release := githubRelease{
 		TagName: j.config["TAGNAME"],
 		Name:    j.config["NAME"],
 		Body:    body,
@@ -52,7 +52,7 @@ func (j GithubReleaseSender) buildBody(commitMap *[]map[string]interface{}) ([]b
 }
 
 // createRelease creates a release on github
-func (j GithubReleaseSender) createRelease(body []byte) error {
+func (j githubReleaseSender) createRelease(body []byte) error {
 	URL := "https://api.github.com/repos/%s/%s/releases"
 
 	req, err := http.NewRequest("POST", fmt.Sprintf(URL, j.config["CREDENTIALS_OWNER"], j.config["REPOSITORY_NAME"]), bytes.NewBuffer(body))
@@ -93,7 +93,7 @@ func (j GithubReleaseSender) createRelease(body []byte) error {
 }
 
 // Send push changelog to github release
-func (j GithubReleaseSender) Send(commitMap *[]map[string]interface{}) error {
+func (j githubReleaseSender) Send(commitMap *[]map[string]interface{}) error {
 	body, err := j.buildBody(commitMap)
 
 	if err != nil {
@@ -136,5 +136,5 @@ func buildGithubReleaseSender(config *envh.EnvTree) (Sender, error) {
 		c["NAME"] = v
 	}
 
-	return NewGithubReleaseSenderFromOAuth(http.Client{}, c)
+	return newGithubReleaseSenderFromOAuth(http.Client{}, c)
 }

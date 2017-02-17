@@ -12,7 +12,7 @@ import (
 	"github.com/antham/envh"
 )
 
-func createTestGithubReleaseSender(t *testing.T) GithubReleaseSender {
+func createTestGithubReleaseSender(t *testing.T) githubReleaseSender {
 
 	config, err := envh.NewEnvTree("SENDERS", "_")
 
@@ -26,7 +26,7 @@ func createTestGithubReleaseSender(t *testing.T) GithubReleaseSender {
 
 	assert.NoError(t, err, "Must return no errors")
 
-	return releaser.(GithubReleaseSender)
+	return releaser.(githubReleaseSender)
 }
 
 func TestGithubReleaseSender(t *testing.T) {
@@ -41,7 +41,7 @@ func TestGithubReleaseSender(t *testing.T) {
 		MatchHeader("Authorization", "token d41d8cd98f00b204e9800998ecf8427e").
 		MatchHeader("Content-Type", "application/json").
 		HeaderPresent("Accept").
-		JSON(GithubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
+		JSON(githubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
 		Reply(201).
 		JSON(string(tagCreationResponse))
 
@@ -76,7 +76,7 @@ func TestGithubReleaseSenderWithWrongCredentials(t *testing.T) {
 		MatchHeader("Authorization", "token d0b934ea223577f7e5cc6599e40b1822").
 		MatchHeader("Content-Type", "application/json").
 		HeaderPresent("Accept").
-		JSON(GithubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
+		JSON(githubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
 		ReplyError(fmt.Errorf("an error occured"))
 
 	client := &http.Client{Transport: &http.Transport{}}
@@ -105,7 +105,7 @@ func TestGithubReleaseSenderWithWrongCredentials(t *testing.T) {
 func TestGithubReleaseSenderBuildBody(t *testing.T) {
 	client := http.Client{Transport: &http.Transport{}}
 
-	s, err := NewGithubReleaseSenderFromOAuth(client, map[string]string{"TEMPLATE": "{{TEST}}}"})
+	s, err := newGithubReleaseSenderFromOAuth(client, map[string]string{"TEMPLATE": "{{TEST}}}"})
 
 	assert.NoError(t, err, "Must return no errors")
 
