@@ -78,6 +78,10 @@ func parseTree(commit *object.Commit, bound *object.Commit) ([]object.Commit, []
 	commits := []object.Commit{}
 	errors := []error{}
 
+	if commit.NumParents() == 0 {
+		commits = append(commits, *commit)
+	}
+
 	if commit.ID() == bound.ID() || commit.NumParents() == 0 {
 		return commits, errors
 	}
