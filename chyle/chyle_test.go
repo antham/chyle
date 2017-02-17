@@ -71,16 +71,11 @@ func TestBuildChangelog(t *testing.T) {
 	err = j.Decode(&results)
 
 	assert.NoError(t, err, "Must decode json without errors")
-	assert.Len(t, results, 7, "Must contains 7 entries")
+	assert.Len(t, results, 2, "Must contains 2 entries")
 
 	subjectExpected := []string{
 		"feat(file8) : new file 8",
 		"feat(file7) : new file 7",
-		"feat(file2) : new file 2",
-		"feat(file1) : new file 1",
-		"feat(file4) : new file 4",
-		"feat(file3) : new file 3",
-		"feat(file6) : new file 6",
 	}
 
 	for i, r := range results {

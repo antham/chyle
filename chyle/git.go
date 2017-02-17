@@ -2,7 +2,6 @@ package chyle
 
 import (
 	"fmt"
-	"io"
 	"strings"
 
 	"srcd.works/go-git.v4"
@@ -51,8 +50,6 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 
 // fetchCommits retrieves commits between a reference range
 func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Commit, error) {
-	commits := []object.Commit{}
-
 	repo, err := git.PlainOpen(repoPath)
 
 	if err != nil {
@@ -71,15 +68,67 @@ func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 		return &[]object.Commit{}, err
 	}
 
-	_ = object.WalkCommitHistory(toCommit, func(c *object.Commit) error {
-		commits = append(commits, *c)
+	cs, errs := parseTree(toCommit, fromCommit)
 
-		if c.ID() == fromCommit.ID() {
-			return io.EOF
-		}
+	return &cs, concateErrors(&errs)
+}
 
+// parseTree recursively parse a given tree to extract commits till boundary is reached
+func parseTree(commit *object.Commit, bound *object.Commit) ([]object.Commit, []error) {
+	commits := []object.Commit{}
+	errors := []error{}
+
+	if commit.ID() == bound.ID() || commit.NumParents() == 0 {
+		return commits, errors
+	}
+
+	commits = append(commits, *commit)
+
+	parents := []object.Commit{}
+
+	err := commit.Parents().ForEach(
+		func(c *object.Commit) error {
+			parents = append(parents, *c)
+
+			return nil
+		})
+
+	if err != nil {
+		errors = append(errors, err)
+		return commits, errors
+	}
+
+	if len(parents) == 2 {
+		cs, errs := parseTree(&parents[1], bound)
+		errors = append(errors, errs...)
+		commits = append(commits, cs...)
+	}
+
+	if len(parents) == 1 {
+		cs, errs := parseTree(&parents[0], bound)
+		errors = append(errors, errs...)
+		commits = append(commits, cs...)
+	}
+
+	return commits, errors
+}
+
+// concatErrors transforms an array of error in one error
+// by merging error message
+func concateErrors(errs *[]error) error {
+	if len(*errs) == 0 {
 		return nil
-	})
+	}
 
-	return &commits, nil
+	errStr := ""
+
+	for i, e := range *errs {
+		errStr += e.Error()
+
+		if i != len(*errs)-1 {
+			errStr += ", "
+		}
+	}
+
+	return fmt.Errorf(errStr)
 }
