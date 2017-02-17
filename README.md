@@ -3,6 +3,25 @@ Chyle [![Build Status](https://travis-ci.org/antham/chyle.svg?branch=master)](ht
 
 Chyle produces a changelog from a git repository.
 
+## Usage
+
+```
+Create a new changelog according to what is defined in config file.
+
+Changelog creation follows this process :
+
+1 - fetch commits
+2 - filter relevant commits
+3 - extract informations from fetched datas
+4 - contact third part services to retrieve additional informations from extracted datas
+5 - send result to third part services
+
+Usage:
+  chyle create [flags]
+
+Global Flags:
+      --debug   enable debugging
+```
 
 ## How it works ?
 
@@ -36,7 +55,6 @@ CHYLE_GIT_REFERENCE_FROM | Git reference starting your range, could be an id, HE
 CHYLE_GIT_REFERENCE_TO | Git reference ending your range, could be an id, HEAD or a branch
 
 ### Matchers
-
 Matchers filters commits according to criterias.
 
 Name | Value
@@ -100,7 +118,7 @@ It creates a new release in [github](https://developer.github.com/v3/repos/relea
 
 Name | Value
 ------------ | -------------
-CHYLE_SENDERS_GITHUB_TEMPLATE | It uses golang template syntax to produce a changelog from you commits
+CHYLE_SENDERS_GITHUB_TEMPLATE | It uses golang template syntax to produce a changelog from you commits, eg: {{ range $key, $value := . }}{{$value.authorName}} : {{$value.message}}{{ end }}
 CHYLE_SENDERS_GITHUB_TAGNAME | Release tag to create
 CHYLE_SENDERS_GITHUB_CREDENTIALS_OWNER | Github owner
 CHYLE_SENDERS_GITHUB_REPOSITORY_NAME | Github repository where we will publish the release
