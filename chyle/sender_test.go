@@ -41,8 +41,8 @@ func TestCreateSenders(t *testing.T) {
 		func() {
 			setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
 			setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
-			setenv("SENDERS_GITHUB_TAGNAME", "test")
-			setenv("SENDERS_GITHUB_TEMPLATE", "test")
+			setenv("SENDERS_GITHUB_RELEASE_TAGNAME", "test")
+			setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "test")
 			setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
 		},
 	}

@@ -13,7 +13,6 @@ import (
 )
 
 func createTestGithubReleaseSender(t *testing.T) githubReleaseSender {
-
 	config, err := envh.NewEnvTree("SENDERS", "_")
 
 	assert.NoError(t, err, "Must return no errors")
@@ -49,9 +48,9 @@ func TestGithubReleaseSender(t *testing.T) {
 	gock.InterceptClient(client)
 
 	restoreEnvs()
-	setenv("SENDERS_GITHUB_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
-	setenv("SENDERS_GITHUB_TAGNAME", "v1.0.0")
-	setenv("SENDERS_GITHUB_NAME", "TEST")
+	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
+	setenv("SENDERS_GITHUB_RELEASE_TAGNAME", "v1.0.0")
+	setenv("SENDERS_GITHUB_RELEASE_NAME", "TEST")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
 	setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
@@ -83,9 +82,9 @@ func TestGithubReleaseSenderWithWrongCredentials(t *testing.T) {
 	gock.InterceptClient(client)
 
 	restoreEnvs()
-	setenv("SENDERS_GITHUB_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
-	setenv("SENDERS_GITHUB_TAGNAME", "v1.0.0")
-	setenv("SENDERS_GITHUB_NAME", "TEST")
+	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
+	setenv("SENDERS_GITHUB_RELEASE_TAGNAME", "v1.0.0")
+	setenv("SENDERS_GITHUB_RELEASE_NAME", "TEST")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
 	setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d0b934ea223577f7e5cc6599e40b1822")
@@ -98,16 +97,19 @@ func TestGithubReleaseSenderWithWrongCredentials(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.EqualError(t, err, "sender issue : can't create github release, Post https://api.github.com/repos/test/test/releases: an error occured", "Must return an error when api response something wrong")
+	assert.EqualError(t, err, "sender issue : can't create github release : Post https://api.github.com/repos/test/test/releases: an error occured", "Must return an error when api response something wrong")
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
 func TestGithubReleaseSenderBuildBody(t *testing.T) {
 	client := http.Client{Transport: &http.Transport{}}
 
-	s, err := newGithubReleaseSenderFromOAuth(client, map[string]string{"TEMPLATE": "{{TEST}}}"})
-
-	assert.NoError(t, err, "Must return no errors")
+	s := githubReleaseSender{
+		client: client,
+		config: githubReleaseConfig{
+			template: "{{TEST}}}",
+		},
+	}
 
 	c := []map[string]interface{}{}
 	c = append(c, map[string]interface{}{"test": "Hello world !"})
@@ -142,25 +144,25 @@ func TestGithubReleaseSendersWithErrors(t *testing.T) {
 				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
 				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
 			},
-			`missing "SENDERS_GITHUB_TAGNAME"`,
+			`missing "SENDERS_GITHUB_REPOSITORY_NAME"`,
 		},
 		g{
 			func() {
 				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
 				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
-				setenv("SENDERS_GITHUB_TAGNAME", "test")
+				setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
 			},
-			`missing "SENDERS_GITHUB_TEMPLATE"`,
+			`missing "SENDERS_GITHUB_RELEASE_TEMPLATE"`,
 		},
 		g{
 			func() {
 				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
 				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
-				setenv("SENDERS_GITHUB_TAGNAME", "test")
-				setenv("SENDERS_GITHUB_TEMPLATE", "test")
+				setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
+				setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "test")
 
 			},
-			`missing "SENDERS_GITHUB_REPOSITORY_NAME"`,
+			`missing "SENDERS_GITHUB_RELEASE_TAGNAME"`,
 		},
 	}
 
