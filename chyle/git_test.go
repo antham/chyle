@@ -1,7 +1,6 @@
 package chyle
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -150,41 +149,5 @@ func TestParseTree(t *testing.T) {
 
 	for _, test := range tests {
 		test.f(parseTree(test.toRef, test.fromRef))
-	}
-}
-
-func TestConcatErrors(t *testing.T) {
-	type g struct {
-		errs *[]error
-		f    func(error)
-	}
-
-	tests := []g{
-		g{
-			&[]error{},
-			func(err error) {
-				assert.NoError(t, err, "Must contains no error")
-			},
-		},
-		g{
-			&[]error{fmt.Errorf("test1")},
-			func(err error) {
-				assert.Error(t, err, "Must contains an error")
-				assert.EqualError(t, err, "test1", "Must match error string")
-			},
-		},
-		g{
-			&[]error{fmt.Errorf("test1"), fmt.Errorf("test2")},
-			func(err error) {
-				assert.Error(t, err, "Must contains an error")
-				assert.EqualError(t, err, "test1, test2", "Must match error string")
-			},
-		},
-	}
-
-	for _, test := range tests {
-		err := concateErrors(test.errs)
-
-		test.f(err)
 	}
 }

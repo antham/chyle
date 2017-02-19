@@ -70,7 +70,7 @@ func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 
 	cs, errs := parseTree(toCommit, fromCommit)
 
-	return &cs, concateErrors(&errs)
+	return &cs, concatErrors(&errs)
 }
 
 // parseTree recursively parse a given tree to extract commits till boundary is reached
@@ -115,24 +115,4 @@ func parseTree(commit *object.Commit, bound *object.Commit) ([]object.Commit, []
 	}
 
 	return commits, errors
-}
-
-// concatErrors transforms an array of error in one error
-// by merging error message
-func concateErrors(errs *[]error) error {
-	if len(*errs) == 0 {
-		return nil
-	}
-
-	errStr := ""
-
-	for i, e := range *errs {
-		errStr += e.Error()
-
-		if i != len(*errs)-1 {
-			errStr += ", "
-		}
-	}
-
-	return fmt.Errorf(errStr)
 }
