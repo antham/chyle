@@ -2,7 +2,6 @@ package chyle
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"testing"
 
@@ -127,40 +126,4 @@ func TestExtractBoolConfig(t *testing.T) {
 	assert.NoError(t, err, "Must return no errors")
 	assert.Equal(t, true, test1, "Must return false")
 	assert.Equal(t, false, test2, "Must return default value cause variable is not defined")
-}
-
-func TestConcatErrors(t *testing.T) {
-	type g struct {
-		errs *[]error
-		f    func(error)
-	}
-
-	tests := []g{
-		g{
-			&[]error{},
-			func(err error) {
-				assert.NoError(t, err, "Must contains no error")
-			},
-		},
-		g{
-			&[]error{fmt.Errorf("test1")},
-			func(err error) {
-				assert.Error(t, err, "Must contains an error")
-				assert.EqualError(t, err, "test1", "Must match error string")
-			},
-		},
-		g{
-			&[]error{fmt.Errorf("test1"), fmt.Errorf("test2")},
-			func(err error) {
-				assert.Error(t, err, "Must contains an error")
-				assert.EqualError(t, err, "test1, test2", "Must match error string")
-			},
-		},
-	}
-
-	for _, test := range tests {
-		err := concatErrors(test.errs)
-
-		test.f(err)
-	}
 }

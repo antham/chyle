@@ -34,8 +34,8 @@ func TestCreate(t *testing.T) {
 
 	restoreEnvs()
 	setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
-	setenv("CHYLE_GIT_REFERENCE_FROM", "test")
-	setenv("CHYLE_GIT_REFERENCE_TO", "test1")
+	setenv("CHYLE_GIT_REFERENCE_FROM", getCommitFromRef("HEAD~3"))
+	setenv("CHYLE_GIT_REFERENCE_TO", getCommitFromRef("test~2^2"))
 
 	w.Add(1)
 

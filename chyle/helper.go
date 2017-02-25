@@ -101,23 +101,3 @@ func debug(format string, v ...interface{}) {
 		logger.Printf(format, v...)
 	}
 }
-
-// concatErrors transforms an array of error in one error
-// by merging error message
-func concatErrors(errs *[]error) error {
-	if len(*errs) == 0 {
-		return nil
-	}
-
-	errStr := ""
-
-	for i, e := range *errs {
-		errStr += e.Error()
-
-		if i != len(*errs)-1 {
-			errStr += ", "
-		}
-	}
-
-	return fmt.Errorf(errStr)
-}

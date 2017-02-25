@@ -9,6 +9,27 @@ import (
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
+// node is a tree node in commit tree
+type node struct {
+	value  *object.Commit
+	parent *node
+}
+
+// ErrNoDiffBetweenReferences is triggered when we can't
+// produce any diff between 2 references
+type ErrNoDiffBetweenReferences struct {
+	from string
+	to   string
+}
+
+// Error returns string error
+func (e ErrNoDiffBetweenReferences) Error() string {
+	return fmt.Sprintf(`can't produce a diff between %s and %s, check your range is correct by running "git log %[1]s..%[2]s" command`, e.from, e.to)
+}
+
+// ErrBrowsingTree is triggered when something wrong occured during commit analysis process
+var ErrBrowsingTree = fmt.Errorf("an issue occured during tree analysis")
+
 // resolveRef give hash commit for a given string reference
 func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, error) {
 	hash := plumbing.Hash{}
@@ -48,7 +69,7 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 	return &object.Commit{}, fmt.Errorf(`Can't find reference "%s"`, refCommit)
 }
 
-// fetchCommits retrieves commits between a reference range
+// fetchCommits retrieves commits in a reference range
 func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Commit, error) {
 	repo, err := git.PlainOpen(repoPath)
 
@@ -68,51 +89,90 @@ func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 		return &[]object.Commit{}, err
 	}
 
-	cs, errs := parseTree(toCommit, fromCommit)
+	var ok bool
+	var commits *[]object.Commit
 
-	return &cs, concatErrors(&errs)
-}
-
-// parseTree recursively parse a given tree to extract commits till boundary is reached
-func parseTree(commit *object.Commit, bound *object.Commit) ([]object.Commit, []error) {
-	commits := []object.Commit{}
-	errors := []error{}
-
-	if commit.NumParents() == 0 {
-		commits = append(commits, *commit)
-	}
-
-	if commit.ID() == bound.ID() || commit.NumParents() == 0 {
-		return commits, errors
-	}
-
-	commits = append(commits, *commit)
-
-	parents := []object.Commit{}
-
-	err := commit.Parents().ForEach(
-		func(c *object.Commit) error {
-			parents = append(parents, *c)
-
-			return nil
-		})
+	exclusionList, err := buildOriginCommitList(fromCommit)
 
 	if err != nil {
-		errors = append(errors, err)
-		return commits, errors
+		return nil, err
 	}
 
-	if len(parents) == 2 {
-		cs, errs := parseTree(&parents[1], bound)
-		errors = append(errors, errs...)
-		commits = append(commits, cs...)
+	if _, ok = exclusionList[toCommit.ID().String()]; ok {
+		return nil, ErrNoDiffBetweenReferences{fromRef, toRef}
 	}
 
-	if len(parents) == 1 {
-		cs, errs := parseTree(&parents[0], bound)
-		errors = append(errors, errs...)
-		commits = append(commits, cs...)
+	commits, err = findDiffCommits(toCommit, &exclusionList)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return commits, errors
+	if len(*commits) == 0 {
+		return nil, ErrNoDiffBetweenReferences{fromRef, toRef}
+	}
+
+	return commits, nil
+}
+
+// buildOriginCommitList browses git tree from a given commit
+// till root commit using kind of breadth-first search algorithm
+// and grab commit ID to a map with ID as key
+func buildOriginCommitList(commit *object.Commit) (map[string]bool, error) {
+	queue := append([]*object.Commit{}, commit)
+	seen := map[string]bool{commit.ID().String(): true}
+
+	for len(queue) > 0 {
+		current := queue[0]
+		queue = append([]*object.Commit{}, queue[1:]...)
+
+		err := current.Parents().ForEach(
+			func(c *object.Commit) error {
+				if _, ok := seen[c.ID().String()]; !ok {
+					seen[c.ID().String()] = true
+					queue = append(queue, c)
+				}
+
+				return nil
+			})
+
+		if err != nil {
+			return seen, ErrBrowsingTree
+		}
+	}
+
+	return seen, nil
+}
+
+// diffCommitGraphs extracts commits that are no part of a given commit list
+func findDiffCommits(commit *object.Commit, exclusionList *map[string]bool) (*[]object.Commit, error) {
+	commits := []object.Commit{}
+	queue := append([]*node{}, &node{value: commit})
+	seen := map[string]bool{commit.ID().String(): true}
+	var current *node
+
+	for len(queue) > 0 {
+		current = queue[0]
+		queue = append([]*node{}, queue[1:]...)
+
+		if _, ok := (*exclusionList)[current.value.ID().String()]; !ok {
+			commits = append(commits, *(current.value))
+		}
+
+		err := current.value.Parents().ForEach(
+			func(c *object.Commit) error {
+				if _, ok := seen[c.ID().String()]; !ok {
+					seen[c.ID().String()] = true
+					queue = append(queue, &node{value: c, parent: current})
+				}
+
+				return nil
+			})
+
+		if err != nil {
+			return &commits, ErrBrowsingTree
+		}
+	}
+
+	return &commits, nil
 }

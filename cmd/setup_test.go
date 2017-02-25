@@ -3,8 +3,10 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"testing"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/antham/envh"
 )
 
@@ -45,4 +47,18 @@ func setenv(key string, value string) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func getCommitFromRef(ref string) string {
+	cmd := exec.Command("git", "rev-parse", ref)
+	cmd.Dir = "test"
+
+	ID, err := cmd.Output()
+	ID = ID[:len(ID)-1]
+
+	if err != nil {
+		logrus.WithField("ID", string(ID)).Fatal(err)
+	}
+
+	return string(ID)
 }
