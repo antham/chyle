@@ -1,20 +1,38 @@
 package chyle
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
-	"log"
 	"net/http"
 )
 
+// ErrGithubSender handles error regarding github api
+// it outputs direct errors coming from request bu as well
+// api return payload
+type ErrGithubSender struct {
+	msg string
+	err error
+}
+
+func (e ErrGithubSender) Error() string {
+	return fmt.Sprintf("%s : %s", e.msg, e.err)
+}
+
 // githubReleaseSender fetch data using jira issue api
 type githubReleaseSender struct {
-	client        http.Client
+	client        *http.Client
 	config        githubReleaseConfig
 	githubRelease githubRelease
+}
+
+// newGithubReleaseSender creates a new githubReleaseSender object
+func newGithubReleaseSender(client *http.Client, config githubReleaseConfig, githubRelease githubRelease) githubReleaseSender {
+	return githubReleaseSender{
+		client,
+		config,
+		githubRelease,
+	}
 }
 
 // buildBody create a request body from commit map
@@ -30,50 +48,110 @@ func (j githubReleaseSender) buildBody(commitMap *[]map[string]interface{}) ([]b
 	return json.Marshal(j.githubRelease)
 }
 
-func (j githubReleaseSender) requestWithPayload(URL string, method string, body []byte) error {
-	req, err := http.NewRequest(method, fmt.Sprintf(URL, j.config.owner, j.config.repositoryName), bytes.NewBuffer(body))
-
-	if err != nil {
-		return err
-	}
-
-	req.Header.Set("Authorization", "token "+j.config.oauthToken)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
-
-	rep, err := j.client.Do(req)
-
-	if err != nil {
-		return err
-	}
-
-	defer func() {
-		err = rep.Body.Close()
-
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	if rep.StatusCode == 201 {
-		return nil
-	}
-
-	b, err := bufio.NewReader(rep.Body).ReadString('\n')
-
-	if err != nil && err != io.EOF {
-		b = "can't fetch github response"
-	}
-
-	return fmt.Errorf(b)
-}
-
 // createRelease creates a release on github
 func (j githubReleaseSender) createRelease(body []byte) error {
-	err := j.requestWithPayload("https://api.github.com/repos/%s/%s/releases", "POST", body)
+	errMsg := "can't create github release"
+
+	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", j.config.owner, j.config.repositoryName)
+
+	req, err := http.NewRequest("POST", URL, bytes.NewBuffer(body))
 
 	if err != nil {
-		return ErrSenderFailed{fmt.Sprintf("can't create github release : %s", err.Error())}
+		return err
+	}
+
+	setHeaders(req, map[string]string{
+		"Authorization": "token " + j.config.oauthToken,
+		"Content-Type":  "application/json",
+		"Accept":        "application/vnd.github.v3+json",
+	})
+
+	status, body, err := sendRequest(j.client, req)
+
+	if err != nil {
+		return ErrGithubSender{errMsg, err}
+	}
+
+	if status != 201 {
+		return ErrGithubSender{errMsg, fmt.Errorf(string(body))}
+	}
+
+	return nil
+}
+
+// getReleaseID retrieves github release ID from a given tag name
+func (j githubReleaseSender) getReleaseID() (int, error) {
+	type s struct {
+		ID int `json:"id"`
+	}
+
+	release := s{}
+
+	errMsg := fmt.Sprintf("can't retrieve github release %s", j.githubRelease.TagName)
+	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/tags/%s", j.config.owner, j.config.repositoryName, j.githubRelease.TagName)
+
+	req, err := http.NewRequest("GET", URL, nil)
+
+	if err != nil {
+		return 0, err
+	}
+
+	setHeaders(req, map[string]string{
+		"Authorization": "token " + j.config.oauthToken,
+		"Content-Type":  "application/json",
+		"Accept":        "application/vnd.github.v3+json",
+	})
+
+	status, body, err := sendRequest(j.client, req)
+
+	if err != nil {
+		return 0, ErrGithubSender{errMsg, err}
+	}
+
+	if status != 200 {
+		return 0, ErrGithubSender{errMsg, fmt.Errorf(string(body))}
+	}
+
+	err = json.Unmarshal(body, &release)
+
+	if err != nil {
+		return 0, ErrGithubSender{errMsg, fmt.Errorf("can't decode json body")}
+	}
+
+	return release.ID, nil
+}
+
+// updateRelease updates an existing release from a tag name
+func (j githubReleaseSender) updateRelease(body []byte) error {
+	ID, err := j.getReleaseID()
+
+	if err != nil {
+		return err
+	}
+
+	errMsg := fmt.Sprintf("can't update github release %s", j.githubRelease.TagName)
+	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/%d", j.config.owner, j.config.repositoryName, ID)
+
+	req, err := http.NewRequest("PATCH", URL, bytes.NewBuffer(body))
+
+	if err != nil {
+		return err
+	}
+
+	setHeaders(req, map[string]string{
+		"Authorization": "token " + j.config.oauthToken,
+		"Content-Type":  "application/json",
+		"Accept":        "application/vnd.github.v3+json",
+	})
+
+	status, body, err := sendRequest(j.client, req)
+
+	if err != nil {
+		return ErrGithubSender{errMsg, err}
+	}
+
+	if status != 200 {
+		return ErrGithubSender{errMsg, fmt.Errorf(string(body))}
 	}
 
 	return nil
@@ -85,6 +163,10 @@ func (j githubReleaseSender) Send(commitMap *[]map[string]interface{}) error {
 
 	if err != nil {
 		return err
+	}
+
+	if j.config.update {
+		return j.updateRelease(body)
 	}
 
 	return j.createRelease(body)

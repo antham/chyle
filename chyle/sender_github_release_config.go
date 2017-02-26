@@ -39,7 +39,7 @@ func buildGithubReleaseSender(config *envh.EnvTree) (Sender, error) {
 		return githubReleaseSender{}, err
 	}
 
-	return githubReleaseSender{http.Client{}, grConfig, gRelease}, nil
+	return newGithubReleaseSender(&http.Client{}, grConfig, gRelease), nil
 }
 
 func buildGithubReleaseConfig(config *envh.EnvTree) (githubReleaseConfig, error) {

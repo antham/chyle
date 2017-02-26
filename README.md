@@ -114,7 +114,7 @@ CHYLE_SENDERS_STDOUT_FORMAT | Only json is supported at the moment
 
 #### Github release api
 
-It creates a new release in [github](https://developer.github.com/v3/repos/releases/#create-a-release) with a template from datas you harvested, if tag exists already it will fail.
+It creates a new release in [github](https://developer.github.com/v3/repos/releases/#create-a-release) with a template from datas you harvested.
 
 Name | Value
 ------------ | -------------
@@ -123,7 +123,8 @@ CHYLE_SENDERS_GITHUB_CREDENTIALS_OWNER | Github owner
 CHYLE_SENDERS_GITHUB_RELEASE_DRAFT | Create a draft (unpublished) release, boolean value, default is false
 CHYLE_SENDERS_GITHUB_RELEASE_NAME | Release title (optional)
 CHYLE_SENDERS_GITHUB_RELEASE_PRERELEASE | Create a prerelease release, boolean value, default is false
-CHYLE_SENDERS_GITHUB_RELEASE_TAGNAME | Release tag to create
+CHYLE_SENDERS_GITHUB_RELEASE_TAGNAME | Release tag to create, when you update a release it will be used to find out release tied to this tag
 CHYLE_SENDERS_GITHUB_RELEASE_TARGETCOMMITISH | The commitish value that determines where the Git tag is created from (optional)
 CHYLE_SENDERS_GITHUB_RELEASE_TEMPLATE | It uses golang template syntax to produce a changelog from you commits, eg: {{ range $key, $value := . }}{{$value.authorName}} : {{$value.message}}{{ end }}
+CHYLE_SENDERS_GITHUB_RELEASE_UPDATE | Set to true if you want to update an existing changelog, typical usage would be when you produce a release through GUI github release system
 CHYLE_SENDERS_GITHUB_REPOSITORY_NAME | Github repository where we will publish the release
