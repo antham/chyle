@@ -83,6 +83,13 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		g{
+			getCommitFromRef("HEAD~1").ID().String(),
+			getCommitFromRef("HEAD~3").ID().String(),
+			func(cs *[]object.Commit, err error) {
+				assert.Error(t, err, "Must return an error")
+			},
+		},
+		g{
 			getCommitFromRef("HEAD~3").ID().String(),
 			getCommitFromRef("test~2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -91,10 +98,30 @@ func TestFetchCommits(t *testing.T) {
 
 				commitTests := []string{
 					"Merge branch 'test2' into test1\n",
-					"feat(file4) : new file 4\n\ncreate a new file 4\n",
 					"feat(file6) : new file 6\n\ncreate a new file 6\n",
-					"feat(file3) : new file 3\n\ncreate a new file 3\n",
 					"feat(file5) : new file 5\n\ncreate a new file 5\n",
+					"feat(file4) : new file 4\n\ncreate a new file 4\n",
+					"feat(file3) : new file 3\n\ncreate a new file 3\n",
+				}
+
+				for i, c := range *cs {
+					assert.Equal(t, commitTests[i], c.Message, "Must match message")
+				}
+			},
+		},
+		g{
+			getCommitFromRef("HEAD~4").ID().String(),
+			getCommitFromRef("test~2^2^2").ID().String(),
+			func(cs *[]object.Commit, err error) {
+				assert.NoError(t, err, "Must return no errors")
+				assert.Len(t, *cs, 5, "Must contains 3 commits")
+
+				commitTests := []string{
+					"feat(file6) : new file 6\n\ncreate a new file 6\n",
+					"feat(file5) : new file 5\n\ncreate a new file 5\n",
+					"feat(file4) : new file 4\n\ncreate a new file 4\n",
+					"feat(file3) : new file 3\n\ncreate a new file 3\n",
+					"feat(file2) : new file 2\n\ncreate a new file 2\n",
 				}
 
 				for i, c := range *cs {

@@ -116,7 +116,7 @@ func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 }
 
 // buildOriginCommitList browses git tree from a given commit
-// till root commit using kind of breadth-first search algorithm
+// till root commit using kind of breadth first search algorithm
 // and grab commit ID to a map with ID as key
 func buildOriginCommitList(commit *object.Commit) (map[string]bool, error) {
 	queue := append([]*object.Commit{}, commit)
@@ -145,6 +145,7 @@ func buildOriginCommitList(commit *object.Commit) (map[string]bool, error) {
 }
 
 // diffCommitGraphs extracts commits that are no part of a given commit list
+// using kind of depth first search algorithm to keep commits ordered
 func findDiffCommits(commit *object.Commit, exclusionList *map[string]bool) (*[]object.Commit, error) {
 	commits := []object.Commit{}
 	queue := append([]*node{}, &node{value: commit})
@@ -163,7 +164,7 @@ func findDiffCommits(commit *object.Commit, exclusionList *map[string]bool) (*[]
 			func(c *object.Commit) error {
 				if _, ok := seen[c.ID().String()]; !ok {
 					seen[c.ID().String()] = true
-					queue = append(queue, &node{value: c, parent: current})
+					queue = append([]*node{&node{value: c, parent: current}}, queue...)
 				}
 
 				return nil
