@@ -84,12 +84,12 @@ func TestCreateWithErrors(t *testing.T) {
 	}
 
 	fixtures := map[string]func(){
-		"Check you defined CHYLE_GIT_REPOSITORY_PATH": func() {
+		`missing "CHYLE_GIT_REPOSITORY_PATH"`: func() {
 		},
-		"Check you defined CHYLE_GIT_REFERENCE_FROM": func() {
+		`missing "CHYLE_GIT_REFERENCE_FROM"`: func() {
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 		},
-		"Check you defined CHYLE_GIT_REFERENCE_TO": func() {
+		`missing "CHYLE_GIT_REFERENCE_TO"`: func() {
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 		},

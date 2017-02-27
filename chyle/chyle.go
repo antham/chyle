@@ -1,58 +1,65 @@
 package chyle
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/antham/envh"
 )
 
 // EnableDebugging activates step logging
 var EnableDebugging = false
 
+// changelogConfig stores base config needed to generate a changelog
+type changelogConfig struct {
+	path string
+	from string
+	to   string
+}
+
 // BuildChangelog creates a changelog from defined configuration
-func BuildChangelog(envTree *envh.EnvTree) error {
-	var repoPath string
-	var fromRef string
-	var toRef string
-
-	for _, s := range []struct {
-		keyChain []string
-		ref      *string
-	}{
-		{
-			[]string{"CHYLE", "GIT", "REPOSITORY", "PATH"},
-			&repoPath,
-		},
-		{
-			[]string{"CHYLE", "GIT", "REFERENCE", "FROM"},
-			&fromRef,
-		},
-		{
-			[]string{"CHYLE", "GIT", "REFERENCE", "TO"},
-			&toRef,
-		},
-	} {
-		ref, err := envTree.FindString(s.keyChain...)
-
-		*(s.ref) = ref
-
-		if err != nil {
-			return fmt.Errorf("Check you defined %s", strings.Join(s.keyChain, "_"))
-		}
-	}
-
-	commits, err := fetchCommits(repoPath, fromRef, toRef)
+func BuildChangelog(config *envh.EnvTree) error {
+	cConfig, err := extractChangelogConfig(config)
 
 	if err != nil {
 		return err
 	}
 
-	p, err := buildProcess(envTree)
+	commits, err := fetchCommits(cConfig.path, cConfig.from, cConfig.to)
+
+	if err != nil {
+		return err
+	}
+
+	p, err := buildProcess(config)
 
 	if err != nil {
 		return err
 	}
 
 	return proceed(p, commits)
+}
+
+// extractChangelogConfig parses initial config
+func extractChangelogConfig(config *envh.EnvTree) (changelogConfig, error) {
+	cConfig := changelogConfig{}
+
+	return cConfig, extractStringConfig(
+		config,
+		[]strConfigMapping{
+			strConfigMapping{
+				[]string{"CHYLE", "GIT", "REPOSITORY", "PATH"},
+				&cConfig.path,
+				true,
+			},
+			strConfigMapping{
+				[]string{"CHYLE", "GIT", "REFERENCE", "FROM"},
+				&cConfig.from,
+				true,
+			},
+			strConfigMapping{
+				[]string{"CHYLE", "GIT", "REFERENCE", "TO"},
+				&cConfig.to,
+				true,
+			},
+		},
+		[]string{},
+	)
 }

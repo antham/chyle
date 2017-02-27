@@ -110,20 +110,20 @@ func TestBuildChangelogWithErrors(t *testing.T) {
 		g{
 			func() {
 			},
-			"Check you defined CHYLE_GIT_REPOSITORY_PATH",
+			`missing "CHYLE_GIT_REPOSITORY_PATH"`,
 		},
 		g{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
 			},
-			"Check you defined CHYLE_GIT_REFERENCE_FROM",
+			`missing "CHYLE_GIT_REFERENCE_FROM"`,
 		},
 		g{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "test2")
 			},
-			"Check you defined CHYLE_GIT_REFERENCE_TO",
+			`missing "CHYLE_GIT_REFERENCE_TO"`,
 		},
 	}
 
