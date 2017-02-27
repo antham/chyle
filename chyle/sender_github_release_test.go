@@ -21,11 +21,11 @@ func createTestGithubReleaseSender(t *testing.T) githubReleaseSender {
 
 	assert.NoError(t, err, "Must return no errors")
 
-	sender, err := buildGithubReleaseSender(&subConfig)
+	sen, err := buildGithubReleaseSender(&subConfig)
 
 	assert.NoError(t, err, "Must return no errors")
 
-	return sender.(githubReleaseSender)
+	return sen.(githubReleaseSender)
 }
 
 func TestGithubReleaseSenderCreateRelease(t *testing.T) {
