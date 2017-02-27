@@ -45,7 +45,7 @@ func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 			"committerName":  c.Committer.Name,
 			"committerEmail": c.Committer.Email,
 			"committerDate":  c.Committer.When.String(),
-			"message":        c.Message,
+			"message":        removePGPKey(c.Message),
 			"type":           solveType(&c),
 		}
 

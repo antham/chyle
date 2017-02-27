@@ -26,3 +26,8 @@ func buildMessageMatcher(key string, value string) (Matcher, error) {
 
 	return MessageMatcher{r}, nil
 }
+
+// removePGPKey fix library issue that don't trim PGP key from message
+func removePGPKey(message string) string {
+	return regexp.MustCompile("(?s).*?-----END PGP SIGNATURE-----\n\n").ReplaceAllString(message, "")
+}
