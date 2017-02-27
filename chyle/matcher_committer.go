@@ -7,22 +7,22 @@ import (
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
-// CommitterMatcher is commit committer matcher
-type CommitterMatcher struct {
+// committerMatcher is commit committer matcher
+type committerMatcher struct {
 	regexp *regexp.Regexp
 }
 
-// Match apply a regexp against commit committer field
-func (c CommitterMatcher) Match(commit *object.Commit) bool {
+// match apply a regexp against commit committer field
+func (c committerMatcher) match(commit *object.Commit) bool {
 	return c.regexp.MatchString(commit.Committer.String())
 }
 
-func buildCommitterMatcher(key string, value string) (Matcher, error) {
+func buildCommitterMatcher(key string, value string) (matcher, error) {
 	r, err := regexp.Compile(value)
 
 	if err != nil {
 		return nil, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
 	}
 
-	return CommitterMatcher{r}, nil
+	return committerMatcher{r}, nil
 }

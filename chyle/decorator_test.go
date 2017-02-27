@@ -24,11 +24,11 @@ func TestDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j, err := NewJiraIssueDecoratorFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
+	j, err := newJiraIssueDecoratorFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
 
 	assert.NoError(t, err, "Must return no errors")
 
-	decorators := []Decorater{
+	decorators := []decorater{
 		j,
 	}
 
@@ -43,7 +43,7 @@ func TestDecorator(t *testing.T) {
 		},
 	}
 
-	result, err := Decorate(&decorators, &commitMaps)
+	result, err := decorate(&decorators, &commitMaps)
 
 	expected := []map[string]interface{}{
 		map[string]interface{}{
@@ -79,7 +79,7 @@ func TestCreateDecorators(t *testing.T) {
 
 	assert.NoError(t, err, "Must return no errors")
 
-	r, err := CreateDecorators(&subConfig)
+	r, err := createDecorators(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *r, 1, "Must return 1 decorator")
@@ -112,7 +112,7 @@ func TestCreateDecoratorsWithErrors(t *testing.T) {
 
 		assert.NoError(t, err, "Must return no errors")
 
-		_, err = CreateDecorators(&subConfig)
+		_, err = createDecorators(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, test.e, "Must match error string")

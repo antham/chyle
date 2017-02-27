@@ -26,7 +26,7 @@ type githubReleaseConfig struct {
 }
 
 // buildGithubReleaseSender create a new GithubReleaseSender object from viper config
-func buildGithubReleaseSender(config *envh.EnvTree) (Sender, error) {
+func buildGithubReleaseSender(config *envh.EnvTree) (sender, error) {
 	grConfig, err := buildGithubReleaseConfig(config)
 
 	if err != nil {

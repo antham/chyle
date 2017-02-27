@@ -25,7 +25,7 @@ func TestSend(t *testing.T) {
 		},
 	}
 
-	err := Send(&[]Sender{s}, datas)
+	err := Send(&[]sender{s}, datas)
 
 	assert.NoError(t, err, "Must return no errors")
 	assert.Equal(t, `[{"id":1,"test":"test"},{"id":2,"test":"test"}]`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations  as json")
@@ -59,7 +59,7 @@ func TestCreateSenders(t *testing.T) {
 
 		assert.NoError(t, err, "Must return no errors")
 
-		r, err := CreateSenders(&subConfig)
+		r, err := createSenders(&subConfig)
 
 		assert.NoError(t, err, "Must contains no errors")
 		assert.Len(t, *r, 1, "Must return 1 decorator")
@@ -105,7 +105,7 @@ func TestCreateSendersWithErrors(t *testing.T) {
 
 		assert.NoError(t, err, "Must return no errors")
 
-		_, err = CreateSenders(&subConfig)
+		_, err = createSenders(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, test.e, "Must match error string")

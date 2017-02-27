@@ -7,24 +7,24 @@ import (
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
-// MessageMatcher is commit message matcher
-type MessageMatcher struct {
+// messageMatcher is commit message matcher
+type messageMatcher struct {
 	regexp *regexp.Regexp
 }
 
-// Match apply a regexp against commit message
-func (m MessageMatcher) Match(commit *object.Commit) bool {
+// match apply a regexp against commit message
+func (m messageMatcher) match(commit *object.Commit) bool {
 	return m.regexp.MatchString(commit.Message)
 }
 
-func buildMessageMatcher(key string, value string) (Matcher, error) {
+func buildMessageMatcher(key string, value string) (matcher, error) {
 	r, err := regexp.Compile(value)
 
 	if err != nil {
 		return nil, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
 	}
 
-	return MessageMatcher{r}, nil
+	return messageMatcher{r}, nil
 }
 
 // removePGPKey fix library issue that don't trim PGP key from message

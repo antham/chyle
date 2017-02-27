@@ -10,28 +10,28 @@ import (
 )
 
 func TestExtract(t *testing.T) {
-	extractors := []Extracter{
-		RegexpExtractor{
+	extractors := []extracter{
+		regexpExtractor{
 			"id",
 			"serviceId",
 			regexp.MustCompile(`(\#\d+)`),
 		},
-		RegexpExtractor{
+		regexpExtractor{
 			"id",
 			"booleanValue",
 			regexp.MustCompile(`(true|false)`),
 		},
-		RegexpExtractor{
+		regexpExtractor{
 			"id",
 			"intValue",
 			regexp.MustCompile(` (\d+)`),
 		},
-		RegexpExtractor{
+		regexpExtractor{
 			"id",
 			"floatValue",
 			regexp.MustCompile(`(\d+\.\d+)`),
 		},
-		RegexpExtractor{
+		regexpExtractor{
 			"secondIdentifier",
 			"secondServiceId",
 			regexp.MustCompile(`(#\d+)`),
@@ -52,7 +52,7 @@ func TestExtract(t *testing.T) {
 		},
 	}
 
-	results, err := Extract(&extractors, &commitMaps)
+	results, err := extract(&extractors, &commitMaps)
 
 	expected := []map[string]interface{}{
 		map[string]interface{}{
@@ -105,7 +105,7 @@ func TestCreateExtractors(t *testing.T) {
 
 	assert.NoError(t, err, "Must return no errors")
 
-	e, err := CreateExtractors(&subConfig)
+	e, err := createExtractors(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *e, 2, "Must return 2 extractors")
@@ -124,7 +124,7 @@ func TestCreateExtractors(t *testing.T) {
 	}
 
 	for i := 0; i < 2; i++ {
-		index := (*e)[0].(RegexpExtractor).index
+		index := (*e)[0].(regexpExtractor).index
 
 		v, ok := expected[index]
 
@@ -132,9 +132,9 @@ func TestCreateExtractors(t *testing.T) {
 			assert.Fail(t, "Index must exists in expected", "Key must exists")
 		}
 
-		assert.Equal(t, (*e)[0].(RegexpExtractor).index, v["index"], "Must return first component after extractor variable")
-		assert.Equal(t, (*e)[0].(RegexpExtractor).identifier, v["identifier"], "Must return second component after extractor variable")
-		assert.Equal(t, (*e)[0].(RegexpExtractor).re, regexp.MustCompile(v["regexp"]), "Must return value as regexp")
+		assert.Equal(t, (*e)[0].(regexpExtractor).index, v["index"], "Must return first component after extractor variable")
+		assert.Equal(t, (*e)[0].(regexpExtractor).identifier, v["identifier"], "Must return second component after extractor variable")
+		assert.Equal(t, (*e)[0].(regexpExtractor).re, regexp.MustCompile(v["regexp"]), "Must return value as regexp")
 	}
 }
 
@@ -186,7 +186,7 @@ func TestCreateExtractorsWithErrors(t *testing.T) {
 
 		assert.NoError(t, err, "Must return no errors")
 
-		_, err = CreateExtractors(&subConfig)
+		_, err = createExtractors(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, test.e, "Must match error string")

@@ -7,7 +7,7 @@ import (
 	"github.com/antham/envh"
 )
 
-func buildStdoutSender(config *envh.EnvTree) (Sender, error) {
+func buildStdoutSender(config *envh.EnvTree) (sender, error) {
 	format, err := config.FindString("FORMAT")
 
 	if err != nil {
@@ -24,13 +24,13 @@ func buildStdoutSender(config *envh.EnvTree) (Sender, error) {
 	return nil, fmt.Errorf("\"%s\" format does not exist", format)
 }
 
-func buildJSONStdoutSender() (Sender, error) {
+func buildJSONStdoutSender() (sender, error) {
 	return jSONStdoutSender{
 		os.Stdout,
 	}, nil
 }
 
-func buildTemplateStdoutSender(config *envh.EnvTree) (Sender, error) {
+func buildTemplateStdoutSender(config *envh.EnvTree) (sender, error) {
 	template, err := config.FindString("TEMPLATE")
 
 	if err != nil {

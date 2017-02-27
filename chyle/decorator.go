@@ -6,13 +6,13 @@ import (
 	"github.com/antham/envh"
 )
 
-// Decorater extends data from commit hashmap with data picked from third part service
-type Decorater interface {
-	Decorate(*map[string]interface{}) (*map[string]interface{}, error)
+// decorater extends data from commit hashmap with data picked from third part service
+type decorater interface {
+	decorate(*map[string]interface{}) (*map[string]interface{}, error)
 }
 
-// Decorate process all defined decorator and apply them against every commit map
-func Decorate(decorators *[]Decorater, commitMaps *[]map[string]interface{}) (*[]map[string]interface{}, error) {
+// decorate process all defined decorator and apply them against every commit map
+func decorate(decorators *[]decorater, commitMaps *[]map[string]interface{}) (*[]map[string]interface{}, error) {
 	var err error
 
 	results := []map[string]interface{}{}
@@ -21,7 +21,7 @@ func Decorate(decorators *[]Decorater, commitMaps *[]map[string]interface{}) (*[
 		result := &commitMap
 
 		for _, decorator := range *decorators {
-			result, err = decorator.Decorate(&commitMap)
+			result, err = decorator.decorate(&commitMap)
 
 			if err != nil {
 				return nil, err
@@ -34,11 +34,11 @@ func Decorate(decorators *[]Decorater, commitMaps *[]map[string]interface{}) (*[
 	return &results, nil
 }
 
-// CreateDecorators build decorators from a config
-func CreateDecorators(config *envh.EnvTree) (*[]Decorater, error) {
-	results := []Decorater{}
+// createDecorators build decorators from a config
+func createDecorators(config *envh.EnvTree) (*[]decorater, error) {
+	results := []decorater{}
 
-	var ex Decorater
+	var ex decorater
 	var err error
 	var subConfig envh.EnvTree
 
@@ -57,7 +57,7 @@ func CreateDecorators(config *envh.EnvTree) (*[]Decorater, error) {
 		}
 
 		if err != nil {
-			return &[]Decorater{}, err
+			return &[]decorater{}, err
 		}
 
 		results = append(results, ex)

@@ -6,13 +6,13 @@ import (
 	"github.com/antham/envh"
 )
 
-// Sender define where the date must be sent
-type Sender interface {
+// sender define where the date must be sent
+type sender interface {
 	Send(*[]map[string]interface{}) error
 }
 
 // Send forward informations extracted before to senders
-func Send(senders *[]Sender, commitMaps *[]map[string]interface{}) error {
+func Send(senders *[]sender, commitMaps *[]map[string]interface{}) error {
 	for _, sender := range *senders {
 		err := sender.Send(commitMaps)
 
@@ -24,11 +24,11 @@ func Send(senders *[]Sender, commitMaps *[]map[string]interface{}) error {
 	return nil
 }
 
-// CreateSenders build senders from a config
-func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
-	results := []Sender{}
+// createSenders build senders from a config
+func createSenders(config *envh.EnvTree) (*[]sender, error) {
+	results := []sender{}
 
-	var se Sender
+	var se sender
 	var subConfig envh.EnvTree
 	var err error
 
@@ -55,7 +55,7 @@ func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
 		}
 
 		if err != nil {
-			return &[]Sender{}, err
+			return &[]sender{}, err
 		}
 
 		results = append(results, se)

@@ -6,30 +6,30 @@ import (
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
-// MergeCommitMatcher match merge commit message
-type MergeCommitMatcher struct {
+// mergeCommitMatcher match merge commit message
+type mergeCommitMatcher struct {
 }
 
-// Match is valid if commit is a merge commit
-func (m MergeCommitMatcher) Match(commit *object.Commit) bool {
+// match is valid if commit is a merge commit
+func (m mergeCommitMatcher) match(commit *object.Commit) bool {
 	return commit.NumParents() == 2
 }
 
-// RegularCommitMatcher match regular commit message
-type RegularCommitMatcher struct {
+// regularCommitMatcher match regular commit message
+type regularCommitMatcher struct {
 }
 
-// Match is valid if commit is not a merge commit
-func (r RegularCommitMatcher) Match(commit *object.Commit) bool {
+// match is valid if commit is not a merge commit
+func (r regularCommitMatcher) match(commit *object.Commit) bool {
 	return commit.NumParents() == 1 || commit.NumParents() == 0
 }
 
-func buildTypeMatcher(key string, value string) (Matcher, error) {
+func buildTypeMatcher(key string, value string) (matcher, error) {
 	switch value {
 	case "regular":
-		return RegularCommitMatcher{}, nil
+		return regularCommitMatcher{}, nil
 	case "merge":
-		return MergeCommitMatcher{}, nil
+		return mergeCommitMatcher{}, nil
 	}
 
 	return nil, fmt.Errorf(`"%s" must be "regular" or "merge", "%s" given`, key, value)

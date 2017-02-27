@@ -47,7 +47,7 @@ func TestMatchersMergeCommits(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := Filter(&[]Matcher{MergeCommitMatcher{}}, &commits)
+	cs := filter(&[]matcher{mergeCommitMatcher{}}, &commits)
 
 	assert.Len(t, *cs, 2, "Must return 2 objects")
 	assert.Equal(t, (*cs)[0].Message, "Merge branch 'test1' into test\n", "Must return merge commit message")
@@ -68,7 +68,7 @@ func TestMatchersRegularCommits(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := Filter(&[]Matcher{RegularCommitMatcher{}}, &commits)
+	cs := filter(&[]matcher{regularCommitMatcher{}}, &commits)
 
 	assert.Len(t, *cs, 8, "Must return 8 objects")
 	assert.Equal(t, (*cs)[0].Message, "feat(file8) : new file 8\n\ncreate a new file 8\n", "Must return a commit message")
@@ -95,7 +95,7 @@ func TestMatchersWithCommitMessage(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := Filter(&[]Matcher{MessageMatcher{re}}, &commits)
+	cs := filter(&[]matcher{messageMatcher{re}}, &commits)
 
 	assert.Len(t, *cs, 2, "Must return 2 objects")
 	assert.Equal(t, (*cs)[0].Message, "feat(file8) : new file 8\n\ncreate a new file 8\n", "Must return a commit message")
@@ -122,7 +122,7 @@ func TestMatchersWithAuthor(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := Filter(&[]Matcher{AuthorMatcher{re}}, &commits)
+	cs := filter(&[]matcher{authorMatcher{re}}, &commits)
 
 	assert.Len(t, *cs, 10, "Must return 10 objects")
 }
@@ -147,7 +147,7 @@ func TestMatchersWithCommitter(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	cs := Filter(&[]Matcher{CommitterMatcher{re}}, &commits)
+	cs := filter(&[]matcher{committerMatcher{re}}, &commits)
 
 	assert.Len(t, *cs, 10, "Must return 10 objects")
 }
@@ -199,7 +199,7 @@ func TestCreateMatchers(t *testing.T) {
 
 	assert.NoError(t, err, "Must return no errors")
 
-	r, err := CreateMatchers(&subConfig)
+	r, err := createMatchers(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *r, 4, "Must return 4 matchers")
@@ -256,7 +256,7 @@ func TestCreateMatchersWithErrors(t *testing.T) {
 
 		assert.NoError(t, err, "Must return no errors")
 
-		_, err = CreateMatchers(&subConfig)
+		_, err = createMatchers(&subConfig)
 
 		assert.Error(t, err, "Must contains an error")
 		assert.EqualError(t, err, test.e, "Must match error string")

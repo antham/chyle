@@ -9,21 +9,21 @@ import (
 // process represents all configuration operations defined
 // needed to create a changelog
 type process struct {
-	matchers   *[]Matcher
-	extractors *[]Extracter
-	decorators *[]Decorater
-	senders    *[]Sender
+	matchers   *[]matcher
+	extractors *[]extracter
+	decorators *[]decorater
+	senders    *[]sender
 }
 
 // buildProcess creates process entity from defined configuration
 func buildProcess(config *envh.EnvTree) (*process, error) {
-	matchers := &[]Matcher{}
-	extractors := &[]Extracter{}
-	decorators := &[]Decorater{}
-	senders := &[]Sender{}
+	matchers := &[]matcher{}
+	extractors := &[]extracter{}
+	decorators := &[]decorater{}
+	senders := &[]sender{}
 
 	if subConfig, err := config.FindSubTree("CHYLE", "MATCHERS"); err == nil {
-		matchers, err = CreateMatchers(&subConfig)
+		matchers, err = createMatchers(&subConfig)
 
 		if err != nil {
 			return nil, err
@@ -31,7 +31,7 @@ func buildProcess(config *envh.EnvTree) (*process, error) {
 	}
 
 	if subConfig, err := config.FindSubTree("CHYLE", "EXTRACTORS"); err == nil {
-		extractors, err = CreateExtractors(&subConfig)
+		extractors, err = createExtractors(&subConfig)
 
 		if err != nil {
 			return nil, err
@@ -39,7 +39,7 @@ func buildProcess(config *envh.EnvTree) (*process, error) {
 	}
 
 	if subConfig, err := config.FindSubTree("CHYLE", "DECORATORS"); err == nil {
-		decorators, err = CreateDecorators(&subConfig)
+		decorators, err = createDecorators(&subConfig)
 
 		if err != nil {
 			return nil, err
@@ -47,7 +47,7 @@ func buildProcess(config *envh.EnvTree) (*process, error) {
 	}
 
 	if subConfig, err := config.FindSubTree("CHYLE", "SENDERS"); err == nil {
-		senders, err = CreateSenders(&subConfig)
+		senders, err = createSenders(&subConfig)
 
 		if err != nil {
 			return nil, err
@@ -64,14 +64,14 @@ func buildProcess(config *envh.EnvTree) (*process, error) {
 
 // proceed extracts datas from a set of commits
 func proceed(process *process, commits *[]object.Commit) error {
-	comExt, err := Extract(process.extractors, TransformCommitsToMap(Filter(process.matchers, commits)))
+	comExt, err := extract(process.extractors, TransformCommitsToMap(filter(process.matchers, commits)))
 
 	if err != nil {
 
 		return err
 	}
 
-	comExp, err := Decorate(process.decorators, comExt)
+	comExp, err := decorate(process.decorators, comExt)
 
 	if err != nil {
 		return err

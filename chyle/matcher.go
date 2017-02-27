@@ -7,19 +7,19 @@ import (
 	"github.com/antham/envh"
 )
 
-// Matcher describe a way of applying a matcher against a commit
-type Matcher interface {
-	Match(*object.Commit) bool
+// matcher describe a way of applying a matcher against a commit
+type matcher interface {
+	match(*object.Commit) bool
 }
 
-// Filter commits that don't fit any matchers
-func Filter(matchers *[]Matcher, commits *[]object.Commit) *[]object.Commit {
+// filter commits that don't fit any matchers
+func filter(matchers *[]matcher, commits *[]object.Commit) *[]object.Commit {
 	results := []object.Commit{}
 
 	for _, commit := range *commits {
 		add := true
 		for _, matcher := range *matchers {
-			if !matcher.Match(&commit) {
+			if !matcher.match(&commit) {
 				add = false
 			}
 		}
@@ -55,11 +55,11 @@ func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	return &commitMaps
 }
 
-// CreateMatchers build matchers from a config
-func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
-	results := []Matcher{}
+// createMatchers build matchers from a config
+func createMatchers(config *envh.EnvTree) (*[]matcher, error) {
+	results := []matcher{}
 
-	var m Matcher
+	var m matcher
 	var s string
 	var err error
 
@@ -74,10 +74,10 @@ func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 
 			debug(`Matcher "%s" defined with value "%s"`, k, s)
 
-			m, err = map[string]func(string, string) (Matcher, error){
+			m, err = map[string]func(string, string) (matcher, error){
 				"MESSAGE":   buildMessageMatcher,
 				"COMMITTER": buildCommitterMatcher,
-				"AUTHOR":    buildAuthorMatcher,
+				"AUTHOR":    buildauthorMatcher,
 				"TYPE":      buildTypeMatcher,
 			}[k](k, s)
 		default:
@@ -85,7 +85,7 @@ func CreateMatchers(config *envh.EnvTree) (*[]Matcher, error) {
 		}
 
 		if err != nil {
-			return &[]Matcher{}, err
+			return &[]matcher{}, err
 		}
 
 		results = append(results, m)

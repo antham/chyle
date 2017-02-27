@@ -11,8 +11,8 @@ import (
 	"github.com/antham/envh"
 )
 
-// JiraIssueDecorator fetch data using jira issue api
-type JiraIssueDecorator struct {
+// jiraIssueDecorator fetch data using jira issue api
+type jiraIssueDecorator struct {
 	client   http.Client
 	username string
 	password string
@@ -20,13 +20,13 @@ type JiraIssueDecorator struct {
 	keys     map[string]string
 }
 
-// NewJiraIssueDecoratorFromPasswordAuth create a new JiraIssueDecorator
-func NewJiraIssueDecoratorFromPasswordAuth(client http.Client, username string, password string, URL string, keys map[string]string) (JiraIssueDecorator, error) {
-	return JiraIssueDecorator{client, username, password, URL, keys}, nil
+// newJiraIssueDecoratorFromPasswordAuth create a new jiraIssueDecorator
+func newJiraIssueDecoratorFromPasswordAuth(client http.Client, username string, password string, URL string, keys map[string]string) (jiraIssueDecorator, error) {
+	return jiraIssueDecorator{client, username, password, URL, keys}, nil
 }
 
-// Decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
-func (j JiraIssueDecorator) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+// decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
+func (j jiraIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
 
 	if data, ok := (*commitMap)["jiraIssueId"]; true {
@@ -72,7 +72,7 @@ func (j JiraIssueDecorator) Decorate(commitMap *map[string]interface{}) (*map[st
 	return commitMap, nil
 }
 
-func buildJiraDecorator(config *envh.EnvTree) (Decorater, error) {
+func buildJiraDecorator(config *envh.EnvTree) (decorater, error) {
 	datas := map[string]string{}
 	keyValues := map[string]string{}
 
@@ -120,5 +120,5 @@ func buildJiraDecorator(config *envh.EnvTree) (Decorater, error) {
 		keyValues[key] = value
 	}
 
-	return NewJiraIssueDecoratorFromPasswordAuth(http.Client{}, datas["USERNAME"], datas["PASSWORD"], datas["URL"], keyValues)
+	return newJiraIssueDecoratorFromPasswordAuth(http.Client{}, datas["USERNAME"], datas["PASSWORD"], datas["URL"], keyValues)
 }
