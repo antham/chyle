@@ -10,7 +10,7 @@ import (
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new changelog",
-	Long: `Create a new changelog according to what is defined in config file.
+	Long: `Create a new changelog according to what is defined as config.
 
 Changelog creation follows this process :
 

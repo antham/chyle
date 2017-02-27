@@ -6,7 +6,7 @@ Chyle produces a changelog from a git repository.
 ## Usage
 
 ```
-Create a new changelog according to what is defined in config file.
+Create a new changelog according to what is defined as config.
 
 Changelog creation follows this process :
 
