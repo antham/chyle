@@ -66,7 +66,7 @@ func CreateExtractors(config *envh.EnvTree) (*[]Extracter, error) {
 		debug(`Extractor "%s" "DESTKEY" defined with value "%s"`, identifier, datas["DESTKEY"])
 		debug(`Extractor "%s" "REG" defined with value "%s"`, identifier, datas["REG"])
 
-		results = append(results, RegexpExtracter{
+		results = append(results, RegexpExtractor{
 			datas["ORIGKEY"],
 			datas["DESTKEY"],
 			re,
