@@ -30,23 +30,18 @@ func CreateSenders(config *envh.EnvTree) (*[]Sender, error) {
 
 	var se Sender
 	var subConfig envh.EnvTree
-	var s string
 	var err error
 
 	for _, k := range config.GetChildrenKeys() {
 		switch k {
 		case "STDOUT":
-			s, err = config.FindString(k, "FORMAT")
+			subConfig, err = config.FindSubTree("STDOUT")
 
 			if err != nil {
-				err = fmt.Errorf(`missing "SENDERS_STDOUT_FORMAT"`)
-
 				break
 			}
 
-			debug(`Sender STDOUT "FORMAT" defined with value "%s"`, s)
-
-			se, err = NewStdoutSender(s)
+			se, err = buildStdoutSender(&subConfig)
 		case "GITHUB":
 			subConfig, err = config.FindSubTree("GITHUB")
 

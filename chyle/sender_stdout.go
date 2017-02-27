@@ -4,34 +4,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 )
 
-// StdoutSender send output on stdout
-type StdoutSender struct {
-	format string
+// jSONStdoutSender output commit payload as JSON on stdout
+type jSONStdoutSender struct {
 	stdout io.Writer
 }
 
-// NewStdoutSender creates a StdoutSender
-func NewStdoutSender(format string) (StdoutSender, error) {
-	switch format {
-	case "json":
-		return StdoutSender{
-			format,
-			os.Stdout,
-		}, nil
-	default:
-		return StdoutSender{}, fmt.Errorf("\"%s\" format does not exist", format)
-	}
+// Send produces an output on stdout
+func (j jSONStdoutSender) Send(commitMaps *[]map[string]interface{}) error {
+	return json.NewEncoder(j.stdout).Encode(commitMaps)
 }
 
-// Send commitMaps to stdout using format
-func (s StdoutSender) Send(commitMaps *[]map[string]interface{}) error {
-	switch s.format {
-	case "json":
-		return json.NewEncoder(s.stdout).Encode(commitMaps)
+// templateStdoutSender output commit payload using given template on stdout
+type templateStdoutSender struct {
+	template string
+	stdout   io.Writer
+}
+
+// Send produces an output on stdout
+func (t templateStdoutSender) Send(commitMaps *[]map[string]interface{}) error {
+	datas, err := populateTemplate("stdout-template", t.template, commitMaps)
+
+	if err != nil {
+		return err
 	}
+
+	fmt.Fprint(t.stdout, datas)
 
 	return nil
 }

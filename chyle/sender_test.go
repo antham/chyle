@@ -13,7 +13,7 @@ import (
 func TestSend(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	s := StdoutSender{"json", buf}
+	s := jSONStdoutSender{buf}
 	datas := &[]map[string]interface{}{
 		map[string]interface{}{
 			"id":   1,
