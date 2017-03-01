@@ -1,6 +1,7 @@
 package chyle
 
 import (
+	"os/exec"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -134,4 +135,38 @@ func TestFetchCommits(t *testing.T) {
 	for _, test := range tests {
 		test.f(fetchCommits("test", test.toRef, test.fromRef))
 	}
+}
+
+func TestShallowCloneProducesNoErrors(t *testing.T) {
+	path := "shallow-repository-test"
+	cmd := exec.Command("rm", "-rf", path)
+	_, err := cmd.Output()
+
+	assert.NoError(t, err, "Must delete repository")
+
+	cmd = exec.Command("git", "clone", "--depth", "2", "git@github.com:octocat/Spoon-Knife.git", path)
+	_, err = cmd.Output()
+
+	assert.NoError(t, err, "Must shallow clone repository")
+
+	cmd = exec.Command("git", "rev-parse", "HEAD~1")
+	cmd.Dir = path
+
+	fromRef, err := cmd.Output()
+	fromRef = fromRef[:len(fromRef)-1]
+
+	assert.NoError(t, err, "Must extract HEAD~1")
+
+	cmd = exec.Command("git", "rev-parse", "HEAD")
+	cmd.Dir = path
+
+	toRef, err := cmd.Output()
+	toRef = toRef[:len(toRef)-1]
+
+	assert.NoError(t, err, "Must extract HEAD")
+
+	commits, err := fetchCommits("shallow-repository-test", string(fromRef), string(toRef))
+
+	assert.NoError(t, err, "Must return no errors")
+	assert.Len(t, *commits, 1, "Must fetch commits in shallow clone")
 }
