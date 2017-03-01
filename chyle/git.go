@@ -71,19 +71,19 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 
 // fetchCommits retrieves commits in a reference range
 func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Commit, error) {
-	repo, err := git.PlainOpen(repoPath)
+	rep, err := git.PlainOpen(repoPath)
 
 	if err != nil {
 		return nil, err
 	}
 
-	fromCommit, err := resolveRef(fromRef, repo)
+	fromCommit, err := resolveRef(fromRef, rep)
 
 	if err != nil {
 		return &[]object.Commit{}, err
 	}
 
-	toCommit, err := resolveRef(toRef, repo)
+	toCommit, err := resolveRef(toRef, rep)
 
 	if err != nil {
 		return &[]object.Commit{}, err
