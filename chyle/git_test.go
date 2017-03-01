@@ -144,7 +144,7 @@ func TestShallowCloneProducesNoErrors(t *testing.T) {
 
 	assert.NoError(t, err, "Must delete repository")
 
-	cmd = exec.Command("git", "clone", "--depth", "2", "git@github.com:octocat/Spoon-Knife.git", path)
+	cmd = exec.Command("git", "clone", "--depth", "2", "https://github.com/octocat/Spoon-Knife.git", path)
 	_, err = cmd.Output()
 
 	assert.NoError(t, err, "Must shallow clone repository")
