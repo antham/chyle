@@ -31,7 +31,7 @@ Chyle fetch a range of commits using given criterias from a git repository. From
 
 Download from release page according to your architecture chyle binary : https://github.com/antham/chyle/releases
 
-You need afterwards to configure each module through environments variables : their are activated when you configure at least one environment variable they need to work.
+You need afterwards to configure each module through environments variables : there are activated when you configure at least one environment variable they need to work.
 
 ### Summary
 
