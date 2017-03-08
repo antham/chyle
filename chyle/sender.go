@@ -8,13 +8,13 @@ import (
 
 // sender define where the date must be sent
 type sender interface {
-	Send(*[]map[string]interface{}) error
+	Send(changelog *Changelog) error
 }
 
-// Send forward informations extracted before to senders
-func Send(senders *[]sender, commitMaps *[]map[string]interface{}) error {
+// Send forward changelog to senders
+func Send(senders *[]sender, changelog *Changelog) error {
 	for _, sender := range *senders {
-		err := sender.Send(commitMaps)
+		err := sender.Send(changelog)
 
 		if err != nil {
 			return err

@@ -54,32 +54,35 @@ func TestExtract(t *testing.T) {
 
 	results, err := extract(&extractors, &commitMaps)
 
-	expected := []map[string]interface{}{
-		map[string]interface{}{
-			"id":               "Whatever #30 whatever true 12345 whatever 12345.12",
-			"secondIdentifier": "test #12345",
-			"serviceId":        "#30",
-			"secondServiceId":  "#12345",
-			"booleanValue":     true,
-			"intValue":         int64(12345),
-			"floatValue":       12345.12,
+	expected := Changelog{
+		Datas: []map[string]interface{}{
+			map[string]interface{}{
+				"id":               "Whatever #30 whatever true 12345 whatever 12345.12",
+				"secondIdentifier": "test #12345",
+				"serviceId":        "#30",
+				"secondServiceId":  "#12345",
+				"booleanValue":     true,
+				"intValue":         int64(12345),
+				"floatValue":       12345.12,
+			},
+			map[string]interface{}{
+				"id":               "Whatever #40 whatever false whatever 78910 whatever 78910.12",
+				"secondIdentifier": "test #45678",
+				"serviceId":        "#40",
+				"secondServiceId":  "#45678",
+				"booleanValue":     false,
+				"intValue":         int64(78910),
+				"floatValue":       78910.12,
+			},
+			map[string]interface{}{
+				"id":           "Whatever whatever whatever",
+				"serviceId":    "",
+				"booleanValue": "",
+				"intValue":     "",
+				"floatValue":   "",
+			},
 		},
-		map[string]interface{}{
-			"id":               "Whatever #40 whatever false whatever 78910 whatever 78910.12",
-			"secondIdentifier": "test #45678",
-			"serviceId":        "#40",
-			"secondServiceId":  "#45678",
-			"booleanValue":     false,
-			"intValue":         int64(78910),
-			"floatValue":       78910.12,
-		},
-		map[string]interface{}{
-			"id":           "Whatever whatever whatever",
-			"serviceId":    "",
-			"booleanValue": "",
-			"intValue":     "",
-			"floatValue":   "",
-		},
+		Metadatas: map[string]interface{}{},
 	}
 
 	assert.NoError(t, err, "Must return no error")

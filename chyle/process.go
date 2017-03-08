@@ -11,7 +11,7 @@ import (
 type process struct {
 	matchers   *[]matcher
 	extractors *[]extracter
-	decorators *[]decorater
+	decorators *map[string][]decorater
 	senders    *[]sender
 }
 
@@ -19,7 +19,7 @@ type process struct {
 func buildProcess(config *envh.EnvTree) (*process, error) {
 	matchers := &[]matcher{}
 	extractors := &[]extracter{}
-	decorators := &[]decorater{}
+	decorators := &map[string][]decorater{}
 	senders := &[]sender{}
 
 	if subConfig, err := config.FindSubTree("CHYLE", "MATCHERS"); err == nil {
@@ -64,18 +64,18 @@ func buildProcess(config *envh.EnvTree) (*process, error) {
 
 // proceed extracts datas from a set of commits
 func proceed(process *process, commits *[]object.Commit) error {
-	comExt, err := extract(process.extractors, TransformCommitsToMap(filter(process.matchers, commits)))
+	changelog, err := extract(process.extractors, TransformCommitsToMap(filter(process.matchers, commits)))
 
 	if err != nil {
 
 		return err
 	}
 
-	comExp, err := decorate(process.decorators, comExt)
+	changelog, err = decorate(process.decorators, changelog)
 
 	if err != nil {
 		return err
 	}
 
-	return Send(process.senders, comExp)
+	return Send(process.senders, changelog)
 }

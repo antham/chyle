@@ -13,7 +13,7 @@ type extracter interface {
 }
 
 // extract parse commit fields to extract datas
-func extract(extractors *[]extracter, commitMaps *[]map[string]interface{}) (*[]map[string]interface{}, error) {
+func extract(extractors *[]extracter, commitMaps *[]map[string]interface{}) (*Changelog, error) {
 	var err error
 
 	results := []map[string]interface{}{}
@@ -32,7 +32,7 @@ func extract(extractors *[]extracter, commitMaps *[]map[string]interface{}) (*[]
 		results = append(results, *result)
 	}
 
-	return &results, nil
+	return &Changelog{Datas: results, Metadatas: map[string]interface{}{}}, nil
 }
 
 // createExtractors build extracters from a config

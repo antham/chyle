@@ -12,8 +12,8 @@ type jSONStdoutSender struct {
 }
 
 // Send produces an output on stdout
-func (j jSONStdoutSender) Send(commitMaps *[]map[string]interface{}) error {
-	return json.NewEncoder(j.stdout).Encode(commitMaps)
+func (j jSONStdoutSender) Send(changelog *Changelog) error {
+	return json.NewEncoder(j.stdout).Encode(changelog)
 }
 
 // templateStdoutSender output commit payload using given template on stdout
@@ -23,8 +23,8 @@ type templateStdoutSender struct {
 }
 
 // Send produces an output on stdout
-func (t templateStdoutSender) Send(commitMaps *[]map[string]interface{}) error {
-	datas, err := populateTemplate("stdout-template", t.template, commitMaps)
+func (t templateStdoutSender) Send(changelog *Changelog) error {
+	datas, err := populateTemplate("stdout-template", t.template, changelog)
 
 	if err != nil {
 		return err

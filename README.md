@@ -78,7 +78,7 @@ CHYLE_EXTRACTORS_*_REG | A regexp used to extract a data
 
 ### Decorators
 
-Decorators request remote api to enrich your commit payload with datas.
+Decorators enrich your changelog with datas.
 
 #### Jira ticket api
 
@@ -126,6 +126,6 @@ CHYLE_SENDERS_GITHUB_RELEASE_NAME | Release title (optional)
 CHYLE_SENDERS_GITHUB_RELEASE_PRERELEASE | Create a prerelease release, boolean value, default is false
 CHYLE_SENDERS_GITHUB_RELEASE_TAGNAME | Release tag to create, when you update a release it will be used to find out release tied to this tag
 CHYLE_SENDERS_GITHUB_RELEASE_TARGETCOMMITISH | The commitish value that determines where the Git tag is created from (optional)
-CHYLE_SENDERS_GITHUB_RELEASE_TEMPLATE | It uses golang template syntax to produce a changelog from you commits, eg: {{ range $key, $value := . }}{{$value.authorName}} : {{$value.message}}{{ end }}
+CHYLE_SENDERS_GITHUB_RELEASE_TEMPLATE | It uses golang template syntax to produce a changelog from you commits, eg: : A metadata {{.Metadatas.title}} {{ range $key, $value := .Datas }}{{$value.authorName}} : {{$value.message}}{{ end }}
 CHYLE_SENDERS_GITHUB_RELEASE_UPDATE | Set to true if you want to update an existing changelog, typical usage would be when you produce a release through GUI github release system
 CHYLE_SENDERS_GITHUB_REPOSITORY_NAME | Github repository where we will publish the release

@@ -11,32 +11,48 @@ type decorater interface {
 	decorate(*map[string]interface{}) (*map[string]interface{}, error)
 }
 
-// decorate process all defined decorator and apply them against every commit map
-func decorate(decorators *[]decorater, commitMaps *[]map[string]interface{}) (*[]map[string]interface{}, error) {
+// decorate process all defined decorator and apply them
+func decorate(decorators *map[string][]decorater, changelog *Changelog) (*Changelog, error) {
 	var err error
 
-	results := []map[string]interface{}{}
+	datas := []map[string]interface{}{}
 
-	for _, commitMap := range *commitMaps {
-		result := &commitMap
+	for _, d := range changelog.Datas {
+		result := &d
 
-		for _, decorator := range *decorators {
-			result, err = decorator.decorate(&commitMap)
+		for _, decorator := range (*decorators)["datas"] {
+			result, err = decorator.decorate(&d)
 
 			if err != nil {
 				return nil, err
 			}
 		}
 
-		results = append(results, *result)
+		datas = append(datas, *result)
 	}
 
-	return &results, nil
+	changelog.Datas = datas
+
+	metadatas := changelog.Metadatas
+
+	for _, decorator := range (*decorators)["metadatas"] {
+		m, err := decorator.decorate(&metadatas)
+
+		if err != nil {
+			return nil, err
+		}
+
+		metadatas = *m
+	}
+
+	changelog.Metadatas = metadatas
+
+	return changelog, nil
 }
 
 // createDecorators build decorators from a config
-func createDecorators(config *envh.EnvTree) (*[]decorater, error) {
-	results := []decorater{}
+func createDecorators(config *envh.EnvTree) (*map[string][]decorater, error) {
+	results := map[string][]decorater{"metadatas": []decorater{}, "datas": []decorater{}}
 
 	var ex decorater
 	var err error
@@ -57,10 +73,10 @@ func createDecorators(config *envh.EnvTree) (*[]decorater, error) {
 		}
 
 		if err != nil {
-			return &[]decorater{}, err
+			return nil, err
 		}
 
-		results = append(results, ex)
+		results["datas"] = append(results["datas"], ex)
 	}
 
 	return &results, nil

@@ -65,20 +65,24 @@ func TestBuildChangelog(t *testing.T) {
 		Subject        string `json:"subject"`
 	}
 
-	results := []Data{}
+	results := struct {
+		Datas     []Data            `json:"datas"`
+		Metadatas map[string]string `json:"metadatas"`
+	}{}
 
 	j := json.NewDecoder(bytes.NewBuffer(b))
 	err = j.Decode(&results)
 
 	assert.NoError(t, err, "Must decode json without errors")
-	assert.Len(t, results, 2, "Must contains 2 entries")
+	assert.Len(t, results.Datas, 2, "Must contains 2 entries")
+	assert.Len(t, results.Metadatas, 0, "Must contains no entries")
 
 	subjectExpected := []string{
 		"feat(file8) : new file 8",
 		"feat(file7) : new file 7",
 	}
 
-	for i, r := range results {
+	for i, r := range results.Datas {
 		h := plumbing.NewHash(r.ID)
 
 		c, err := repo.Commit(h)

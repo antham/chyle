@@ -35,9 +35,9 @@ func newGithubReleaseSender(client *http.Client, config githubReleaseConfig, git
 	}
 }
 
-// buildBody create a request body from commit map
-func (j githubReleaseSender) buildBody(commitMap *[]map[string]interface{}) ([]byte, error) {
-	body, err := populateTemplate("github-release-template", j.config.template, commitMap)
+// buildBody create a request body from changelog
+func (j githubReleaseSender) buildBody(changelog *Changelog) ([]byte, error) {
+	body, err := populateTemplate("github-release-template", j.config.template, changelog)
 
 	if err != nil {
 		return []byte{}, err
@@ -158,8 +158,8 @@ func (j githubReleaseSender) updateRelease(body []byte) error {
 }
 
 // Send push changelog to github release
-func (j githubReleaseSender) Send(commitMap *[]map[string]interface{}) error {
-	body, err := j.buildBody(commitMap)
+func (j githubReleaseSender) Send(changelog *Changelog) error {
+	body, err := j.buildBody(changelog)
 
 	if err != nil {
 		return err

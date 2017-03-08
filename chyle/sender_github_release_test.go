@@ -48,7 +48,7 @@ func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 	gock.InterceptClient(client)
 
 	restoreEnvs()
-	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
+	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}")
 	setenv("SENDERS_GITHUB_RELEASE_TAGNAME", "v1.0.0")
 	setenv("SENDERS_GITHUB_RELEASE_NAME", "TEST")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
@@ -58,8 +58,12 @@ func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 	s := createTestGithubReleaseSender(t)
 	s.client = client
 
-	c := []map[string]interface{}{}
-	c = append(c, map[string]interface{}{"test": "Hello world !"})
+	c := Changelog{
+		Datas:     []map[string]interface{}{},
+		Metadatas: map[string]interface{}{},
+	}
+
+	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
 
 	err = s.Send(&c)
 
@@ -82,7 +86,7 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 	gock.InterceptClient(client)
 
 	restoreEnvs()
-	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
+	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}")
 	setenv("SENDERS_GITHUB_RELEASE_TAGNAME", "v1.0.0")
 	setenv("SENDERS_GITHUB_RELEASE_NAME", "TEST")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
@@ -92,8 +96,12 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 	s := createTestGithubReleaseSender(t)
 	s.client = client
 
-	c := []map[string]interface{}{}
-	c = append(c, map[string]interface{}{"test": "Hello world !"})
+	c := Changelog{
+		Datas:     []map[string]interface{}{},
+		Metadatas: map[string]interface{}{},
+	}
+
+	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
 
 	err := s.Send(&c)
 
@@ -128,7 +136,7 @@ func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 	gock.InterceptClient(client)
 
 	restoreEnvs()
-	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
+	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}")
 	setenv("SENDERS_GITHUB_RELEASE_TAGNAME", "v1.0.0")
 	setenv("SENDERS_GITHUB_RELEASE_NAME", "TEST")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
@@ -139,8 +147,12 @@ func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 	s := createTestGithubReleaseSender(t)
 	s.client = client
 
-	c := []map[string]interface{}{}
-	c = append(c, map[string]interface{}{"test": "Hello world !"})
+	c := Changelog{
+		Datas:     []map[string]interface{}{},
+		Metadatas: map[string]interface{}{},
+	}
+
+	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
 
 	err = s.Send(&c)
 
@@ -162,7 +174,7 @@ func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
 	gock.InterceptClient(client)
 
 	restoreEnvs()
-	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := . }}{{$value.test}}{{ end }}")
+	setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}")
 	setenv("SENDERS_GITHUB_RELEASE_TAGNAME", "v1.0.0")
 	setenv("SENDERS_GITHUB_RELEASE_NAME", "TEST")
 	setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
@@ -173,8 +185,12 @@ func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
 	s := createTestGithubReleaseSender(t)
 	s.client = client
 
-	c := []map[string]interface{}{}
-	c = append(c, map[string]interface{}{"test": "Hello world !"})
+	c := Changelog{
+		Datas:     []map[string]interface{}{},
+		Metadatas: map[string]interface{}{},
+	}
+
+	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
 
 	err := s.Send(&c)
 
@@ -192,8 +208,12 @@ func TestGithubReleaseSenderBuildBody(t *testing.T) {
 		},
 	}
 
-	c := []map[string]interface{}{}
-	c = append(c, map[string]interface{}{"test": "Hello world !"})
+	c := Changelog{
+		Datas:     []map[string]interface{}{},
+		Metadatas: map[string]interface{}{},
+	}
+
+	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
 
 	datas, err := s.buildBody(&c)
 

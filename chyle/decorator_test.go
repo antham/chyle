@@ -28,34 +28,39 @@ func TestDecorator(t *testing.T) {
 
 	assert.NoError(t, err, "Must return no errors")
 
-	decorators := []decorater{
-		j,
+	decorators := map[string][]decorater{
+		"datas":     []decorater{j},
+		"metadatas": []decorater{},
 	}
 
-	commitMaps := []map[string]interface{}{
-		map[string]interface{}{
-			"test":        "test1",
-			"jiraIssueId": "10000",
-		},
-		map[string]interface{}{
-			"test":        "test2",
-			"jiraIssueId": "ABC-123",
-		},
+	changelog := Changelog{
+		Datas: []map[string]interface{}{
+			map[string]interface{}{
+				"test":        "test1",
+				"jiraIssueId": "10000",
+			},
+			map[string]interface{}{
+				"test":        "test2",
+				"jiraIssueId": "ABC-123",
+			}},
+		Metadatas: map[string]interface{}{},
 	}
 
-	result, err := decorate(&decorators, &commitMaps)
+	result, err := decorate(&decorators, &changelog)
 
-	expected := []map[string]interface{}{
-		map[string]interface{}{
-			"test":         "test1",
-			"jiraIssueId":  "10000",
-			"jiraIssueKey": "EX-1",
-		},
-		map[string]interface{}{
-			"test":         "test2",
-			"jiraIssueId":  "ABC-123",
-			"jiraIssueKey": "ABC-123",
-		},
+	expected := Changelog{
+		Datas: []map[string]interface{}{
+			map[string]interface{}{
+				"test":         "test1",
+				"jiraIssueId":  "10000",
+				"jiraIssueKey": "EX-1",
+			},
+			map[string]interface{}{
+				"test":         "test2",
+				"jiraIssueId":  "ABC-123",
+				"jiraIssueKey": "ABC-123",
+			}},
+		Metadatas: map[string]interface{}{},
 	}
 
 	assert.NoError(t, err, "Must return no errors")
@@ -82,7 +87,7 @@ func TestCreateDecorators(t *testing.T) {
 	r, err := createDecorators(&subConfig)
 
 	assert.NoError(t, err, "Must contains no errors")
-	assert.Len(t, *r, 1, "Must return 1 decorator")
+	assert.Len(t, (*r)["datas"], 1, "Must return 1 decorator")
 }
 
 func TestCreateDecoratorsWithErrors(t *testing.T) {

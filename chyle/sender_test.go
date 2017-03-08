@@ -14,7 +14,13 @@ func TestSend(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	s := jSONStdoutSender{buf}
-	datas := &[]map[string]interface{}{
+
+	c := Changelog{
+		Datas:     []map[string]interface{}{},
+		Metadatas: map[string]interface{}{},
+	}
+
+	c.Datas = []map[string]interface{}{
 		map[string]interface{}{
 			"id":   1,
 			"test": "test",
@@ -25,10 +31,10 @@ func TestSend(t *testing.T) {
 		},
 	}
 
-	err := Send(&[]sender{s}, datas)
+	err := Send(&[]sender{s}, &c)
 
 	assert.NoError(t, err, "Must return no errors")
-	assert.Equal(t, `[{"id":1,"test":"test"},{"id":2,"test":"test"}]`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations  as json")
+	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations  as json")
 }
 
 func TestCreateSenders(t *testing.T) {
