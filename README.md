@@ -40,6 +40,7 @@ You need afterwards to configure each module through environments variables : th
 * [Extractors](#extractors)
 * [Decorators](#decorators)
   * [Jira ticket api](#jira-ticket-api)
+  * [Environment variable](#environment-variable)
 * [Senders](#senders)
   * [Stdout](#stdout)
   * [Github release api](#github-release-api)
@@ -99,6 +100,17 @@ CHYLE_DECORATORS_JIRA_CREDENTIALS_USERNAME | Jira username
 CHYLE_DECORATORS_JIRA_CREDENTIALS_PASSWORD | Jira password
 CHYLE_DECORATORS_JIRA_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
 CHYLE_DECORATORS_JIRA_KEYS_*_FIELD | The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")
+
+#### Environment variable
+
+This decorator dump an environment variable in metadatas changelog section.
+
+You need to define everytime both an "VALUE" key and a "DESTKEY" key, replace * with a name convenient to you, you can get as many value as you want.
+
+Name | Value
+------------ | -------------
+DECORATORS_ENV_*_VALUE | Value to dump in metadatas
+DECORATORS_ENV_*_DESTKEY | The name of the key where to store dumped value in metadatas
 
 ### Senders
 

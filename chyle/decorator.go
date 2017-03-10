@@ -50,24 +50,40 @@ func decorate(decorators *map[string][]decorater, changelog *Changelog) (*Change
 	return changelog, nil
 }
 
-// createDatasDecorators build decorators dealing with datas extracted from repository
-func createDatasDecorators(config *envh.EnvTree) (*[]decorater, error) {
-	results := []decorater{}
+// createDecorators build decorators from a config
+func createDecorators(config *envh.EnvTree) (*map[string][]decorater, error) {
+	results := map[string][]decorater{"metadatas": []decorater{}, "datas": []decorater{}}
 
-	var ex decorater
+	var decType string
+	var dec decorater
+	var decs []decorater
 	var err error
 	var subConfig envh.EnvTree
 
 	for _, k := range config.GetChildrenKeys() {
+		dec = nil
+		decs = []decorater{}
+		decType = ""
+
 		switch k {
 		case "JIRA":
+			decType = "datas"
 			subConfig, err = config.FindSubTree("JIRA")
 
 			if err != nil {
 				break
 			}
 
-			ex, err = buildJiraDecorator(&subConfig)
+			dec, err = buildJiraDecorator(&subConfig)
+		case "ENV":
+			decType = "metadatas"
+			subConfig, err = config.FindSubTree("ENV")
+
+			if err != nil {
+				break
+			}
+
+			decs, err = buildEnvDecorators(&subConfig)
 		default:
 			err = fmt.Errorf(`a wrong decorator key containing "%s" was defined`, k)
 		}
@@ -76,19 +92,12 @@ func createDatasDecorators(config *envh.EnvTree) (*[]decorater, error) {
 			return nil, err
 		}
 
-		results = append(results, ex)
+		if len(decs) == 0 {
+			results[decType] = append(results[decType], dec)
+		} else {
+			results[decType] = append(results[decType], decs...)
+		}
 	}
 
 	return &results, nil
-}
-
-// createDecorators build decorators from a config
-func createDecorators(config *envh.EnvTree) (*map[string][]decorater, error) {
-	datas, err := createDatasDecorators(config)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &map[string][]decorater{"metadatas": []decorater{}, "datas": *datas}, nil
 }
