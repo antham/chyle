@@ -50,9 +50,9 @@ func decorate(decorators *map[string][]decorater, changelog *Changelog) (*Change
 	return changelog, nil
 }
 
-// createDecorators build decorators from a config
-func createDecorators(config *envh.EnvTree) (*map[string][]decorater, error) {
-	results := map[string][]decorater{"metadatas": []decorater{}, "datas": []decorater{}}
+// createDatasDecorators build decorators dealing with datas extracted from repository
+func createDatasDecorators(config *envh.EnvTree) (*[]decorater, error) {
+	results := []decorater{}
 
 	var ex decorater
 	var err error
@@ -76,8 +76,19 @@ func createDecorators(config *envh.EnvTree) (*map[string][]decorater, error) {
 			return nil, err
 		}
 
-		results["datas"] = append(results["datas"], ex)
+		results = append(results, ex)
 	}
 
 	return &results, nil
+}
+
+// createDecorators build decorators from a config
+func createDecorators(config *envh.EnvTree) (*map[string][]decorater, error) {
+	datas, err := createDatasDecorators(config)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &map[string][]decorater{"metadatas": []decorater{}, "datas": *datas}, nil
 }
