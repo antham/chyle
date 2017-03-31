@@ -39,15 +39,15 @@ func TestExtract(t *testing.T) {
 	}
 
 	commitMaps := []map[string]interface{}{
-		map[string]interface{}{
+		{
 			"id":               "Whatever #30 whatever true 12345 whatever 12345.12",
 			"secondIdentifier": "test #12345",
 		},
-		map[string]interface{}{
+		{
 			"id":               "Whatever #40 whatever false whatever 78910 whatever 78910.12",
 			"secondIdentifier": "test #45678",
 		},
-		map[string]interface{}{
+		{
 			"id": "Whatever whatever whatever",
 		},
 	}
@@ -56,7 +56,7 @@ func TestExtract(t *testing.T) {
 
 	expected := Changelog{
 		Datas: []map[string]interface{}{
-			map[string]interface{}{
+			{
 				"id":               "Whatever #30 whatever true 12345 whatever 12345.12",
 				"secondIdentifier": "test #12345",
 				"serviceId":        "#30",
@@ -65,7 +65,7 @@ func TestExtract(t *testing.T) {
 				"intValue":         int64(12345),
 				"floatValue":       12345.12,
 			},
-			map[string]interface{}{
+			{
 				"id":               "Whatever #40 whatever false whatever 78910 whatever 78910.12",
 				"secondIdentifier": "test #45678",
 				"serviceId":        "#40",
@@ -74,7 +74,7 @@ func TestExtract(t *testing.T) {
 				"intValue":         int64(78910),
 				"floatValue":       78910.12,
 			},
-			map[string]interface{}{
+			{
 				"id":           "Whatever whatever whatever",
 				"serviceId":    "",
 				"booleanValue": "",
@@ -114,12 +114,12 @@ func TestCreateExtractors(t *testing.T) {
 	assert.Len(t, *e, 2, "Must return 2 extractors")
 
 	expected := map[string]map[string]string{
-		"id": map[string]string{
+		"id": {
 			"index":      "id",
 			"identifier": "test",
 			"regexp":     ".*",
 		},
-		"authorName": map[string]string{
+		"authorName": {
 			"index":      "authorName",
 			"identifier": "test2",
 			"regexp":     ".*",
@@ -148,26 +148,26 @@ func TestCreateExtractorsWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("EXTRACTORS_AUTHORNAME_TEST", "")
 			},
 			`An environment variable suffixed with "ORIGKEY" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_ORIGKEY`,
 		},
-		g{
+		{
 			func() {
 				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
 			},
 			`An environment variable suffixed with "DESTKEY" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_DESTKEY`,
 		},
-		g{
+		{
 			func() {
 				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
 				setenv("EXTRACTORS_AUTHORNAME_DESTKEY", "test")
 			},
 			`An environment variable suffixed with "REG" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_REG`,
 		},
-		g{
+		{
 			func() {
 				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
 				setenv("EXTRACTORS_AUTHORNAME_DESTKEY", "test")

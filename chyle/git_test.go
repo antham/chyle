@@ -17,21 +17,21 @@ func TestResolveRef(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			"HEAD",
 			func(o *object.Commit, err error) {
 				assert.NoError(t, err, "Must contains no error")
 				assert.True(t, o.ID().String() == getCommitFromRef("HEAD").ID().String(), "Must resolve HEAD reference")
 			},
 		},
-		g{
+		{
 			"test1",
 			func(o *object.Commit, err error) {
 				assert.NoError(t, err, "Must contains no error")
 				assert.True(t, o.ID().String() == getCommitFromRef("test1").ID().String(), "Must resolve branch reference")
 			},
 		},
-		g{
+		{
 			getCommitFromRef("test1").ID().String(),
 			func(o *object.Commit, err error) {
 				assert.NoError(t, err, "Must contains no error")
@@ -53,7 +53,7 @@ func TestResolveRefWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			"whatever",
 			repo,
 			func(o *object.Commit, err error) {
@@ -76,21 +76,21 @@ func TestFetchCommits(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			getCommitFromRef("HEAD").ID().String(),
 			getCommitFromRef("test").ID().String(),
 			func(cs *[]object.Commit, err error) {
 				assert.Error(t, err, "Must return an error")
 			},
 		},
-		g{
+		{
 			getCommitFromRef("HEAD~1").ID().String(),
 			getCommitFromRef("HEAD~3").ID().String(),
 			func(cs *[]object.Commit, err error) {
 				assert.Error(t, err, "Must return an error")
 			},
 		},
-		g{
+		{
 			getCommitFromRef("HEAD~3").ID().String(),
 			getCommitFromRef("test~2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -110,7 +110,7 @@ func TestFetchCommits(t *testing.T) {
 				}
 			},
 		},
-		g{
+		{
 			getCommitFromRef("HEAD~4").ID().String(),
 			getCommitFromRef("test~2^2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {

@@ -44,17 +44,17 @@ func extractChangelogConfig(config *envh.EnvTree) (changelogConfig, error) {
 	return cConfig, extractStringConfig(
 		config,
 		[]strConfigMapping{
-			strConfigMapping{
+			{
 				[]string{"CHYLE", "GIT", "REPOSITORY", "PATH"},
 				&cConfig.path,
 				true,
 			},
-			strConfigMapping{
+			{
 				[]string{"CHYLE", "GIT", "REFERENCE", "FROM"},
 				&cConfig.from,
 				true,
 			},
-			strConfigMapping{
+			{
 				[]string{"CHYLE", "GIT", "REFERENCE", "TO"},
 				&cConfig.to,
 				true,

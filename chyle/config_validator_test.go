@@ -25,12 +25,12 @@ func TestExtractStringConfig(t *testing.T) {
 	err = extractStringConfig(
 		&config,
 		[]strConfigMapping{
-			strConfigMapping{
+			{
 				[]string{"CHYLE", "TEST1"},
 				&test1,
 				true,
 			},
-			strConfigMapping{
+			{
 				[]string{"CHYLE", "TEST2"},
 				&test2,
 				false,
@@ -61,12 +61,12 @@ func TestExtractBoolConfig(t *testing.T) {
 	err = extractBoolConfig(
 		&config,
 		[]boolConfigMapping{
-			boolConfigMapping{
+			{
 				[]string{"CHYLE", "TEST1"},
 				&test1,
 				true,
 			},
-			boolConfigMapping{
+			{
 				[]string{"CHYLE", "TEST2"},
 				&test2,
 				false,

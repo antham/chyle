@@ -25,25 +25,25 @@ func TestBuildProcessWithWrongEnvironmentsVariables(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("CHYLE_MATCHERS_WHATEVER", "test")
 			},
 			`a wrong matcher key containing "WHATEVER" was defined`,
 		},
-		g{
+		{
 			func() {
 				setenv("CHYLE_EXTRACTORS_WHATEVER", "test")
 			},
 			`An environment variable suffixed with "ORIGKEY" must be defined with "WHATEVER", like EXTRACTORS_WHATEVER_ORIGKEY`,
 		},
-		g{
+		{
 			func() {
 				setenv("CHYLE_DECORATORS_WHATEVER", "test")
 			},
 			`a wrong decorator key containing "WHATEVER" was defined`,
 		},
-		g{
+		{
 			func() {
 				setenv("CHYLE_SENDERS_WHATEVER", "test")
 			},

@@ -111,18 +111,18 @@ func TestBuildChangelogWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 			},
 			`missing "CHYLE_GIT_REPOSITORY_PATH"`,
 		},
-		g{
+		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
 			},
 			`missing "CHYLE_GIT_REFERENCE_FROM"`,
 		},
-		g{
+		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "test2")

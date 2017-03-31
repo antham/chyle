@@ -28,13 +28,13 @@ func TestCreateEnvDecoratorWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("DECORATORS_ENV_WHATEVER_VALUE", "test")
 			},
 			`An environment variable suffixed with "DESTKEY" must be defined with "WHATEVER", like DECORATORS_ENV_WHATEVER_DESTKEY`,
 		},
-		g{
+		{
 			func() {
 				setenv("DECORATORS_ENV_WHATEVER_DESTKEY", "test")
 			},

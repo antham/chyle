@@ -21,11 +21,11 @@ func TestSend(t *testing.T) {
 	}
 
 	c.Datas = []map[string]interface{}{
-		map[string]interface{}{
+		{
 			"id":   1,
 			"test": "test",
 		},
-		map[string]interface{}{
+		{
 			"id":   2,
 			"test": "test",
 		},
@@ -79,19 +79,19 @@ func TestCreateSendersWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("SENDERS_WHATEVER", "test")
 			},
 			`a wrong sender key containing "WHATEVER" was defined`,
 		},
-		g{
+		{
 			func() {
 				setenv("SENDERS_STDOUT", "test")
 			},
 			`missing "SENDERS_STDOUT_FORMAT"`,
 		},
-		g{
+		{
 			func() {
 				setenv("SENDERS_GITHUB", "test")
 			},

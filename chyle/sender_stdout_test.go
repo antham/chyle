@@ -19,11 +19,11 @@ func TestJSONStdoutSender(t *testing.T) {
 	}
 
 	c.Datas = []map[string]interface{}{
-		map[string]interface{}{
+		{
 			"id":   1,
 			"test": "test",
 		},
-		map[string]interface{}{
+		{
 			"id":   2,
 			"test": "test",
 		},
@@ -46,11 +46,11 @@ func TestTemplateStdoutSender(t *testing.T) {
 	}
 
 	c.Datas = []map[string]interface{}{
-		map[string]interface{}{
+		{
 			"id":   1,
 			"test": "test",
 		},
-		map[string]interface{}{
+		{
 			"id":   2,
 			"test": "test",
 		},

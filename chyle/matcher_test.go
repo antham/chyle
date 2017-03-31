@@ -212,31 +212,31 @@ func TestCreateMatchersWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("MATCHERS_TEST", "")
 			},
 			`a wrong matcher key containing "TEST" was defined`,
 		},
-		g{
+		{
 			func() {
 				setenv("MATCHERS_TYPE", "test")
 			},
 			`"TYPE" must be "regular" or "merge", "test" given`,
 		},
-		g{
+		{
 			func() {
 				setenv("MATCHERS_MESSAGE", "*")
 			},
 			`"MESSAGE" doesn't contain a valid regular expression`,
 		},
-		g{
+		{
 			func() {
 				setenv("MATCHERS_COMMITTER", "*")
 			},
 			`"COMMITTER" doesn't contain a valid regular expression`,
 		},
-		g{
+		{
 			func() {
 				setenv("MATCHERS_AUTHOR", "*")
 			},

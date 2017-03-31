@@ -48,22 +48,22 @@ func buildGithubReleaseConfig(config *envh.EnvTree) (githubReleaseConfig, error)
 	err := extractStringConfig(
 		config,
 		[]strConfigMapping{
-			strConfigMapping{
+			{
 				[]string{"CREDENTIALS", "OAUTHTOKEN"},
 				&grConfig.oauthToken,
 				true,
 			},
-			strConfigMapping{
+			{
 				[]string{"CREDENTIALS", "OWNER"},
 				&grConfig.owner,
 				true,
 			},
-			strConfigMapping{
+			{
 				[]string{"REPOSITORY", "NAME"},
 				&grConfig.repositoryName,
 				true,
 			},
-			strConfigMapping{
+			{
 				[]string{"RELEASE", "TEMPLATE"},
 				&grConfig.template,
 				true,
@@ -79,7 +79,7 @@ func buildGithubReleaseConfig(config *envh.EnvTree) (githubReleaseConfig, error)
 	err = extractBoolConfig(
 		config,
 		[]boolConfigMapping{
-			boolConfigMapping{
+			{
 				[]string{"RELEASE", "UPDATE"},
 				&grConfig.update,
 				false,
@@ -97,17 +97,17 @@ func buildGithubRelease(config *envh.EnvTree) (githubRelease, error) {
 	err := extractStringConfig(
 		config,
 		[]strConfigMapping{
-			strConfigMapping{
+			{
 				[]string{"RELEASE", "TAGNAME"},
 				&gRelease.TagName,
 				true,
 			},
-			strConfigMapping{
+			{
 				[]string{"RELEASE", "TARGETCOMMITISH"},
 				&gRelease.TargetCommitish,
 				false,
 			},
-			strConfigMapping{
+			{
 				[]string{"RELEASE", "NAME"},
 				&gRelease.Name,
 				false,
@@ -123,12 +123,12 @@ func buildGithubRelease(config *envh.EnvTree) (githubRelease, error) {
 	err = extractBoolConfig(
 		config,
 		[]boolConfigMapping{
-			boolConfigMapping{
+			{
 				[]string{"RELEASE", "DRAFT"},
 				&gRelease.Draft,
 				false,
 			},
-			boolConfigMapping{
+			{
 				[]string{"RELEASE", "PRERELEASE"},
 				&gRelease.PreRelease,
 				false,

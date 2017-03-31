@@ -52,7 +52,7 @@ func decorate(decorators *map[string][]decorater, changelog *Changelog) (*Change
 
 // createDecorators build decorators from a config
 func createDecorators(config *envh.EnvTree) (*map[string][]decorater, error) {
-	results := map[string][]decorater{"metadatas": []decorater{}, "datas": []decorater{}}
+	results := map[string][]decorater{"metadatas": {}, "datas": {}}
 
 	var decType string
 	var dec decorater

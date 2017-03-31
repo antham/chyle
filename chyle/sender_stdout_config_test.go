@@ -33,13 +33,13 @@ func TestBuildStdoutSenderWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("SENDERS_STDOUT_FORMAT", "test")
 			},
 			`"test" format does not exist`,
 		},
-		g{
+		{
 			func() {
 				setenv("SENDERS_STDOUT_FORMAT", "template")
 			},

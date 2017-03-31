@@ -69,26 +69,26 @@ func TestCreateJiraDecoratorWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("DECORATORS_JIRA_CREDENTIALS", "test")
 			},
 			`"USERNAME" variable not found in "JIRA" config`,
 		},
-		g{
+		{
 			func() {
 				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
 			},
 			`"PASSWORD" variable not found in "JIRA" config`,
 		},
-		g{
+		{
 			func() {
 				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
 				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
 			},
 			`"URL" variable not found in "JIRA" config`,
 		},
-		g{
+		{
 			func() {
 				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
 				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
@@ -96,7 +96,7 @@ func TestCreateJiraDecoratorWithErrors(t *testing.T) {
 			},
 			`"url" is not a valid absolute URL defined in "JIRA" config`,
 		},
-		g{
+		{
 			func() {
 				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
 				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
@@ -104,7 +104,7 @@ func TestCreateJiraDecoratorWithErrors(t *testing.T) {
 			},
 			`No "DECORATORS_JIRA_KEYS" key found`,
 		},
-		g{
+		{
 			func() {
 				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
 				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
@@ -113,7 +113,7 @@ func TestCreateJiraDecoratorWithErrors(t *testing.T) {
 			},
 			`An environment variable suffixed with "DESTKEY" must be defined with "TEST", like DECORATORS_JIRA_KEYS_TEST_DESTKEY`,
 		},
-		g{
+		{
 			func() {
 				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
 				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")

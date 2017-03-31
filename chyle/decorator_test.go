@@ -29,17 +29,17 @@ func TestDecorator(t *testing.T) {
 	assert.NoError(t, err, "Must return no errors")
 
 	decorators := map[string][]decorater{
-		"datas":     []decorater{j},
-		"metadatas": []decorater{},
+		"datas":     {j},
+		"metadatas": {},
 	}
 
 	changelog := Changelog{
 		Datas: []map[string]interface{}{
-			map[string]interface{}{
+			{
 				"test":        "test1",
 				"jiraIssueId": "10000",
 			},
-			map[string]interface{}{
+			{
 				"test":        "test2",
 				"jiraIssueId": "ABC-123",
 			}},
@@ -50,12 +50,12 @@ func TestDecorator(t *testing.T) {
 
 	expected := Changelog{
 		Datas: []map[string]interface{}{
-			map[string]interface{}{
+			{
 				"test":         "test1",
 				"jiraIssueId":  "10000",
 				"jiraIssueKey": "EX-1",
 			},
-			map[string]interface{}{
+			{
 				"test":         "test2",
 				"jiraIssueId":  "ABC-123",
 				"jiraIssueKey": "ABC-123",
@@ -97,7 +97,7 @@ func TestCreateDecoratorsWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("DECORATORS_TEST", "")
 			},

@@ -228,26 +228,26 @@ func TestGithubReleaseSendersWithErrors(t *testing.T) {
 	}
 
 	tests := []g{
-		g{
+		{
 			func() {
 				setenv("SENDERS_GITHUB", "test")
 			},
 			`missing "SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN"`,
 		},
-		g{
+		{
 			func() {
 				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
 			},
 			`missing "SENDERS_GITHUB_CREDENTIALS_OWNER"`,
 		},
-		g{
+		{
 			func() {
 				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
 				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
 			},
 			`missing "SENDERS_GITHUB_REPOSITORY_NAME"`,
 		},
-		g{
+		{
 			func() {
 				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
 				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
@@ -255,7 +255,7 @@ func TestGithubReleaseSendersWithErrors(t *testing.T) {
 			},
 			`missing "SENDERS_GITHUB_RELEASE_TEMPLATE"`,
 		},
-		g{
+		{
 			func() {
 				setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
 				setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")

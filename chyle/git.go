@@ -164,7 +164,7 @@ func findDiffCommits(commit *object.Commit, exclusionList *map[string]bool) (*[]
 			func(c *object.Commit) error {
 				if _, ok := seen[c.ID().String()]; !ok {
 					seen[c.ID().String()] = true
-					queue = append([]*node{&node{value: c, parent: current}}, queue...)
+					queue = append([]*node{{value: c, parent: current}}, queue...)
 				}
 
 				return nil
