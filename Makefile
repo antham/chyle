@@ -3,7 +3,7 @@ compile:
 	gox -output "build/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
 fmt:
-	find ! -path "./vendor/*" -name "*.go" -exec go fmt {} \;
+	find ! -path "./vendor/*" -name "*.go" -exec gofmt -s -w {} \;
 
 gometalinter:
 	gometalinter -D gotype -D aligncheck --vendor --deadline=240s --dupl-threshold=200 -e '_string' -j 5 ./...
