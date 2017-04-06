@@ -27,8 +27,8 @@ func (e ErrNoDiffBetweenReferences) Error() string {
 	return fmt.Sprintf(`can't produce a diff between %s and %s, check your range is correct by running "git log %[1]s..%[2]s" command`, e.from, e.to)
 }
 
-// ErrBrowsingTree is triggered when something wrong occured during commit analysis process
-var ErrBrowsingTree = fmt.Errorf("an issue occured during tree analysis")
+// ErrBrowsingTree is triggered when something wrong occurred during commit analysis process
+var ErrBrowsingTree = fmt.Errorf("an issue occurred during tree analysis")
 
 // resolveRef give hash commit for a given string reference
 func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, error) {

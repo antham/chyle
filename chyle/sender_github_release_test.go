@@ -80,7 +80,7 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 		MatchHeader("Content-Type", "application/json").
 		HeaderPresent("Accept").
 		JSON(githubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
-		ReplyError(fmt.Errorf("an error occured"))
+		ReplyError(fmt.Errorf("an error occurred"))
 
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
@@ -105,7 +105,7 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.EqualError(t, err, "can't create github release : Post https://api.github.com/repos/test/test/releases: an error occured", "Must return an error when api response something wrong")
+	assert.EqualError(t, err, "can't create github release : Post https://api.github.com/repos/test/test/releases: an error occurred", "Must return an error when api response something wrong")
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
@@ -168,7 +168,7 @@ func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
 		MatchHeader("Authorization", "token d0b934ea223577f7e5cc6599e40b1822").
 		MatchHeader("Content-Type", "application/json").
 		HeaderPresent("Accept").
-		ReplyError(fmt.Errorf("an error occured"))
+		ReplyError(fmt.Errorf("an error occurred"))
 
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
@@ -194,7 +194,7 @@ func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.EqualError(t, err, "can't retrieve github release v1.0.0 : Get https://api.github.com/repos/test/test/releases/tags/v1.0.0: an error occured")
+	assert.EqualError(t, err, "can't retrieve github release v1.0.0 : Get https://api.github.com/repos/test/test/releases/tags/v1.0.0: an error occurred")
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
