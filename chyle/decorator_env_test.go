@@ -14,7 +14,7 @@ func TestEnvDecorator(t *testing.T) {
 
 	metadatas := map[string]interface{}{}
 
-	e := envDecorator{"DECORATORS_ENV_WHATEVER_VALUE", "DECORATORS_ENV_WHATEVER_DESTKEY"}
+	e := envDecorator{"DECORATORS_ENV_WHATEVER_VALUE", "helloWorld"}
 	m, err := e.decorate(&metadatas)
 
 	assert.NoError(t, err, "Must returns no errors")

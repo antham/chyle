@@ -109,7 +109,7 @@ You need to define everytime both an "VALUE" key and a "DESTKEY" key, replace * 
 
 Name | Value
 ------------ | -------------
-DECORATORS_ENV_*_VALUE | Value to dump in metadatas
+DECORATORS_ENV_*_VALUE | Environment variable key to dump in metadatas
 DECORATORS_ENV_*_DESTKEY | The name of the key where to store dumped value in metadatas
 
 ### Senders

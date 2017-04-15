@@ -15,7 +15,7 @@ type envDecorator struct {
 
 // decorate add environment variable to changelog metadatas
 func (e envDecorator) decorate(metadatas *map[string]interface{}) (*map[string]interface{}, error) {
-	(*metadatas)[os.Getenv(e.destKey)] = os.Getenv(e.envVar)
+	(*metadatas)[e.destKey] = os.Getenv(e.envVar)
 
 	return metadatas, nil
 }
