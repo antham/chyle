@@ -1,22 +1,24 @@
-hash: f3bc508f574fe558963325918aba6818fe42d972f9d2a4f0e3b88feb6a2b7e82
-updated: 2017-02-13T22:29:03.414863116+01:00
+hash: da223da77f9513d19a61b9fcbb52a7e03a519f798a134a08175fe31b76ba2425
+updated: 2017-04-16T22:31:36.966420611+02:00
 imports:
 - name: github.com/antham/envh
-  version: aab851b3bca5a17c82382ff3499217c16c6e0441
+  version: ff82cd4e834aa3c6204d9cca62578556cb7fa181
 - name: github.com/fatih/color
-  version: 5ec5d9d3c2cf82e9688b34e9bc27a94d616a7193
+  version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/mattn/go-colorable
   version: 5411d3eea5978e6cdc258b30de592b60df6aba96
+  repo: https://github.com/mattn/go-colorable
 - name: github.com/mattn/go-isatty
-  version: 281032e84ae07510239465db46bf442aa44b953a
+  version: 57fdcb988a5c543893cc61bce354a6e24ab70022
+  repo: https://github.com/mattn/go-isatty
 - name: github.com/sergi/go-diff
   version: 24e2351369ec4949b2ed0dc5c477afdd4c4034e8
   subpackages:
   - diffmatchpatch
 - name: github.com/Sirupsen/logrus
-  version: c078b1e43f58d563c74cebe63c85789e76ddb627
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/spf13/cobra
   version: b5d8e8f46a2f829f755b6e33b454e25c61c935e1
 - name: github.com/spf13/pflag
@@ -44,11 +46,14 @@ imports:
   - ssh
   - ssh/agent
 - name: golang.org/x/sys
-  version: ce7380f5b0648ed6e89b75c4fa526e42841091fd
+  version: e24f485414aeafb646f6fca458b0bf869c0880a1
+  repo: https://go.googlesource.com/sys
   subpackages:
   - unix
 - name: gopkg.in/h2non/gock.v0
   version: 0ad9c55bec42c49b394bca98d4bcff7f4a82843c
+- name: gopkg.in/src-d/go-git.v4
+  version: 36c78b9d1b1eea682703fb1cbb0f4f3144354389
 - name: gopkg.in/warnings.v0
   version: 8a331561fe74dadba6edfc59f3be66c22c3b065d
 - name: srcd.works/go-billy.v1
