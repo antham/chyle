@@ -1,9 +1,13 @@
 package chyle
 
 import (
-	"fmt"
-
 	"srcd.works/go-git.v4/plumbing/object"
+)
+
+const (
+	unknownTypeMatcher = "unknown"
+	regularTypeMatcher = "regular"
+	mergeTypeMatcher   = "merge"
 )
 
 // mergeCommitMatcher match merge commit message
@@ -24,24 +28,21 @@ func (r regularCommitMatcher) match(commit *object.Commit) bool {
 	return commit.NumParents() == 1 || commit.NumParents() == 0
 }
 
-func buildTypeMatcher(key string, value string) (matcher, error) {
-	switch value {
-	case "regular":
-		return regularCommitMatcher{}, nil
-	case "merge":
-		return mergeCommitMatcher{}, nil
+func buildTypeMatcher(key string) matcher {
+	if key == regularTypeMatcher {
+		return regularCommitMatcher{}
 	}
 
-	return nil, fmt.Errorf(`"%s" must be "regular" or "merge", "%s" given`, key, value)
+	return mergeCommitMatcher{}
 }
 
 func solveType(commit *object.Commit) string {
 	switch commit.NumParents() {
 	case 0, 1:
-		return "regular"
+		return regularTypeMatcher
 	case 2:
-		return "merge"
+		return mergeTypeMatcher
 	default:
-		return "unknown"
+		return unknownTypeMatcher
 	}
 }

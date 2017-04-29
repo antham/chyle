@@ -83,21 +83,26 @@ Decorators enrich your changelog with datas.
 
 #### Jira ticket api
 
-First, you need to use an extractor to define a "jiraIssueId" key ot extract jira ticket id, let's consider our id is in commit message we would add as environment variable.
+First, you need to use an extractor to define a "jiraIssueId" key to extract jira ticket id, let's consider our id is in commit message we would add as environment variable.
 
 Name | Value
 ------------ | -------------
-CHYLE_EXTRACTORS_JIRA_ORIGKEY | message
-CHYLE_EXTRACTORS_JIRA_DESTKEY | jiraIssueId
-CHYLE_EXTRACTORS_JIRA_REG | "(\w+-\d+)"
+CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY | message
+CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY | jiraIssueId
+CHYLE_EXTRACTORS_JIRAISSUEID_REG | "(\w+-\d+)"
 
-You need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * with a name convenient to you, you can get as many value as you want.
+You need to define jira credentials and endpoint.
 
 Name | Value
 ------------ | -------------
 CHYLE_DECORATORS_JIRA_CREDENTIALS_URL | It's the endpoint of you remote jira access point
 CHYLE_DECORATORS_JIRA_CREDENTIALS_USERNAME | Jira username
 CHYLE_DECORATORS_JIRA_CREDENTIALS_PASSWORD | Jira password
+
+To extract data, you need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * with a name convenient to you, you can get as many value as you want.
+
+Name | Value
+------------ | ------------
 CHYLE_DECORATORS_JIRA_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
 CHYLE_DECORATORS_JIRA_KEYS_*_FIELD | The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")
 

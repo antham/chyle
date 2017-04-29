@@ -7,59 +7,25 @@ import (
 // EnableDebugging activates step logging
 var EnableDebugging = false
 
-// changelogConfig stores base config needed to generate a changelog
-type changelogConfig struct {
-	path string
-	from string
-	to   string
-}
-
 // BuildChangelog creates a changelog from defined configuration
-func BuildChangelog(config *envh.EnvTree) error {
-	cConfig, err := extractChangelogConfig(config)
+func BuildChangelog(envConfig *envh.EnvTree) error {
+	err := resolveConfig(envConfig)
 
 	if err != nil {
 		return err
 	}
 
-	commits, err := fetchCommits(cConfig.path, cConfig.from, cConfig.to)
+	commits, err := fetchCommits(chyleConfig.GIT.REPOSITORY.PATH, chyleConfig.GIT.REFERENCE.FROM, chyleConfig.GIT.REFERENCE.TO)
 
 	if err != nil {
 		return err
 	}
 
-	p, err := buildProcess(config)
+	p, err := buildProcess()
 
 	if err != nil {
 		return err
 	}
 
 	return proceed(p, commits)
-}
-
-// extractChangelogConfig parses initial config
-func extractChangelogConfig(config *envh.EnvTree) (changelogConfig, error) {
-	cConfig := changelogConfig{}
-
-	return cConfig, extractStringConfig(
-		config,
-		[]strConfigMapping{
-			{
-				[]string{"CHYLE", "GIT", "REPOSITORY", "PATH"},
-				&cConfig.path,
-				true,
-			},
-			{
-				[]string{"CHYLE", "GIT", "REFERENCE", "FROM"},
-				&cConfig.from,
-				true,
-			},
-			{
-				[]string{"CHYLE", "GIT", "REFERENCE", "TO"},
-				&cConfig.to,
-				true,
-			},
-		},
-		[]string{},
-	)
 }

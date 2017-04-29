@@ -6,11 +6,17 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v0"
-
-	"github.com/antham/envh"
 )
 
 func TestJiraDecorator(t *testing.T) {
+	chyleConfig = CHYLE{}
+	chyleConfig.DECORATORS.JIRA.KEYS = map[string]string{}
+	chyleConfig.FEATURES.HASJIRADECORATOR = true
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.USERNAME = "test"
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD = "test"
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL = "http://test.com"
+	chyleConfig.DECORATORS.JIRA.KEYS["jiraIssueKey"] = "key"
+
 	defer gock.Off()
 
 	gock.New("http://test.com/rest/api/2/issue/10000").
@@ -20,9 +26,7 @@ func TestJiraDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j, err := newJiraIssueDecoratorFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
-
-	assert.NoError(t, err, "Must return no errors")
+	j := newJiraIssueDecoratorFromPasswordAuth(*client)
 
 	result, err := j.decorate(&map[string]interface{}{"test": "test", "jiraIssueId": "10000"})
 
@@ -47,9 +51,7 @@ func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j, err := newJiraIssueDecoratorFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
-
-	assert.NoError(t, err, "Must return no errors")
+	j := newJiraIssueDecoratorFromPasswordAuth(*client)
 
 	result, err := j.decorate(&map[string]interface{}{"test": "test"})
 
@@ -60,85 +62,4 @@ func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 	assert.NoError(t, err, "Must return no errors")
 	assert.Equal(t, expected, *result, "Must return same struct than the one submitted")
 	assert.False(t, gock.IsDone(), "Must have one pending request")
-}
-
-func TestCreateJiraDecoratorWithErrors(t *testing.T) {
-	type g struct {
-		f func()
-		e string
-	}
-
-	tests := []g{
-		{
-			func() {
-				setenv("DECORATORS_JIRA_CREDENTIALS", "test")
-			},
-			`"USERNAME" variable not found in "JIRA" config`,
-		},
-		{
-			func() {
-				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
-			},
-			`"PASSWORD" variable not found in "JIRA" config`,
-		},
-		{
-			func() {
-				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
-			},
-			`"URL" variable not found in "JIRA" config`,
-		},
-		{
-			func() {
-				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
-				setenv("DECORATORS_JIRA_CREDENTIALS_URL", "url")
-			},
-			`"url" is not a valid absolute URL defined in "JIRA" config`,
-		},
-		{
-			func() {
-				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
-				setenv("DECORATORS_JIRA_CREDENTIALS_URL", "http://test.com")
-			},
-			`No "DECORATORS_JIRA_KEYS" key found`,
-		},
-		{
-			func() {
-				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
-				setenv("DECORATORS_JIRA_CREDENTIALS_URL", "http://test.com")
-				setenv("DECORATORS_JIRA_KEYS_TEST", "test")
-			},
-			`An environment variable suffixed with "DESTKEY" must be defined with "TEST", like DECORATORS_JIRA_KEYS_TEST_DESTKEY`,
-		},
-		{
-			func() {
-				setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "username")
-				setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "password")
-				setenv("DECORATORS_JIRA_CREDENTIALS_URL", "http://test.com")
-				setenv("DECORATORS_JIRA_KEYS_TEST_DESTKEY", "test")
-			},
-			`An environment variable suffixed with "FIELD" must be defined with "TEST", like DECORATORS_JIRA_KEYS_TEST_FIELD`,
-		},
-	}
-
-	for _, test := range tests {
-		restoreEnvs()
-		test.f()
-
-		config, err := envh.NewEnvTree("^DECORATORS", "_")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		subConfig, err := config.FindSubTree("DECORATORS")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		_, err = createDecorators(&subConfig)
-
-		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, test.e, "Must match error string")
-	}
 }
