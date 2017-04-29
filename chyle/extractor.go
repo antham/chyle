@@ -1,10 +1,7 @@
 package chyle
 
 import (
-	"fmt"
 	"regexp"
-
-	"github.com/antham/envh"
 )
 
 // extracter describe a way to extract data from a commit hashmap summary
@@ -36,42 +33,16 @@ func extract(extractors *[]extracter, commitMaps *[]map[string]interface{}) (*Ch
 }
 
 // createExtractors build extracters from a config
-func createExtractors(config *envh.EnvTree) (*[]extracter, error) {
+func createExtractors() *[]extracter {
 	results := []extracter{}
 
-	for _, identifier := range config.GetChildrenKeys() {
-		subConfig, err := config.FindSubTree(identifier)
-
-		if err != nil {
-			return &results, err
-		}
-
-		datas := map[string]string{}
-
-		for _, v := range []string{"ORIGKEY", "DESTKEY", "REG"} {
-			datas[v], err = subConfig.FindString(v)
-
-			if err != nil {
-				return &results, fmt.Errorf(`An environment variable suffixed with "%s" must be defined with "%s", like EXTRACTORS_%s_%s`, v, identifier, identifier, v)
-			}
-		}
-
-		re, err := regexp.Compile(datas["REG"])
-
-		if err != nil {
-			return &[]extracter{}, fmt.Errorf(`"%s" is not a valid regular expression defined for "EXTRACTORS_%s_%s" key`, datas["REG"], identifier, "REG")
-		}
-
-		debug(`Extractor "%s" "ORIGKEY" defined with value "%s"`, identifier, datas["ORIGKEY"])
-		debug(`Extractor "%s" "DESTKEY" defined with value "%s"`, identifier, datas["DESTKEY"])
-		debug(`Extractor "%s" "REG" defined with value "%s"`, identifier, datas["REG"])
-
+	for _, datas := range chyleConfig.EXTRACTORS {
 		results = append(results, regexpExtractor{
 			datas["ORIGKEY"],
 			datas["DESTKEY"],
-			re,
+			regexp.MustCompile(datas["REG"]),
 		})
 	}
 
-	return &results, nil
+	return &results
 }

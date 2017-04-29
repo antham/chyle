@@ -1,11 +1,5 @@
 package chyle
 
-import (
-	"fmt"
-
-	"github.com/antham/envh"
-)
-
 // sender define where the date must be sent
 type sender interface {
 	Send(changelog *Changelog) error
@@ -25,41 +19,16 @@ func Send(senders *[]sender, changelog *Changelog) error {
 }
 
 // createSenders build senders from a config
-func createSenders(config *envh.EnvTree) (*[]sender, error) {
+func createSenders() *[]sender {
 	results := []sender{}
 
-	var se sender
-	var subConfig envh.EnvTree
-	var err error
-
-	for _, k := range config.GetChildrenKeys() {
-		switch k {
-		case "STDOUT":
-			subConfig, err = config.FindSubTree("STDOUT")
-
-			if err != nil {
-				break
-			}
-
-			se, err = buildStdoutSender(&subConfig)
-		case "GITHUB":
-			subConfig, err = config.FindSubTree("GITHUB")
-
-			if err != nil {
-				break
-			}
-
-			se, err = buildGithubReleaseSender(&subConfig)
-		default:
-			err = fmt.Errorf(`a wrong sender key containing "%s" was defined`, k)
-		}
-
-		if err != nil {
-			return &[]sender{}, err
-		}
-
-		results = append(results, se)
+	if chyleConfig.FEATURES.HASGITHUBRELEASESENDER {
+		results = append(results, buildGithubReleaseSender())
 	}
 
-	return &results, nil
+	if chyleConfig.FEATURES.HASSTDOUTSENDER {
+		results = append(results, buildStdoutSender())
+	}
+
+	return &results
 }

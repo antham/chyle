@@ -1,10 +1,7 @@
 package chyle
 
 import (
-	"fmt"
 	"srcd.works/go-git.v4/plumbing/object"
-
-	"github.com/antham/envh"
 )
 
 // matcher describe a way of applying a matcher against a commit
@@ -34,10 +31,11 @@ func filter(matchers *[]matcher, commits *[]object.Commit) *[]object.Commit {
 
 // TransformCommitsToMap extract useful commits data in hash map table
 func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
+	var commitMap map[string]interface{}
 	commitMaps := []map[string]interface{}{}
 
 	for _, c := range *commits {
-		commitMap := map[string]interface{}{
+		commitMap = map[string]interface{}{
 			"id":             c.ID().String(),
 			"authorName":     c.Author.Name,
 			"authorEmail":    c.Author.Email,
@@ -56,40 +54,18 @@ func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 }
 
 // createMatchers build matchers from a config
-func createMatchers(config *envh.EnvTree) (*[]matcher, error) {
+func createMatchers() *[]matcher {
 	results := []matcher{}
 
-	var m matcher
-	var s string
-	var err error
-
-	for _, k := range config.GetChildrenKeys() {
-		switch k {
-		case "MESSAGE", "COMMITTER", "AUTHOR", "TYPE":
-			s, err = config.FindString(k)
-
-			if err != nil {
-				break
-			}
-
-			debug(`Matcher "%s" defined with value "%s"`, k, s)
-
-			m, err = map[string]func(string, string) (matcher, error){
+	for k, v := range chyleConfig.MATCHERS {
+		results = append(results,
+			map[string]func(string) matcher{
 				"MESSAGE":   buildMessageMatcher,
 				"COMMITTER": buildCommitterMatcher,
-				"AUTHOR":    buildauthorMatcher,
+				"AUTHOR":    buildAuthorMatcher,
 				"TYPE":      buildTypeMatcher,
-			}[k](k, s)
-		default:
-			err = fmt.Errorf(`a wrong matcher key containing "%s" was defined`, k)
-		}
-
-		if err != nil {
-			return &[]matcher{}, err
-		}
-
-		results = append(results, m)
+			}[k](v))
 	}
 
-	return &results, nil
+	return &results
 }

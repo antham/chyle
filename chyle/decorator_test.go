@@ -6,11 +6,17 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v0"
-
-	"github.com/antham/envh"
 )
 
 func TestDecorator(t *testing.T) {
+	chyleConfig = CHYLE{}
+	chyleConfig.DECORATORS.JIRA.KEYS = map[string]string{}
+	chyleConfig.FEATURES.HASJIRADECORATOR = true
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.USERNAME = "test"
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD = "test"
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL = "http://test.com"
+	chyleConfig.DECORATORS.JIRA.KEYS["jiraIssueKey"] = "key"
+
 	defer gock.Off()
 
 	gock.New("http://test.com/rest/api/2/issue/10000").
@@ -24,9 +30,7 @@ func TestDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j, err := newJiraIssueDecoratorFromPasswordAuth(*client, "test", "test", "http://test.com", map[string]string{"jiraIssueKey": "key"})
-
-	assert.NoError(t, err, "Must return no errors")
+	j := newJiraIssueDecoratorFromPasswordAuth(*client)
 
 	decorators := map[string][]decorater{
 		"datas":     {j},
@@ -69,57 +73,15 @@ func TestDecorator(t *testing.T) {
 }
 
 func TestCreateDecorators(t *testing.T) {
-	restoreEnvs()
-	setenv("DECORATORS_JIRA_CREDENTIALS_USERNAME", "test")
-	setenv("DECORATORS_JIRA_CREDENTIALS_PASSWORD", "test")
-	setenv("DECORATORS_JIRA_CREDENTIALS_URL", "http://test.com")
-	setenv("DECORATORS_JIRA_KEYS_JIRATICKETDESCRIPTION_DESTKEY", "jiraTicketDescription")
-	setenv("DECORATORS_JIRA_KEYS_JIRATICKETDESCRIPTION_FIELD", "fields.summary")
+	chyleConfig.DECORATORS.JIRA.KEYS = map[string]string{}
 
-	config, err := envh.NewEnvTree("^DECORATORS", "_")
+	chyleConfig.FEATURES.HASJIRADECORATOR = true
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.USERNAME = "test"
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD = "test"
+	chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL = "http://test.com"
+	chyleConfig.DECORATORS.JIRA.KEYS["jiraTicketDescription"] = "fields.summary"
 
-	assert.NoError(t, err, "Must return no errors")
+	d := createDecorators()
 
-	subConfig, err := config.FindSubTree("DECORATORS")
-
-	assert.NoError(t, err, "Must return no errors")
-
-	r, err := createDecorators(&subConfig)
-
-	assert.NoError(t, err, "Must contains no errors")
-	assert.Len(t, (*r)["datas"], 1, "Must return 1 decorator")
-}
-
-func TestCreateDecoratorsWithErrors(t *testing.T) {
-	type g struct {
-		f func()
-		e string
-	}
-
-	tests := []g{
-		{
-			func() {
-				setenv("DECORATORS_TEST", "")
-			},
-			`a wrong decorator key containing "TEST" was defined`,
-		},
-	}
-
-	for _, test := range tests {
-		restoreEnvs()
-		test.f()
-
-		config, err := envh.NewEnvTree("^DECORATORS", "_")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		subConfig, err := config.FindSubTree("DECORATORS")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		_, err = createDecorators(&subConfig)
-
-		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, test.e, "Must match error string")
-	}
+	assert.Len(t, (*d)["datas"], 1, "Must return 1 decorator")
 }

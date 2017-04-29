@@ -38,7 +38,9 @@ func TestJSONStdoutSender(t *testing.T) {
 func TestTemplateStdoutSender(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	s := templateStdoutSender{"{{ range $key, $value := .Datas }}{{$value.id}} : {{$value.test}} | {{ end }}", buf}
+	chyleConfig.SENDERS.STDOUT.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.id}} : {{$value.test}} | {{ end }}"
+
+	s := templateStdoutSender{buf}
 
 	c := Changelog{
 		Datas:     []map[string]interface{}{},

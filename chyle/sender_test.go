@@ -6,8 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/antham/envh"
 )
 
 func TestSend(t *testing.T) {
@@ -36,84 +34,29 @@ func TestSend(t *testing.T) {
 	assert.NoError(t, err, "Must return no errors")
 	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations  as json")
 }
-
 func TestCreateSenders(t *testing.T) {
-	restoreEnvs()
-
 	tests := []func(){
 		func() {
-			setenv("SENDERS_STDOUT_FORMAT", "json")
+			chyleConfig.FEATURES.HASSTDOUTSENDER = true
+			chyleConfig.SENDERS.STDOUT.FORMAT = "json"
 		},
 		func() {
-			setenv("SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "test")
-			setenv("SENDERS_GITHUB_CREDENTIALS_OWNER", "test")
-			setenv("SENDERS_GITHUB_RELEASE_TAGNAME", "test")
-			setenv("SENDERS_GITHUB_RELEASE_TEMPLATE", "test")
-			setenv("SENDERS_GITHUB_REPOSITORY_NAME", "test")
+			chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
+			chyleConfig.SENDERS.GITHUB.CREDENTIALS.OAUTHTOKEN = "test"
+			chyleConfig.SENDERS.GITHUB.CREDENTIALS.OWNER = "test"
+			chyleConfig.SENDERS.GITHUB.RELEASE.TAGNAME = "test"
+			chyleConfig.SENDERS.GITHUB.RELEASE.TEMPLATE = "test"
+			chyleConfig.SENDERS.GITHUB.REPOSITORY.NAME = "test"
 		},
 	}
 
 	for _, f := range tests {
-		restoreEnvs()
+		chyleConfig = CHYLE{}
+
 		f()
 
-		config, err := envh.NewEnvTree("^SENDERS", "_")
+		s := createSenders()
 
-		assert.NoError(t, err, "Must return no errors")
-
-		subConfig, err := config.FindSubTree("SENDERS")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		r, err := createSenders(&subConfig)
-
-		assert.NoError(t, err, "Must contains no errors")
-		assert.Len(t, *r, 1, "Must return 1 decorator")
-	}
-}
-
-func TestCreateSendersWithErrors(t *testing.T) {
-	type g struct {
-		f func()
-		e string
-	}
-
-	tests := []g{
-		{
-			func() {
-				setenv("SENDERS_WHATEVER", "test")
-			},
-			`a wrong sender key containing "WHATEVER" was defined`,
-		},
-		{
-			func() {
-				setenv("SENDERS_STDOUT", "test")
-			},
-			`missing "SENDERS_STDOUT_FORMAT"`,
-		},
-		{
-			func() {
-				setenv("SENDERS_GITHUB", "test")
-			},
-			`missing "SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN"`,
-		},
-	}
-
-	for _, test := range tests {
-		restoreEnvs()
-		test.f()
-
-		config, err := envh.NewEnvTree("^SENDERS", "_")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		subConfig, err := config.FindSubTree("SENDERS")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		_, err = createSenders(&subConfig)
-
-		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, test.e, "Must match error string")
+		assert.Len(t, *s, 1, "Must return 1 sender")
 	}
 }

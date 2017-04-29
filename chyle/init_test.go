@@ -1,42 +1,42 @@
 package chyle
 
 import (
-	"bytes"
-	"log"
-	"testing"
+// "bytes"
+// "log"
+// "testing"
 
-	"github.com/stretchr/testify/assert"
+// "github.com/stretchr/testify/assert"
 )
 
-func TestDebug(t *testing.T) {
-	b := []byte{}
+// func TestDebug(t *testing.T) {
+// 	b := []byte{}
 
-	buffer := bytes.NewBuffer(b)
+// 	buffer := bytes.NewBuffer(b)
 
-	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
+// 	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
 
-	EnableDebugging = true
+// 	EnableDebugging = true
 
-	debug("test : %s", "output")
+// 	debug("test : %s", "output")
 
-	actual, err := buffer.ReadString('\n')
+// 	actual, err := buffer.ReadString('\n')
 
-	assert.NoError(t, err, "Must return no errors")
-	assert.Regexp(t, `CHYLE - \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} test : output\n`, actual, "Must output given format with argument when debug is enabled")
-}
+// 	assert.NoError(t, err, "Must return no errors")
+// 	assert.Regexp(t, `CHYLE - \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} test : output\n`, actual, "Must output given format with argument when debug is enabled")
+// }
 
-func TestDebugWithDebugDisabled(t *testing.T) {
-	b := []byte{}
+// func TestDebugWithDebugDisabled(t *testing.T) {
+// 	b := []byte{}
 
-	buffer := bytes.NewBuffer(b)
+// 	buffer := bytes.NewBuffer(b)
 
-	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
+// 	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
 
-	EnableDebugging = false
+// 	EnableDebugging = false
 
-	debug("test : %s", "output")
+// 	debug("test : %s", "output")
 
-	_, err := buffer.ReadString('\n')
+// 	_, err := buffer.ReadString('\n')
 
-	assert.EqualError(t, err, "EOF", "Must return EOF error")
-}
+// 	assert.EqualError(t, err, "EOF", "Must return EOF error")
+// }

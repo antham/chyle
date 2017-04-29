@@ -15,6 +15,7 @@ import (
 )
 
 func TestBuildChangelog(t *testing.T) {
+	restoreEnvs()
 	p, err := os.Getwd()
 
 	if err != nil {
@@ -36,22 +37,24 @@ func TestBuildChangelog(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	oldStdout := os.Stdout
-	os.Stdout = f
-
 	config, err := envh.NewEnvTree("CHYLE", "_")
 
 	if err != nil {
 		logrus.Fatal(err)
 	}
 
-	err = BuildChangelog(&config)
+	oldStdout := os.Stdout
+	os.Stdout = f
 
-	assert.NoError(t, err, "Must build changelog without errors")
+	err = BuildChangelog(&config)
 
 	os.Stdout = oldStdout
 
-	b, _ := ioutil.ReadFile(f.Name())
+	assert.NoError(t, err, "Must build changelog without errors")
+
+	b, err := ioutil.ReadFile(f.Name())
+
+	assert.NoError(t, err, "Can't read filename")
 
 	type Data struct {
 		ID             string `json:"id"`
@@ -95,55 +98,5 @@ func TestBuildChangelog(t *testing.T) {
 		assert.Equal(t, c.Committer.Email, r.CommitterEmail, "Must contains committer email")
 		assert.Equal(t, subjectExpected[i], r.Subject, "Must contains a subject field")
 		assert.Equal(t, r.Type, "regular", "Must have a commit type")
-	}
-}
-
-func TestBuildChangelogWithErrors(t *testing.T) {
-	p, err := os.Getwd()
-
-	if err != nil {
-		logrus.Fatal(err)
-	}
-
-	type g struct {
-		f      func()
-		errStr string
-	}
-
-	tests := []g{
-		{
-			func() {
-			},
-			`missing "CHYLE_GIT_REPOSITORY_PATH"`,
-		},
-		{
-			func() {
-				setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
-			},
-			`missing "CHYLE_GIT_REFERENCE_FROM"`,
-		},
-		{
-			func() {
-				setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/test")
-				setenv("CHYLE_GIT_REFERENCE_FROM", "test2")
-			},
-			`missing "CHYLE_GIT_REFERENCE_TO"`,
-		},
-	}
-
-	for _, test := range tests {
-		restoreEnvs()
-		test.f()
-
-		config, err := envh.NewEnvTree("CHYLE", "_")
-
-		if err != nil {
-			logrus.Fatal(err)
-		}
-
-		err = BuildChangelog(&config)
-
-		assert.Error(t, err, "Must return an error")
-		assert.EqualError(t, err, test.errStr, "Must return an error")
 	}
 }

@@ -2,8 +2,6 @@ package chyle
 
 import (
 	"srcd.works/go-git.v4/plumbing/object"
-
-	"github.com/antham/envh"
 )
 
 // process represents all configuration operations defined
@@ -16,42 +14,26 @@ type process struct {
 }
 
 // buildProcess creates process entity from defined configuration
-func buildProcess(config *envh.EnvTree) (*process, error) {
+func buildProcess() (*process, error) {
 	matchers := &[]matcher{}
 	extractors := &[]extracter{}
 	decorators := &map[string][]decorater{}
 	senders := &[]sender{}
 
-	if subConfig, err := config.FindSubTree("CHYLE", "MATCHERS"); err == nil {
-		matchers, err = createMatchers(&subConfig)
-
-		if err != nil {
-			return nil, err
-		}
+	if chyleConfig.FEATURES.HASMATCHERS {
+		matchers = createMatchers()
 	}
 
-	if subConfig, err := config.FindSubTree("CHYLE", "EXTRACTORS"); err == nil {
-		extractors, err = createExtractors(&subConfig)
-
-		if err != nil {
-			return nil, err
-		}
+	if chyleConfig.FEATURES.HASEXTRACTORS {
+		extractors = createExtractors()
 	}
 
-	if subConfig, err := config.FindSubTree("CHYLE", "DECORATORS"); err == nil {
-		decorators, err = createDecorators(&subConfig)
-
-		if err != nil {
-			return nil, err
-		}
+	if chyleConfig.FEATURES.HASDECORATORS {
+		decorators = createDecorators()
 	}
 
-	if subConfig, err := config.FindSubTree("CHYLE", "SENDERS"); err == nil {
-		senders, err = createSenders(&subConfig)
-
-		if err != nil {
-			return nil, err
-		}
+	if chyleConfig.FEATURES.HASSENDERS {
+		senders = createSenders()
 	}
 
 	return &process{

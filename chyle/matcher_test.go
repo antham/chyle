@@ -9,8 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"srcd.works/go-git.v4/plumbing"
 	"srcd.works/go-git.v4/plumbing/object"
-
-	"github.com/antham/envh"
 )
 
 func getCommitFromRef(ref string) *object.Commit {
@@ -185,80 +183,15 @@ func TestTransformCommitsToMap(t *testing.T) {
 }
 
 func TestCreateMatchers(t *testing.T) {
-	restoreEnvs()
-	setenv("MATCHERS_TYPE", "regular")
-	setenv("MATCHERS_MESSAGE", ".*")
-	setenv("MATCHERS_AUTHOR", ".*")
-	setenv("MATCHERS_COMMITTER", ".*")
+	chyleConfig = CHYLE{}
+	chyleConfig.FEATURES.HASMATCHERS = true
+	chyleConfig.MATCHERS = map[string]string{}
+	chyleConfig.MATCHERS["TYPE"] = "regular"
+	chyleConfig.MATCHERS["MESSAGE"] = ".*"
+	chyleConfig.MATCHERS["AUTHOR"] = ".*"
+	chyleConfig.MATCHERS["COMMITTER"] = ".*"
 
-	config, err := envh.NewEnvTree("^MATCHERS", "_")
+	m := createMatchers()
 
-	assert.NoError(t, err, "Must return no errors")
-
-	subConfig, err := config.FindSubTree("MATCHERS")
-
-	assert.NoError(t, err, "Must return no errors")
-
-	r, err := createMatchers(&subConfig)
-
-	assert.NoError(t, err, "Must contains no errors")
-	assert.Len(t, *r, 4, "Must return 4 matchers")
-}
-
-func TestCreateMatchersWithErrors(t *testing.T) {
-	type g struct {
-		f func()
-		e string
-	}
-
-	tests := []g{
-		{
-			func() {
-				setenv("MATCHERS_TEST", "")
-			},
-			`a wrong matcher key containing "TEST" was defined`,
-		},
-		{
-			func() {
-				setenv("MATCHERS_TYPE", "test")
-			},
-			`"TYPE" must be "regular" or "merge", "test" given`,
-		},
-		{
-			func() {
-				setenv("MATCHERS_MESSAGE", "*")
-			},
-			`"MESSAGE" doesn't contain a valid regular expression`,
-		},
-		{
-			func() {
-				setenv("MATCHERS_COMMITTER", "*")
-			},
-			`"COMMITTER" doesn't contain a valid regular expression`,
-		},
-		{
-			func() {
-				setenv("MATCHERS_AUTHOR", "*")
-			},
-			`"AUTHOR" doesn't contain a valid regular expression`,
-		},
-	}
-
-	for _, test := range tests {
-		restoreEnvs()
-		test.f()
-
-		config, err := envh.NewEnvTree("^MATCHERS", "_")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		subConfig, err := config.FindSubTree("MATCHERS")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		_, err = createMatchers(&subConfig)
-
-		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, test.e, "Must match error string")
-	}
+	assert.Len(t, *m, 4, "Must contain 4 matchers")
 }

@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/antham/envh"
 )
 
 func TestExtract(t *testing.T) {
@@ -90,27 +88,22 @@ func TestExtract(t *testing.T) {
 }
 
 func TestCreateExtractors(t *testing.T) {
-	restoreEnvs()
+	chyleConfig = CHYLE{}
+	chyleConfig.FEATURES.HASEXTRACTORS = true
+	chyleConfig.EXTRACTORS = map[string]map[string]string{}
 
-	setenv("EXTRACTORS_ID_ORIGKEY", "id")
-	setenv("EXTRACTORS_ID_DESTKEY", "test")
-	setenv("EXTRACTORS_ID_REG", ".*")
+	chyleConfig.EXTRACTORS["ID"] = map[string]string{}
+	chyleConfig.EXTRACTORS["ID"]["ORIGKEY"] = "id"
+	chyleConfig.EXTRACTORS["ID"]["DESTKEY"] = "test"
+	chyleConfig.EXTRACTORS["ID"]["REG"] = ".*"
 
-	setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "authorName")
-	setenv("EXTRACTORS_AUTHORNAME_DESTKEY", "test2")
-	setenv("EXTRACTORS_AUTHORNAME_REG", ".*")
+	chyleConfig.EXTRACTORS["AUTHORNAME"] = map[string]string{}
+	chyleConfig.EXTRACTORS["AUTHORNAME"]["ORIGKEY"] = "authorName"
+	chyleConfig.EXTRACTORS["AUTHORNAME"]["DESTKEY"] = "test2"
+	chyleConfig.EXTRACTORS["AUTHORNAME"]["REG"] = ".*"
 
-	config, err := envh.NewEnvTree("^EXTRACTORS", "_")
+	e := createExtractors()
 
-	assert.NoError(t, err, "Must return no errors")
-
-	subConfig, err := config.FindSubTree("EXTRACTORS")
-
-	assert.NoError(t, err, "Must return no errors")
-
-	e, err := createExtractors(&subConfig)
-
-	assert.NoError(t, err, "Must contains no errors")
 	assert.Len(t, *e, 2, "Must return 2 extractors")
 
 	expected := map[string]map[string]string{
@@ -138,60 +131,5 @@ func TestCreateExtractors(t *testing.T) {
 		assert.Equal(t, (*e)[0].(regexpExtractor).index, v["index"], "Must return first component after extractor variable")
 		assert.Equal(t, (*e)[0].(regexpExtractor).identifier, v["identifier"], "Must return second component after extractor variable")
 		assert.Equal(t, (*e)[0].(regexpExtractor).re, regexp.MustCompile(v["regexp"]), "Must return value as regexp")
-	}
-}
-
-func TestCreateExtractorsWithErrors(t *testing.T) {
-	type g struct {
-		f func()
-		e string
-	}
-
-	tests := []g{
-		{
-			func() {
-				setenv("EXTRACTORS_AUTHORNAME_TEST", "")
-			},
-			`An environment variable suffixed with "ORIGKEY" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_ORIGKEY`,
-		},
-		{
-			func() {
-				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
-			},
-			`An environment variable suffixed with "DESTKEY" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_DESTKEY`,
-		},
-		{
-			func() {
-				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
-				setenv("EXTRACTORS_AUTHORNAME_DESTKEY", "test")
-			},
-			`An environment variable suffixed with "REG" must be defined with "AUTHORNAME", like EXTRACTORS_AUTHORNAME_REG`,
-		},
-		{
-			func() {
-				setenv("EXTRACTORS_AUTHORNAME_ORIGKEY", "test")
-				setenv("EXTRACTORS_AUTHORNAME_DESTKEY", "test")
-				setenv("EXTRACTORS_AUTHORNAME_REG", "*")
-			},
-			`"*" is not a valid regular expression defined for "EXTRACTORS_AUTHORNAME_REG" key`,
-		},
-	}
-
-	for _, test := range tests {
-		restoreEnvs()
-		test.f()
-
-		config, err := envh.NewEnvTree("^EXTRACTORS", "_")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		subConfig, err := config.FindSubTree("EXTRACTORS")
-
-		assert.NoError(t, err, "Must return no errors")
-
-		_, err = createExtractors(&subConfig)
-
-		assert.Error(t, err, "Must contains an error")
-		assert.EqualError(t, err, test.e, "Must match error string")
 	}
 }

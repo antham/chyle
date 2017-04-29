@@ -1,7 +1,6 @@
 package chyle
 
 import (
-	"fmt"
 	"regexp"
 
 	"srcd.works/go-git.v4/plumbing/object"
@@ -17,14 +16,8 @@ func (m messageMatcher) match(commit *object.Commit) bool {
 	return m.regexp.MatchString(commit.Message)
 }
 
-func buildMessageMatcher(key string, value string) (matcher, error) {
-	r, err := regexp.Compile(value)
-
-	if err != nil {
-		return nil, fmt.Errorf(`"%s" doesn't contain a valid regular expression`, key)
-	}
-
-	return messageMatcher{r}, nil
+func buildMessageMatcher(value string) matcher {
+	return messageMatcher{regexp.MustCompile(value)}
 }
 
 // removePGPKey fix library issue that don't trim PGP key from message
