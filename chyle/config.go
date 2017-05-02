@@ -218,7 +218,7 @@ func (c *CHYLE) validateAndSetChyleDecoratorsEnv(fullconfig *envh.EnvTree, keyCh
 	}
 
 	for _, key := range keys {
-		if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "FIELD"}); err != nil {
+		if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "VARNAME"}); err != nil {
 			return true, err
 		}
 	}
@@ -228,7 +228,7 @@ func (c *CHYLE) validateAndSetChyleDecoratorsEnv(fullconfig *envh.EnvTree, keyCh
 	for _, key := range keys {
 		c.DECORATORS.ENV[key] = map[string]string{}
 
-		for _, field := range []string{"DESTKEY", "FIELD"} {
+		for _, field := range []string{"DESTKEY", "VARNAME"} {
 			c.DECORATORS.ENV[key][field] = fullconfig.FindStringUnsecured("CHYLE", "DECORATORS", "ENV", key, field)
 		}
 	}
@@ -364,11 +364,11 @@ func (c *CHYLE) setJiraKeys(fullconfig *envh.EnvTree, keyChain []string) (bool, 
 	for _, key := range keys {
 		datas := map[string]string{}
 
-		for _, field := range []string{"DESTKEY", "FIELD"} {
+		for _, field := range []string{"DESTKEY", "VARNAME"} {
 			datas[field] = fullconfig.FindStringUnsecured(append(keyChain, key, field)...)
 		}
 
-		c.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["FIELD"]
+		c.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["VARNAME"]
 	}
 
 	return true, nil
