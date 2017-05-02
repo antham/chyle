@@ -82,3 +82,14 @@ func validateTemplate(fullconfig *envh.EnvTree, chain []string) error {
 
 	return nil
 }
+
+// featureDisabled return false if one subtree declared in keyChains exists
+func featureDisabled(fullconfig *envh.EnvTree, keyChains [][]string) bool {
+	for _, keyChain := range keyChains {
+		if fullconfig.IsExistingSubTree(keyChain...) {
+			return false
+		}
+	}
+
+	return true
+}

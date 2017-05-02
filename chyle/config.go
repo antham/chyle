@@ -148,22 +148,18 @@ func (c *CHYLE) validateChyleGitReference(fullconfig *envh.EnvTree, keyChain []s
 }
 
 func (c *CHYLE) validateAndSetChyleDecoratorsEnv(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	keys, err := fullconfig.FindChildrenKeys("CHYLE", "DECORATORS", "ENV")
-
-	if err == nil && len(keys) == 0 {
+	if featureDisabled(fullconfig, [][]string{{"CHYLE", "DECORATORS", "ENV"}}) {
 		return true, nil
-	}
-
-	for _, key := range keys {
-		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "VARNAME"}); err != nil {
-			return true, err
-		}
 	}
 
 	c.DECORATORS.ENV = map[string]map[string]string{}
 
-	for _, key := range keys {
+	for _, key := range fullconfig.FindChildrenKeysUnsecured("CHYLE", "DECORATORS", "ENV") {
 		c.DECORATORS.ENV[key] = map[string]string{}
+
+		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "VARNAME"}); err != nil {
+			return true, err
+		}
 
 		for _, field := range []string{"DESTKEY", "VARNAME"} {
 			c.DECORATORS.ENV[key][field] = fullconfig.FindStringUnsecured("CHYLE", "DECORATORS", "ENV", key, field)
@@ -174,13 +170,11 @@ func (c *CHYLE) validateAndSetChyleDecoratorsEnv(fullconfig *envh.EnvTree, keyCh
 }
 
 func (c *CHYLE) validateChyleExtractors(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	keys, err := fullconfig.FindChildrenKeys("CHYLE", "EXTRACTORS")
-
-	if err == nil && len(keys) == 0 {
+	if featureDisabled(fullconfig, [][]string{{"CHYLE", "EXTRACTORS"}}) {
 		return true, nil
 	}
 
-	for _, key := range keys {
+	for _, key := range fullconfig.FindChildrenKeysUnsecured("CHYLE", "EXTRACTORS") {
 		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "EXTRACTORS", key}, []string{"ORIGKEY", "DESTKEY", "REG"}); err != nil {
 			return true, err
 		}
@@ -212,7 +206,7 @@ func (c *CHYLE) setChyleExtractors(fullconfig *envh.EnvTree, keyChain []string) 
 }
 
 func (c *CHYLE) validateChyleMatchers(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	if !fullconfig.IsExistingSubTree("CHYLE", "MATCHERS") {
+	if featureDisabled(fullconfig, [][]string{{"CHYLE", "MATCHERS"}}) {
 		return true, nil
 	}
 
@@ -248,7 +242,7 @@ func (c *CHYLE) validateChyleMatchers(fullconfig *envh.EnvTree, keyChain []strin
 }
 
 func (c *CHYLE) validateChyleSendersStdout(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	if !fullconfig.IsExistingSubTree("CHYLE", "SENDERS", "STDOUT") {
+	if featureDisabled(fullconfig, [][]string{{"CHYLE", "SENDERS", "STDOUT"}}) {
 		return false, nil
 	}
 
@@ -322,10 +316,10 @@ func (c *CHYLE) setJiraKeys(fullconfig *envh.EnvTree, keyChain []string) (bool, 
 }
 
 func (c *CHYLE) validateChyleJiraDecorators(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	hasCred := fullconfig.IsExistingSubTree("CHYLE", "DECORATORS", "JIRA")
-	hasExt := fullconfig.IsExistingSubTree("CHYLE", "EXTRACTORS", "JIRAISSUEID")
-
-	if !hasCred && !hasExt {
+	if featureDisabled(fullconfig, [][]string{
+		{"CHYLE", "DECORATORS", "JIRA"},
+		{"CHYLE", "EXTRACTORS", "JIRAISSUEID"},
+	}) {
 		return false, nil
 	}
 
