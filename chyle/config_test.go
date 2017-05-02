@@ -272,7 +272,19 @@ func TestResolveConfig(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_SENDERS_GITHUB_CREDENTIALS_OWNER", "user")
+				setenv("CHYLE_SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_SENDERS_GITHUB_RELEASE_TEMPLATE", "{{.}}")
+				setenv("CHYLE_SENDERS_GITHUB_RELEASE_TAGNAME", "v2.0.0")
+			},
+			`environment variable missing : "CHYLE_SENDERS_GITHUB_REPOSITORY_NAME"`,
+		},
 		// Sender stdout
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_STDOUT_TEST", "test")
 			},
 			`environment variable missing : "CHYLE_SENDERS_STDOUT_FORMAT"`,
