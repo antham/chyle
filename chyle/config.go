@@ -2,30 +2,12 @@ package chyle
 
 import (
 	"fmt"
-	"net/url"
-	"regexp"
 	"strings"
-	"text/template"
 
 	"github.com/antham/envh"
 )
 
 var chyleConfig CHYLE
-
-// ErrMissingEnvVar is triggered when a required environment variable is missing
-type ErrMissingEnvVar struct {
-	keys []string
-}
-
-// Error output error as string
-func (e ErrMissingEnvVar) Error() string {
-	switch len(e.keys) {
-	case 1:
-		return fmt.Sprintf(`environment variable missing : "%s"`, e.keys[0])
-	default:
-		return fmt.Sprintf(`environments variables missing : "%s"`, strings.Join(e.keys, `", "`))
-	}
-}
 
 // CHYLE hold config extracted from environment variables
 type CHYLE struct {
@@ -107,64 +89,6 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	return false, nil
 }
 
-func (c *CHYLE) checkSubConfigPool(conf *envh.EnvTree, prefix []string, keys []string) error {
-	undefinedKeys := []string{}
-
-	for _, key := range keys {
-		ok, err := conf.HasSubTreeValue(append(prefix, key)...)
-
-		if !ok || err != nil {
-			undefinedKeys = append(undefinedKeys, strings.Join(append(prefix, key), "_"))
-		}
-	}
-
-	if len(undefinedKeys) > 0 {
-		return ErrMissingEnvVar{undefinedKeys}
-	}
-
-	return nil
-}
-
-func (c *CHYLE) validateURL(fullconfig *envh.EnvTree, chain []string) error {
-	if _, err := url.ParseRequestURI(fullconfig.FindStringUnsecured(chain...)); err != nil {
-		return fmt.Errorf(`provide a valid URL for "%s", "%s" given`, strings.Join(chain, "_"), fullconfig.FindStringUnsecured(chain...))
-	}
-
-	return nil
-}
-
-func (c *CHYLE) validateRegexp(fullconfig *envh.EnvTree, chain []string) error {
-	if _, err := regexp.Compile(fullconfig.FindStringUnsecured(chain...)); err != nil {
-		return fmt.Errorf(`provide a valid regexp for "%s", "%s" given`, strings.Join(chain, "_"), fullconfig.FindStringUnsecured(chain...))
-	}
-
-	return nil
-}
-
-func (c *CHYLE) validateOneOf(fullconfig *envh.EnvTree, chain []string, choices []string) error {
-	val := fullconfig.FindStringUnsecured(chain...)
-
-	for _, choice := range choices {
-		if choice == val {
-			return nil
-		}
-	}
-
-	return fmt.Errorf(`provide a value for "%s" from one of those values : ["%s"], "%s" given`, strings.Join(chain, "_"), strings.Join(choices, `", "`), val)
-}
-
-func (c *CHYLE) validateTemplate(fullconfig *envh.EnvTree, chain []string) error {
-	val := fullconfig.FindStringUnsecured(chain...)
-
-	_, err := template.New("test").Parse(val)
-
-	if err != nil {
-		return fmt.Errorf(`provide a valid template string for "%s" : "%s", "%s" given`, strings.Join(chain, "_"), err.Error(), val)
-	}
-
-	return nil
-}
-
 func (c *CHYLE) setFeatures(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
 	structs := []struct {
 		ref   *bool
@@ -216,11 +140,11 @@ func (c *CHYLE) setFeatures(fullconfig *envh.EnvTree, keyChain []string) (bool, 
 }
 
 func (c *CHYLE) validateChyleGitRepository(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	return false, c.checkSubConfigPool(fullconfig, []string{"CHYLE", "GIT", "REPOSITORY"}, []string{"PATH"})
+	return false, validateSubConfigPool(fullconfig, []string{"CHYLE", "GIT", "REPOSITORY"}, []string{"PATH"})
 }
 
 func (c *CHYLE) validateChyleGitReference(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	return false, c.checkSubConfigPool(fullconfig, []string{"CHYLE", "GIT", "REFERENCE"}, []string{"FROM", "TO"})
+	return false, validateSubConfigPool(fullconfig, []string{"CHYLE", "GIT", "REFERENCE"}, []string{"FROM", "TO"})
 }
 
 func (c *CHYLE) validateAndSetChyleDecoratorsEnv(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
@@ -231,7 +155,7 @@ func (c *CHYLE) validateAndSetChyleDecoratorsEnv(fullconfig *envh.EnvTree, keyCh
 	}
 
 	for _, key := range keys {
-		if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "VARNAME"}); err != nil {
+		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "VARNAME"}); err != nil {
 			return true, err
 		}
 	}
@@ -257,7 +181,7 @@ func (c *CHYLE) validateChyleExtractors(fullconfig *envh.EnvTree, keyChain []str
 	}
 
 	for _, key := range keys {
-		if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "EXTRACTORS", key}, []string{"ORIGKEY", "DESTKEY", "REG"}); err != nil {
+		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "EXTRACTORS", key}, []string{"ORIGKEY", "DESTKEY", "REG"}); err != nil {
 			return true, err
 		}
 	}
@@ -276,7 +200,7 @@ func (c *CHYLE) setChyleExtractors(fullconfig *envh.EnvTree, keyChain []string) 
 
 			value := fullconfig.FindStringUnsecured(chain...)
 
-			if err := c.validateRegexp(fullconfig, chain); err != nil {
+			if err := validateRegexp(fullconfig, chain); err != nil {
 				return err
 			}
 
@@ -301,7 +225,7 @@ func (c *CHYLE) validateChyleMatchers(fullconfig *envh.EnvTree, keyChain []strin
 			continue
 		}
 
-		if err := c.validateRegexp(fullconfig, []string{"CHYLE", "MATCHERS", key}); err != nil {
+		if err := validateRegexp(fullconfig, []string{"CHYLE", "MATCHERS", key}); err != nil {
 			return true, err
 		}
 
@@ -314,7 +238,7 @@ func (c *CHYLE) validateChyleMatchers(fullconfig *envh.EnvTree, keyChain []strin
 		return true, nil
 	}
 
-	if err := c.validateOneOf(fullconfig, []string{"CHYLE", "MATCHERS", "TYPE"}, []string{regularTypeMatcher, mergeTypeMatcher}); err != nil {
+	if err := validateOneOf(fullconfig, []string{"CHYLE", "MATCHERS", "TYPE"}, []string{regularTypeMatcher, mergeTypeMatcher}); err != nil {
 		return true, err
 	}
 
@@ -345,7 +269,7 @@ func (c *CHYLE) validateChyleSendersStdout(fullconfig *envh.EnvTree, keyChain []
 			return false, ErrMissingEnvVar{[]string{strings.Join(tmplKeyChain, "_")}}
 		}
 
-		if err := c.validateTemplate(fullconfig, tmplKeyChain); err != nil {
+		if err := validateTemplate(fullconfig, tmplKeyChain); err != nil {
 			return false, err
 		}
 	default:
@@ -360,19 +284,19 @@ func (c *CHYLE) validateChyleSendersGithub(fullconfig *envh.EnvTree, keyChain []
 		return false, nil
 	}
 
-	if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "CREDENTIALS"}, []string{"OAUTHTOKEN", "OWNER"}); err != nil {
+	if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "CREDENTIALS"}, []string{"OAUTHTOKEN", "OWNER"}); err != nil {
 		return false, err
 	}
 
-	if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE"}, []string{"TAGNAME", "TEMPLATE"}); err != nil {
+	if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE"}, []string{"TAGNAME", "TEMPLATE"}); err != nil {
 		return false, err
 	}
 
-	if err := c.validateTemplate(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE", "TEMPLATE"}); err != nil {
+	if err := validateTemplate(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE", "TEMPLATE"}); err != nil {
 		return false, err
 	}
 
-	if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "REPOSITORY"}, []string{"NAME"}); err != nil {
+	if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "REPOSITORY"}, []string{"NAME"}); err != nil {
 		return false, err
 	}
 
@@ -405,11 +329,11 @@ func (c *CHYLE) validateChyleJiraDecorators(fullconfig *envh.EnvTree, keyChain [
 		return false, nil
 	}
 
-	if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS"}, []string{"URL", "USERNAME", "PASSWORD"}); err != nil {
+	if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS"}, []string{"URL", "USERNAME", "PASSWORD"}); err != nil {
 		return false, err
 	}
 
-	if err := c.validateURL(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL"}); err != nil {
+	if err := validateURL(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL"}); err != nil {
 		return false, err
 	}
 
@@ -420,12 +344,12 @@ func (c *CHYLE) validateChyleJiraDecorators(fullconfig *envh.EnvTree, keyChain [
 	}
 
 	for _, key := range keys {
-		if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "KEYS", key}, []string{"DESTKEY", "FIELD"}); err != nil {
+		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "KEYS", key}, []string{"DESTKEY", "FIELD"}); err != nil {
 			return false, err
 		}
 	}
 
-	return false, c.checkSubConfigPool(fullconfig, []string{"CHYLE", "EXTRACTORS", "JIRAISSUEID"}, []string{"ORIGKEY", "DESTKEY", "REG"})
+	return false, validateSubConfigPool(fullconfig, []string{"CHYLE", "EXTRACTORS", "JIRAISSUEID"}, []string{"ORIGKEY", "DESTKEY", "REG"})
 }
 
 func resolveConfig(envConfig *envh.EnvTree) error {
