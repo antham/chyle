@@ -208,33 +208,6 @@ func TestResolveConfig(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_ENV_TEST_WHATEVER", "test")
-			},
-			`environments variables missing : "CHYLE_DECORATORS_ENV_TEST_DESTKEY", "CHYLE_DECORATORS_ENV_TEST_VARNAME"`,
-		},
-		{
-			func() {
-				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
-				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
-				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_ENV_TEST_DESTKEY", "test")
-			},
-			`environment variable missing : "CHYLE_DECORATORS_ENV_TEST_VARNAME"`,
-		},
-		{
-			func() {
-				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
-				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
-				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_ENV_TEST_VARNAME", "test")
-			},
-			`environment variable missing : "CHYLE_DECORATORS_ENV_TEST_DESTKEY"`,
-		},
-		{
-			func() {
-				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
-				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
-				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_GITHUB_CREDENTIALS_TEST", "test")
 			},
 			`environments variables missing : "CHYLE_SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "CHYLE_SENDERS_GITHUB_CREDENTIALS_OWNER"`,
