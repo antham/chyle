@@ -71,6 +71,64 @@ func TestResolveConfig(t *testing.T) {
 			},
 			`provide a value for "CHYLE_MATCHERS_TYPE" from one of those values : ["regular", "merge"], "test" given`,
 		},
+		// Extractors
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_EXTRACTORS_TEST", "test")
+			},
+			`environments variables missing : "CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_DESTKEY", "CHYLE_EXTRACTORS_TEST_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_EXTRACTORS_TEST_ORIGKEY", "test")
+			},
+			`environments variables missing : "CHYLE_EXTRACTORS_TEST_DESTKEY", "CHYLE_EXTRACTORS_TEST_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_EXTRACTORS_TEST_DESTKEY", "test")
+			},
+			`environments variables missing : "CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_EXTRACTORS_TEST_REG", "test")
+			},
+			`environments variables missing : "CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_DESTKEY"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_EXTRACTORS_TEST_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_TEST_DESTKEY", "test")
+			},
+			`environment variable missing : "CHYLE_EXTRACTORS_TEST_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_EXTRACTORS_TEST_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_TEST_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_TEST_REG", ".**")
+			},
+			`provide a valid regexp for "CHYLE_EXTRACTORS_TEST_REG", ".**" given`,
+		},
 		// Decorators env
 		{
 			func() {
