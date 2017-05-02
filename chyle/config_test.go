@@ -15,6 +15,7 @@ func TestResolveConfig(t *testing.T) {
 	}
 
 	tests := []g{
+		// Mandatory parameters
 		{
 			func() {
 			},
@@ -33,6 +34,7 @@ func TestResolveConfig(t *testing.T) {
 			},
 			`environment variable missing : "CHYLE_GIT_REFERENCE_TO"`,
 		},
+		// Matchers
 		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
@@ -69,6 +71,7 @@ func TestResolveConfig(t *testing.T) {
 			},
 			`provide a value for "CHYLE_MATCHERS_TYPE" from one of those values : ["regular", "merge"], "test" given`,
 		},
+		// Decorators env
 		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
@@ -96,6 +99,7 @@ func TestResolveConfig(t *testing.T) {
 			},
 			`environment variable missing : "CHYLE_DECORATORS_ENV_TEST_DESTKEY"`,
 		},
+		// Decorator jira
 		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
@@ -203,6 +207,7 @@ func TestResolveConfig(t *testing.T) {
 			},
 			`environment variable missing : "CHYLE_EXTRACTORS_JIRAISSUEID_REG"`,
 		},
+		// Sender github
 		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
@@ -267,6 +272,7 @@ func TestResolveConfig(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+		// Sender stdout
 				setenv("CHYLE_SENDERS_STDOUT_TEST", "test")
 			},
 			`environment variable missing : "CHYLE_SENDERS_STDOUT_FORMAT"`,
