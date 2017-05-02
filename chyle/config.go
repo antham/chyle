@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+	"text/template"
 
 	"github.com/antham/envh"
 )
@@ -150,6 +151,18 @@ func (c *CHYLE) validateOneOf(fullconfig *envh.EnvTree, chain []string, choices 
 	}
 
 	return fmt.Errorf(`provide a value for "%s" from one of those values : ["%s"], "%s" given`, strings.Join(chain, "_"), strings.Join(choices, `", "`), val)
+}
+
+func (c *CHYLE) validateTemplate(fullconfig *envh.EnvTree, chain []string) error {
+	val := fullconfig.FindStringUnsecured(chain...)
+
+	_, err := template.New("test").Parse(val)
+
+	if err != nil {
+		return fmt.Errorf(`provide a valid template string for "%s" : "%s", "%s" given`, strings.Join(chain, "_"), err.Error(), val)
+	}
+
+	return nil
 }
 
 func (c *CHYLE) setFeatures(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
@@ -326,7 +339,13 @@ func (c *CHYLE) validateChyleSendersStdout(fullconfig *envh.EnvTree, keyChain []
 	case "json":
 		return false, nil
 	case "template":
-		if err = c.checkSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "STDOUT"}, []string{"TEMPLATE"}); err != nil {
+		tmplKeyChain := append(keyChain, "TEMPLATE")
+
+		if ok, err := fullconfig.HasSubTreeValue(tmplKeyChain...); !ok || err != nil {
+			return false, ErrMissingEnvVar{[]string{strings.Join(tmplKeyChain, "_")}}
+		}
+
+		if err := c.validateTemplate(fullconfig, tmplKeyChain); err != nil {
 			return false, err
 		}
 	default:
@@ -346,6 +365,10 @@ func (c *CHYLE) validateChyleSendersGithub(fullconfig *envh.EnvTree, keyChain []
 	}
 
 	if err := c.checkSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE"}, []string{"TAGNAME", "TEMPLATE"}); err != nil {
+		return false, err
+	}
+
+	if err := c.validateTemplate(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE", "TEMPLATE"}); err != nil {
 		return false, err
 	}
 

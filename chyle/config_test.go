@@ -263,6 +263,18 @@ func TestResolveConfig(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_GITHUB_CREDENTIALS_OWNER", "user")
 				setenv("CHYLE_SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_SENDERS_GITHUB_RELEASE_TAGNAME", "v2.0.0")
+				setenv("CHYLE_SENDERS_GITHUB_RELEASE_TEMPLATE", "{{.....}}")
+			},
+			`provide a valid template string for "CHYLE_SENDERS_GITHUB_RELEASE_TEMPLATE" : "template: test:1: unexpected <.> in operand", "{{.....}}" given`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_SENDERS_GITHUB_CREDENTIALS_OWNER", "user")
+				setenv("CHYLE_SENDERS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 				setenv("CHYLE_SENDERS_GITHUB_RELEASE_TEMPLATE", "{{.}}")
 			},
 			`environment variable missing : "CHYLE_SENDERS_GITHUB_RELEASE_TAGNAME"`,
@@ -306,6 +318,16 @@ func TestResolveConfig(t *testing.T) {
 				setenv("CHYLE_SENDERS_STDOUT_FORMAT", "template")
 			},
 			`environment variable missing : "CHYLE_SENDERS_STDOUT_TEMPLATE"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_SENDERS_STDOUT_FORMAT", "template")
+				setenv("CHYLE_SENDERS_STDOUT_TEMPLATE", "{{.....}}")
+			},
+			`provide a valid template string for "CHYLE_SENDERS_STDOUT_TEMPLATE" : "template: test:1: unexpected <.> in operand", "{{.....}}" given`,
 		},
 	}
 	for i, test := range tests {
