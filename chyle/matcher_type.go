@@ -5,7 +5,6 @@ import (
 )
 
 const (
-	unknownTypeMatcher = "unknown"
 	regularTypeMatcher = "regular"
 	mergeTypeMatcher   = "merge"
 )
@@ -37,12 +36,9 @@ func buildTypeMatcher(key string) matcher {
 }
 
 func solveType(commit *object.Commit) string {
-	switch commit.NumParents() {
-	case 0, 1:
-		return regularTypeMatcher
-	case 2:
+	if commit.NumParents() == 2 {
 		return mergeTypeMatcher
-	default:
-		return unknownTypeMatcher
 	}
+
+	return regularTypeMatcher
 }
