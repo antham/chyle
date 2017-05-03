@@ -164,7 +164,7 @@ func TestTransformCommitsToMap(t *testing.T) {
 		logrus.Fatal(err)
 	}
 
-	commitMaps := TransformCommitsToMap(&commits)
+	commitMaps := transformCommitsToMap(&commits)
 
 	expected := map[string]interface{}{
 		"id":             commit.ID().String(),
