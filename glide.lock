@@ -1,8 +1,8 @@
-hash: da223da77f9513d19a61b9fcbb52a7e03a519f798a134a08175fe31b76ba2425
-updated: 2017-04-16T22:31:36.966420611+02:00
+hash: b8ab39b4a936c3f0454fa9a81c5fed7e7ff303c53f1fe2c0125968592a90048f
+updated: 2017-05-03T13:06:47.571707995+02:00
 imports:
 - name: github.com/antham/envh
-  version: ff82cd4e834aa3c6204d9cca62578556cb7fa181
+  version: 81cb62459bcbdf8f0b3e3ca99891c5d248d8b279
 - name: github.com/fatih/color
   version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
 - name: github.com/inconshreveable/mousetrap
