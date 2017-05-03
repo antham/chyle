@@ -29,8 +29,8 @@ func filter(matchers *[]matcher, commits *[]object.Commit) *[]object.Commit {
 	return &results
 }
 
-// TransformCommitsToMap extract useful commits data in hash map table
-func TransformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
+// transformCommitsToMap extract useful commits data in hash map table
+func transformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	var commitMap map[string]interface{}
 	commitMaps := []map[string]interface{}{}
 
