@@ -84,12 +84,12 @@ func TestCreateWithErrors(t *testing.T) {
 	}
 
 	fixtures := map[string]func(){
-		`missing "CHYLE_GIT_REPOSITORY_PATH"`: func() {
+		`environment variable missing : "CHYLE_GIT_REPOSITORY_PATH"`: func() {
 		},
-		`missing "CHYLE_GIT_REFERENCE_FROM"`: func() {
+		`environments variables missing : "CHYLE_GIT_REFERENCE_FROM", "CHYLE_GIT_REFERENCE_TO"`: func() {
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 		},
-		`missing "CHYLE_GIT_REFERENCE_TO"`: func() {
+		`environment variable missing : "CHYLE_GIT_REFERENCE_TO"`: func() {
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 		},
