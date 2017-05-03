@@ -8,6 +8,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestBuildStdoutSender(t *testing.T) {
+	chyleConfig.SENDERS.STDOUT.FORMAT = "json"
+	assert.IsType(t, jSONStdoutSender{}, buildStdoutSender())
+
+	chyleConfig.SENDERS.STDOUT.FORMAT = "template"
+	chyleConfig.SENDERS.STDOUT.TEMPLATE = "{{.}}"
+	assert.IsType(t, templateStdoutSender{}, buildStdoutSender())
+}
+
 func TestJSONStdoutSender(t *testing.T) {
 	buf := &bytes.Buffer{}
 
