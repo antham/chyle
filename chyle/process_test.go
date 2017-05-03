@@ -7,7 +7,17 @@ import (
 )
 
 func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
-	_, err := buildProcess()
+	chyleConfig = CHYLE{}
 
-	assert.NoError(t, err, "Must produces no errors")
+	p := buildProcess()
+
+	expected := process{
+		&[]matcher{},
+		&[]extracter{},
+		&map[string][]decorater{},
+		&[]sender{},
+	}
+
+	assert.EqualValues(t, expected, *p)
+
 }

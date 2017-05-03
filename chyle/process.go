@@ -14,7 +14,7 @@ type process struct {
 }
 
 // buildProcess creates process entity from defined configuration
-func buildProcess() (*process, error) {
+func buildProcess() *process {
 	matchers := &[]matcher{}
 	extractors := &[]extracter{}
 	decorators := &map[string][]decorater{}
@@ -41,7 +41,7 @@ func buildProcess() (*process, error) {
 		extractors,
 		decorators,
 		senders,
-	}, nil
+	}
 }
 
 // proceed extracts datas from a set of commits

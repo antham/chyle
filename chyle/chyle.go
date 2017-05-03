@@ -21,11 +21,5 @@ func BuildChangelog(envConfig *envh.EnvTree) error {
 		return err
 	}
 
-	p, err := buildProcess()
-
-	if err != nil {
-		return err
-	}
-
-	return proceed(p, commits)
+	return proceed(buildProcess(), commits)
 }
