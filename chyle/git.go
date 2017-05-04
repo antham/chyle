@@ -27,6 +27,16 @@ func (e ErrNoDiffBetweenReferences) Error() string {
 	return fmt.Sprintf(`can't produce a diff between %s and %s, check your range is correct by running "git log %[1]s..%[2]s" command`, e.from, e.to)
 }
 
+// ErrRepositoryPath is triggered when repository path can't be opened
+type ErrRepositoryPath struct {
+	path string
+}
+
+// Error returns string error
+func (e ErrRepositoryPath) Error() string {
+	return fmt.Sprintf(`check "%s" is an existing git repository path`, e.path)
+}
+
 // ErrBrowsingTree is triggered when something wrong occurred during commit analysis process
 var ErrBrowsingTree = fmt.Errorf("an issue occurred during tree analysis")
 
@@ -74,7 +84,7 @@ func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 	rep, err := git.PlainOpen(repoPath)
 
 	if err != nil {
-		return nil, err
+		return nil, ErrRepositoryPath{repoPath}
 	}
 
 	fromCommit, err := resolveRef(fromRef, rep)

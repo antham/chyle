@@ -93,7 +93,7 @@ func TestCreateWithErrors(t *testing.T) {
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 		},
-		"repository not exists": func() {
+		`check "whatever" is an existing git repository path`: func() {
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "whatever")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
