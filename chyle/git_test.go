@@ -70,6 +70,7 @@ func TestResolveRefWithErrors(t *testing.T) {
 
 func TestFetchCommits(t *testing.T) {
 	type g struct {
+		path    string
 		toRef   string
 		fromRef string
 		f       func(*[]object.Commit, error)
@@ -77,6 +78,7 @@ func TestFetchCommits(t *testing.T) {
 
 	tests := []g{
 		{
+			"test",
 			getCommitFromRef("HEAD").ID().String(),
 			getCommitFromRef("test").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -84,6 +86,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
+			"test",
 			getCommitFromRef("HEAD~1").ID().String(),
 			getCommitFromRef("HEAD~3").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -91,6 +94,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
+			"test",
 			getCommitFromRef("HEAD~3").ID().String(),
 			getCommitFromRef("test~2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -111,6 +115,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
+			"test",
 			getCommitFromRef("HEAD~4").ID().String(),
 			getCommitFromRef("test~2^2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -130,10 +135,18 @@ func TestFetchCommits(t *testing.T) {
 				}
 			},
 		},
+		{
+			"whatever",
+			getCommitFromRef("HEAD").ID().String(),
+			getCommitFromRef("HEAD~1").ID().String(),
+			func(cs *[]object.Commit, err error) {
+				assert.EqualError(t, err, `check "whatever" is an existing git repository path`)
+			},
+		},
 	}
 
 	for _, test := range tests {
-		test.f(fetchCommits("test", test.toRef, test.fromRef))
+		test.f(fetchCommits(test.path, test.toRef, test.fromRef))
 	}
 }
 
