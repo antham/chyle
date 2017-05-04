@@ -1,7 +1,6 @@
 package chyle
 
 import (
-	"fmt"
 	"regexp"
 	"strconv"
 )
@@ -14,12 +13,12 @@ type regexpExtractor struct {
 }
 
 // extract data from a commitMap
-func (r regexpExtractor) extract(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+func (r regexpExtractor) extract(commitMap *map[string]interface{}) *map[string]interface{} {
 	var mapValue interface{}
 	var ok bool
 
 	if mapValue, ok = (*commitMap)[r.index]; !ok {
-		return commitMap, nil
+		return commitMap
 	}
 
 	var value string
@@ -27,7 +26,7 @@ func (r regexpExtractor) extract(commitMap *map[string]interface{}) (*map[string
 	value, ok = mapValue.(string)
 
 	if !ok {
-		return nil, fmt.Errorf(`Can't parse value`)
+		return commitMap
 	}
 
 	var result string
@@ -43,7 +42,7 @@ func (r regexpExtractor) extract(commitMap *map[string]interface{}) (*map[string
 	if err == nil {
 		(*commitMap)[r.identifier] = b
 
-		return commitMap, nil
+		return commitMap
 	}
 
 	i, err := strconv.ParseInt(result, 10, 64)
@@ -51,7 +50,7 @@ func (r regexpExtractor) extract(commitMap *map[string]interface{}) (*map[string
 	if err == nil {
 		(*commitMap)[r.identifier] = i
 
-		return commitMap, nil
+		return commitMap
 	}
 
 	f, err := strconv.ParseFloat(result, 64)
@@ -59,10 +58,10 @@ func (r regexpExtractor) extract(commitMap *map[string]interface{}) (*map[string
 	if err == nil {
 		(*commitMap)[r.identifier] = f
 
-		return commitMap, nil
+		return commitMap
 	}
 
 	(*commitMap)[r.identifier] = result
 
-	return commitMap, nil
+	return commitMap
 }

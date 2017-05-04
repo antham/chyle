@@ -46,13 +46,9 @@ func buildProcess() *process {
 
 // proceed extracts datas from a set of commits
 func proceed(process *process, commits *[]object.Commit) error {
-	changelog, err := extract(process.extractors, transformCommitsToMap(filter(process.matchers, commits)))
+	changelog := extract(process.extractors, transformCommitsToMap(filter(process.matchers, commits)))
 
-	if err != nil {
-		return err
-	}
-
-	changelog, err = decorate(process.decorators, changelog)
+	changelog, err := decorate(process.decorators, changelog)
 
 	if err != nil {
 		return err
