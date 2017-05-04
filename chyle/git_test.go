@@ -38,6 +38,13 @@ func TestResolveRef(t *testing.T) {
 				assert.True(t, o.ID().String() == getCommitFromRef("test1").ID().String(), "Must resolve commit id")
 			},
 		},
+		{
+			"whatever",
+			func(o *object.Commit, err error) {
+				assert.Error(t, err)
+				assert.EqualError(t, err, `reference "whatever" can't be found in git repository`)
+			},
+		},
 	}
 
 	for _, test := range tests {
