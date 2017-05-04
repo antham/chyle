@@ -161,6 +161,14 @@ func TestFetchCommits(t *testing.T) {
 				assert.EqualError(t, err, `reference "whatever" can't be found in git repository`)
 			},
 		},
+		{
+			"test",
+			"HEAD",
+			"HEAD",
+			func(cs *[]object.Commit, err error) {
+				assert.EqualError(t, err, `can't produce a diff between HEAD and HEAD, check your range is correct by running "git log HEAD..HEAD" command`)
+			},
+		},
 	}
 
 	for _, test := range tests {
