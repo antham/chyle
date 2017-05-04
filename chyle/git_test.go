@@ -145,6 +145,22 @@ func TestFetchCommits(t *testing.T) {
 				assert.EqualError(t, err, `check "whatever" is an existing git repository path`)
 			},
 		},
+		{
+			"test",
+			"whatever",
+			getCommitFromRef("HEAD~1").ID().String(),
+			func(cs *[]object.Commit, err error) {
+				assert.EqualError(t, err, `reference "whatever" can't be found in git repository`)
+			},
+		},
+		{
+			"test",
+			getCommitFromRef("HEAD~1").ID().String(),
+			"whatever",
+			func(cs *[]object.Commit, err error) {
+				assert.EqualError(t, err, `reference "whatever" can't be found in git repository`)
+			},
+		},
 	}
 
 	for _, test := range tests {
