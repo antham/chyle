@@ -83,6 +83,7 @@ func TestFetchCommits(t *testing.T) {
 			getCommitFromRef("test").ID().String(),
 			func(cs *[]object.Commit, err error) {
 				assert.Error(t, err)
+				assert.Regexp(t, `can't produce a diff between .*? and .*?, check your range is correct by running "git log .*?\.\..*?" command`, err.Error())
 			},
 		},
 		{
@@ -91,6 +92,7 @@ func TestFetchCommits(t *testing.T) {
 			getCommitFromRef("HEAD~3").ID().String(),
 			func(cs *[]object.Commit, err error) {
 				assert.Error(t, err)
+				assert.Regexp(t, `can't produce a diff between .*? and .*?, check your range is correct by running "git log .*?\.\..*?" command`, err.Error())
 			},
 		},
 		{
