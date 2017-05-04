@@ -15,49 +15,54 @@ type regexpExtractor struct {
 
 // extract data from a commitMap
 func (r regexpExtractor) extract(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
-	if value, ok := (*commitMap)[r.index]; ok {
-		v, ok := value.(string)
+	var mapValue interface{}
+	var ok bool
 
-		if !ok {
-			return nil, fmt.Errorf(`Can't parse value`)
-		}
+	if mapValue, ok = (*commitMap)[r.index]; !ok {
+		return commitMap, nil
+	}
 
-		var result string
+	var value string
 
-		results := r.re.FindStringSubmatch(v)
+	value, ok = mapValue.(string)
 
-		if len(results) > 1 {
-			result = results[1]
-		}
+	if !ok {
+		return nil, fmt.Errorf(`Can't parse value`)
+	}
 
-		b, err := strconv.ParseBool(result)
+	var result string
 
-		if err == nil {
-			(*commitMap)[r.identifier] = b
+	results := r.re.FindStringSubmatch(value)
 
-			return commitMap, nil
-		}
+	if len(results) > 1 {
+		result = results[1]
+	}
 
-		i, err := strconv.ParseInt(result, 10, 64)
+	b, err := strconv.ParseBool(result)
 
-		if err == nil {
-			(*commitMap)[r.identifier] = i
-
-			return commitMap, nil
-		}
-
-		f, err := strconv.ParseFloat(result, 64)
-
-		if err == nil {
-			(*commitMap)[r.identifier] = f
-
-			return commitMap, nil
-		}
-
-		(*commitMap)[r.identifier] = result
+	if err == nil {
+		(*commitMap)[r.identifier] = b
 
 		return commitMap, nil
 	}
+
+	i, err := strconv.ParseInt(result, 10, 64)
+
+	if err == nil {
+		(*commitMap)[r.identifier] = i
+
+		return commitMap, nil
+	}
+
+	f, err := strconv.ParseFloat(result, 64)
+
+	if err == nil {
+		(*commitMap)[r.identifier] = f
+
+		return commitMap, nil
+	}
+
+	(*commitMap)[r.identifier] = result
 
 	return commitMap, nil
 }
