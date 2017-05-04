@@ -50,7 +50,7 @@ func TestExtract(t *testing.T) {
 		},
 	}
 
-	results, err := extract(&extractors, &commitMaps)
+	results := extract(&extractors, &commitMaps)
 
 	expected := Changelog{
 		Datas: []map[string]interface{}{
@@ -83,7 +83,6 @@ func TestExtract(t *testing.T) {
 		Metadatas: map[string]interface{}{},
 	}
 
-	assert.NoError(t, err, "Must return no error")
 	assert.Equal(t, expected, *results, "Must return extracted datas with old one")
 }
 
