@@ -20,21 +20,21 @@ func TestResolveRef(t *testing.T) {
 		{
 			"HEAD",
 			func(o *object.Commit, err error) {
-				assert.NoError(t, err, "Must contains no error")
+				assert.NoError(t, err)
 				assert.True(t, o.ID().String() == getCommitFromRef("HEAD").ID().String(), "Must resolve HEAD reference")
 			},
 		},
 		{
 			"test1",
 			func(o *object.Commit, err error) {
-				assert.NoError(t, err, "Must contains no error")
+				assert.NoError(t, err)
 				assert.True(t, o.ID().String() == getCommitFromRef("test1").ID().String(), "Must resolve branch reference")
 			},
 		},
 		{
 			getCommitFromRef("test1").ID().String(),
 			func(o *object.Commit, err error) {
-				assert.NoError(t, err, "Must contains no error")
+				assert.NoError(t, err)
 				assert.True(t, o.ID().String() == getCommitFromRef("test1").ID().String(), "Must resolve commit id")
 			},
 		},
@@ -57,8 +57,8 @@ func TestResolveRefWithErrors(t *testing.T) {
 			"whatever",
 			repo,
 			func(o *object.Commit, err error) {
-				assert.Error(t, err, "Must return an error")
-				assert.EqualError(t, err, `Can't find reference "whatever"`, "Must return an error")
+				assert.Error(t, err)
+				assert.EqualError(t, err, `Can't find reference "whatever"`)
 			},
 		},
 	}
@@ -82,7 +82,7 @@ func TestFetchCommits(t *testing.T) {
 			getCommitFromRef("HEAD").ID().String(),
 			getCommitFromRef("test").ID().String(),
 			func(cs *[]object.Commit, err error) {
-				assert.Error(t, err, "Must return an error")
+				assert.Error(t, err)
 			},
 		},
 		{
@@ -90,7 +90,7 @@ func TestFetchCommits(t *testing.T) {
 			getCommitFromRef("HEAD~1").ID().String(),
 			getCommitFromRef("HEAD~3").ID().String(),
 			func(cs *[]object.Commit, err error) {
-				assert.Error(t, err, "Must return an error")
+				assert.Error(t, err)
 			},
 		},
 		{
@@ -98,8 +98,8 @@ func TestFetchCommits(t *testing.T) {
 			getCommitFromRef("HEAD~3").ID().String(),
 			getCommitFromRef("test~2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {
-				assert.NoError(t, err, "Must return no errors")
-				assert.Len(t, *cs, 5, "Must contains 3 commits")
+				assert.NoError(t, err)
+				assert.Len(t, *cs, 5)
 
 				commitTests := []string{
 					"Merge branch 'test2' into test1\n",
@@ -110,7 +110,7 @@ func TestFetchCommits(t *testing.T) {
 				}
 
 				for i, c := range *cs {
-					assert.Equal(t, commitTests[i], c.Message, "Must match message")
+					assert.Equal(t, commitTests[i], c.Message)
 				}
 			},
 		},
@@ -131,7 +131,7 @@ func TestFetchCommits(t *testing.T) {
 				}
 
 				for i, c := range *cs {
-					assert.Equal(t, commitTests[i], c.Message, "Must match message")
+					assert.Equal(t, commitTests[i], c.Message)
 				}
 			},
 		},
@@ -180,6 +180,6 @@ func TestShallowCloneProducesNoErrors(t *testing.T) {
 
 	commits, err := fetchCommits("shallow-repository-test", string(fromRef), string(toRef))
 
-	assert.NoError(t, err, "Must return no errors")
+	assert.NoError(t, err)
 	assert.Len(t, *commits, 1, "Must fetch commits in shallow clone")
 }
