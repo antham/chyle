@@ -98,12 +98,12 @@ func TestCreateWithErrors(t *testing.T) {
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
 		},
-		"Can't find reference \"ref1\"": func() {
+		`reference "ref1" can't be found in git repository`: func() {
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
 		},
-		"Can't find reference \"ref2\"": func() {
+		`reference "ref2" can't be found in git repository`: func() {
 			setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 			setenv("CHYLE_GIT_REFERENCE_FROM", "HEAD")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")

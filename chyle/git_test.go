@@ -58,7 +58,7 @@ func TestResolveRefWithErrors(t *testing.T) {
 			repo,
 			func(o *object.Commit, err error) {
 				assert.Error(t, err)
-				assert.EqualError(t, err, `Can't find reference "whatever"`)
+				assert.EqualError(t, err, `reference "whatever" can't be found in git repository`)
 			},
 		},
 	}

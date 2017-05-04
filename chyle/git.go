@@ -37,6 +37,17 @@ func (e ErrRepositoryPath) Error() string {
 	return fmt.Sprintf(`check "%s" is an existing git repository path`, e.path)
 }
 
+// ErrReferenceNotFound is triggered when reference can't be
+// found in git repository
+type ErrReferenceNotFound struct {
+	ref string
+}
+
+// Error returns string error
+func (e ErrReferenceNotFound) Error() string {
+	return fmt.Sprintf(`reference "%s" can't be found in git repository`, e.ref)
+}
+
 // ErrBrowsingTree is triggered when something wrong occurred during commit analysis process
 var ErrBrowsingTree = fmt.Errorf("an issue occurred during tree analysis")
 
@@ -55,7 +66,7 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 	iter, err := repository.References()
 
 	if err != nil {
-		return &object.Commit{}, err
+		return &object.Commit{}, ErrReferenceNotFound{refCommit}
 	}
 
 	err = iter.ForEach(func(ref *plumbing.Reference) error {
@@ -76,7 +87,7 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 		return repository.Commit(hash)
 	}
 
-	return &object.Commit{}, fmt.Errorf(`Can't find reference "%s"`, refCommit)
+	return &object.Commit{}, ErrReferenceNotFound{refCommit}
 }
 
 // fetchCommits retrieves commits in a reference range
