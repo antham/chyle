@@ -32,12 +32,7 @@ func init() {
 }
 
 func initConfig() {
-	e, err := envh.NewEnvTree("CHYLE", "_")
-
-	if err != nil {
-		failure(err)
-		exitError()
-	}
+	e, _ := envh.NewEnvTree("CHYLE", "_")
 
 	envTree = &e
 
