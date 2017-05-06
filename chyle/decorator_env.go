@@ -23,7 +23,7 @@ func buildEnvDecorators() []decorater {
 
 	for _, e := range chyleConfig.DECORATORS.ENV {
 		results = append(results, envDecorator{
-			e["VALUE"],
+			e["VARNAME"],
 			e["DESTKEY"],
 		})
 	}
