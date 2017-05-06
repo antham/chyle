@@ -1,7 +1,9 @@
 package chyle
 
 import (
+	"bytes"
 	"fmt"
+	"log"
 	"testing"
 
 	"github.com/antham/envh"
@@ -403,4 +405,48 @@ func TestResolveConfig(t *testing.T) {
 		assert.Error(t, err, errDetail)
 		assert.EqualError(t, err, test.e, errDetail)
 	}
+}
+
+func TestDebugConfig(t *testing.T) {
+	chyleConfig = CHYLE{}
+	b := []byte{}
+
+	buffer := bytes.NewBuffer(b)
+
+	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
+
+	EnableDebugging = true
+
+	debugConfig()
+
+	for {
+		p := buffer.Next(100)
+
+		if len(p) == 0 {
+			break
+		}
+
+		b = append(b, p...)
+	}
+
+	actual := string(b)
+
+	assert.Regexp(t, `CHYLE - \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} {\n\s+"GIT": {\n\s+"REPOSITORY": {\n`, actual, "Must output given format with argument when debug is enabled")
+}
+
+func TestDebugConfigWithDebugDisabled(t *testing.T) {
+	chyleConfig = CHYLE{}
+	b := []byte{}
+
+	buffer := bytes.NewBuffer(b)
+
+	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
+
+	EnableDebugging = false
+
+	debugConfig()
+
+	_, err := buffer.ReadString('\n')
+
+	assert.EqualError(t, err, "EOF", "Must return EOF error")
 }

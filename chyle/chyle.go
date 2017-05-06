@@ -15,6 +15,8 @@ func BuildChangelog(envConfig *envh.EnvTree) error {
 		return err
 	}
 
+	debugConfig()
+
 	commits, err := fetchCommits(chyleConfig.GIT.REPOSITORY.PATH, chyleConfig.GIT.REFERENCE.FROM, chyleConfig.GIT.REFERENCE.TO)
 
 	if err != nil {
