@@ -26,7 +26,7 @@ func TestJiraDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := newJiraIssueDecoratorFromPasswordAuth(*client)
+	j := jiraIssueDecorator{*client}
 
 	result, err := j.decorate(&map[string]interface{}{"test": "test", "jiraIssueId": "10000"})
 
@@ -51,7 +51,7 @@ func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := newJiraIssueDecoratorFromPasswordAuth(*client)
+	j := jiraIssueDecorator{*client}
 
 	result, err := j.decorate(&map[string]interface{}{"test": "test"})
 

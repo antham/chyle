@@ -12,11 +12,6 @@ type jiraIssueDecorator struct {
 	client http.Client
 }
 
-// newJiraIssueDecoratorFromPasswordAuth create a new jiraIssueDecorator
-func newJiraIssueDecoratorFromPasswordAuth(client http.Client) jiraIssueDecorator {
-	return jiraIssueDecorator{client}
-}
-
 // decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
 func (j jiraIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
@@ -64,6 +59,7 @@ func (j jiraIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[st
 	return commitMap, nil
 }
 
+// buildJiraDecorator create a new jira ticket decorator
 func buildJiraDecorator() decorater {
-	return newJiraIssueDecoratorFromPasswordAuth(http.Client{})
+	return jiraIssueDecorator{http.Client{}}
 }
