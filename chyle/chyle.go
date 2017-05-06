@@ -9,9 +9,7 @@ var EnableDebugging = false
 
 // BuildChangelog creates a changelog from defined configuration
 func BuildChangelog(envConfig *envh.EnvTree) error {
-	err := resolveConfig(envConfig)
-
-	if err != nil {
+	if err := resolveConfig(envConfig); err != nil {
 		return err
 	}
 
