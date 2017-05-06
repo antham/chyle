@@ -306,11 +306,11 @@ func (c *CHYLE) setJiraKeys(fullconfig *envh.EnvTree, keyChain []string) (bool, 
 	for _, key := range keys {
 		datas := map[string]string{}
 
-		for _, field := range []string{"DESTKEY", "VARNAME"} {
+		for _, field := range []string{"DESTKEY", "FIELD"} {
 			datas[field] = fullconfig.FindStringUnsecured(append(keyChain, key, field)...)
 		}
 
-		c.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["VARNAME"]
+		c.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["FIELD"]
 	}
 
 	return true, nil
