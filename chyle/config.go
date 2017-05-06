@@ -1,6 +1,7 @@
 package chyle
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -20,7 +21,7 @@ type CHYLE struct {
 		HASENVDECORATOR        bool
 		HASGITHUBRELEASESENDER bool
 		HASSTDOUTSENDER        bool
-	}
+	} `json:"-"`
 	GIT struct {
 		REPOSITORY struct {
 			PATH string
@@ -348,4 +349,14 @@ func (c *CHYLE) validateChyleJiraDecorators(fullconfig *envh.EnvTree, keyChain [
 
 func resolveConfig(envConfig *envh.EnvTree) error {
 	return envConfig.PopulateStruct(&chyleConfig)
+}
+
+func debugConfig() {
+	if !EnableDebugging {
+		return
+	}
+
+	if d, err := json.MarshalIndent(chyleConfig, "", "    "); err == nil {
+		logger.Println(string(d))
+	}
 }
