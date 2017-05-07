@@ -86,7 +86,6 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 		"CHYLE_GIT_REFERENCE":        c.validateChyleGitReference,
 		"CHYLE_GIT_REPOSITORY":       c.validateChyleGitRepository,
 		"CHYLE_MATCHERS":             c.validateChyleMatchers,
-		"CHYLE_SENDERS_GITHUB":       c.validateChyleSendersGithub,
 		"CHYLE_SENDERS_STDOUT":       c.validateChyleSendersStdout,
 	}[strings.Join(keyChain, "_")]; ok {
 		return walker(fullconfig, keyChain)
@@ -94,6 +93,7 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 
 	if validator, ok := map[string]func() validater{
 		"CHYLE_DECORATORS_JIRA": func() validater { return jiraDecoratorValidator{fullconfig} },
+		"CHYLE_SENDERS_GITHUB":  func() validater { return githubSenderValidator{fullconfig} },
 	}[strings.Join(keyChain, "_")]; ok {
 		return validator().validate()
 	}
@@ -280,30 +280,6 @@ func (c *CHYLE) validateChyleSendersStdout(fullconfig *envh.EnvTree, keyChain []
 		}
 	default:
 		return false, fmt.Errorf(`"CHYLE_SENDERS_STDOUT_FORMAT" "%s" doesn't exist`, format)
-	}
-
-	return false, nil
-}
-
-func (c *CHYLE) validateChyleSendersGithub(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	if !fullconfig.IsExistingSubTree("CHYLE", "SENDERS", "GITHUB") {
-		return false, nil
-	}
-
-	if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "CREDENTIALS"}, []string{"OAUTHTOKEN", "OWNER"}); err != nil {
-		return false, err
-	}
-
-	if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE"}, []string{"TAGNAME", "TEMPLATE"}); err != nil {
-		return false, err
-	}
-
-	if err := validateTemplate(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE", "TEMPLATE"}); err != nil {
-		return false, err
-	}
-
-	if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "SENDERS", "GITHUB", "REPOSITORY"}, []string{"NAME"}); err != nil {
-		return false, err
 	}
 
 	return false, nil

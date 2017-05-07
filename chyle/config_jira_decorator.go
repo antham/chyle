@@ -6,7 +6,8 @@ import (
 	"github.com/antham/envh"
 )
 
-// jiraDecoratorValidator validates jira config defined through environment variables
+// jiraDecoratorValidator validates jira config
+// defined through environment variables
 type jiraDecoratorValidator struct {
 	config *envh.EnvTree
 }
