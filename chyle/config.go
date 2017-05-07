@@ -83,7 +83,6 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 		"CHYLE_FEATURES":             c.setFeatures,
 		"CHYLE_GIT_REFERENCE":        c.validateChyleGitReference,
 		"CHYLE_GIT_REPOSITORY":       c.validateChyleGitRepository,
-		"CHYLE_MATCHERS":             c.validateChyleMatchers,
 	}[strings.Join(keyChain, "_")]; ok {
 		return walker(fullconfig, keyChain)
 	}
@@ -92,6 +91,7 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 		"CHYLE_DECORATORS_JIRA": func() configurater { return jiraDecoratorProcessor{fullconfig} },
 		"CHYLE_SENDERS_GITHUB":  func() configurater { return githubSenderProcessor{fullconfig} },
 		"CHYLE_SENDERS_STDOUT":  func() configurater { return stdoutSenderProcessor{fullconfig} },
+		"CHYLE_MATCHERS":        func() configurater { return &matchersConfigurator{chyleConfig: c, config: fullconfig} },
 	}[strings.Join(keyChain, "_")]; ok {
 		return processor().process()
 	}
@@ -213,42 +213,6 @@ func (c *CHYLE) setChyleExtractors(fullconfig *envh.EnvTree, keyChain []string) 
 	}
 
 	return nil
-}
-
-func (c *CHYLE) validateChyleMatchers(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	if featureDisabled(fullconfig, [][]string{{"CHYLE", "MATCHERS"}}) {
-		return true, nil
-	}
-
-	c.MATCHERS = map[string]string{}
-
-	for _, key := range []string{"MESSAGE", "COMMITTER", "AUTHOR"} {
-		value, err := fullconfig.FindString("CHYLE", "MATCHERS", key)
-
-		if err != nil {
-			continue
-		}
-
-		if err := validateRegexp(fullconfig, []string{"CHYLE", "MATCHERS", key}); err != nil {
-			return true, err
-		}
-
-		c.MATCHERS[key] = value
-	}
-
-	value, err := fullconfig.FindString("CHYLE", "MATCHERS", "TYPE")
-
-	if err != nil {
-		return true, nil
-	}
-
-	if err := validateOneOf(fullconfig, []string{"CHYLE", "MATCHERS", "TYPE"}, []string{regularTypeMatcher, mergeTypeMatcher}); err != nil {
-		return true, err
-	}
-
-	c.MATCHERS["TYPE"] = value
-
-	return true, nil
 }
 
 func (c *CHYLE) setJiraKeys(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
