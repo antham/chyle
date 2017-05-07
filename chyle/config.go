@@ -2,7 +2,6 @@ package chyle
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/antham/envh"
@@ -86,7 +85,6 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 		"CHYLE_GIT_REFERENCE":        c.validateChyleGitReference,
 		"CHYLE_GIT_REPOSITORY":       c.validateChyleGitRepository,
 		"CHYLE_MATCHERS":             c.validateChyleMatchers,
-		"CHYLE_SENDERS_STDOUT":       c.validateChyleSendersStdout,
 	}[strings.Join(keyChain, "_")]; ok {
 		return walker(fullconfig, keyChain)
 	}
@@ -94,6 +92,7 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	if validator, ok := map[string]func() validater{
 		"CHYLE_DECORATORS_JIRA": func() validater { return jiraDecoratorValidator{fullconfig} },
 		"CHYLE_SENDERS_GITHUB":  func() validater { return githubSenderValidator{fullconfig} },
+		"CHYLE_SENDERS_STDOUT":  func() validater { return stdoutSenderValidator{fullconfig} },
 	}[strings.Join(keyChain, "_")]; ok {
 		return validator().validate()
 	}
@@ -251,38 +250,6 @@ func (c *CHYLE) validateChyleMatchers(fullconfig *envh.EnvTree, keyChain []strin
 	c.MATCHERS["TYPE"] = value
 
 	return true, nil
-}
-
-func (c *CHYLE) validateChyleSendersStdout(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	if featureDisabled(fullconfig, [][]string{{"CHYLE", "SENDERS", "STDOUT"}}) {
-		return false, nil
-	}
-
-	var err error
-	var format string
-
-	if format, err = fullconfig.FindString(append(keyChain, "FORMAT")...); err != nil {
-		return false, ErrMissingEnvVar{[]string{strings.Join(append(keyChain, "FORMAT"), "_")}}
-	}
-
-	switch format {
-	case "json":
-		return false, nil
-	case "template":
-		tmplKeyChain := append(keyChain, "TEMPLATE")
-
-		if ok, err := fullconfig.HasSubTreeValue(tmplKeyChain...); !ok || err != nil {
-			return false, ErrMissingEnvVar{[]string{strings.Join(tmplKeyChain, "_")}}
-		}
-
-		if err := validateTemplate(fullconfig, tmplKeyChain); err != nil {
-			return false, err
-		}
-	default:
-		return false, fmt.Errorf(`"CHYLE_SENDERS_STDOUT_FORMAT" "%s" doesn't exist`, format)
-	}
-
-	return false, nil
 }
 
 func (c *CHYLE) setJiraKeys(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
