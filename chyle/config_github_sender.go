@@ -4,12 +4,12 @@ import (
 	"github.com/antham/envh"
 )
 
-// githubSenderValidator validates github sender config defined through environment variables
-type githubSenderValidator struct {
+// githubSenderProcessor validates github sender config defined through environment variables
+type githubSenderProcessor struct {
 	config *envh.EnvTree
 }
 
-func (g githubSenderValidator) validate() (bool, error) {
+func (g githubSenderProcessor) process() (bool, error) {
 	if g.isDisabled() {
 		return false, nil
 	}
@@ -28,17 +28,17 @@ func (g githubSenderValidator) validate() (bool, error) {
 }
 
 // isDisabled checks if github sender is enabled
-func (g githubSenderValidator) isDisabled() bool {
+func (g githubSenderProcessor) isDisabled() bool {
 	return !g.config.IsExistingSubTree("CHYLE", "SENDERS", "GITHUB")
 }
 
 // validateCredentials checks github credentials to access remote api
-func (g githubSenderValidator) validateCredentials() error {
+func (g githubSenderProcessor) validateCredentials() error {
 	return validateSubConfigPool(g.config, []string{"CHYLE", "SENDERS", "GITHUB", "CREDENTIALS"}, []string{"OAUTHTOKEN", "OWNER"})
 }
 
 // validateReleaseMandatoryFields checks release mandatory field definition
-func (g githubSenderValidator) validateReleaseMandatoryFields() error {
+func (g githubSenderProcessor) validateReleaseMandatoryFields() error {
 	if err := validateSubConfigPool(g.config, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE"}, []string{"TAGNAME", "TEMPLATE"}); err != nil {
 		return err
 	}
@@ -51,6 +51,6 @@ func (g githubSenderValidator) validateReleaseMandatoryFields() error {
 }
 
 // validateRepositoryName checks if github repository name is defined
-func (g githubSenderValidator) validateRepositoryName() error {
+func (g githubSenderProcessor) validateRepositoryName() error {
 	return validateSubConfigPool(g.config, []string{"CHYLE", "SENDERS", "GITHUB", "REPOSITORY"}, []string{"NAME"})
 }

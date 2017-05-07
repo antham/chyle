@@ -6,13 +6,13 @@ import (
 	"github.com/antham/envh"
 )
 
-// jiraDecoratorValidator validates jira config
+// jiraDecoratorProcessor validates jira config
 // defined through environment variables
-type jiraDecoratorValidator struct {
+type jiraDecoratorProcessor struct {
 	config *envh.EnvTree
 }
 
-func (j jiraDecoratorValidator) validate() (bool, error) {
+func (j jiraDecoratorProcessor) process() (bool, error) {
 	if j.isDisabled() {
 		return false, nil
 	}
@@ -31,7 +31,7 @@ func (j jiraDecoratorValidator) validate() (bool, error) {
 }
 
 // isDisabled checks if jira decorator is enabled
-func (j jiraDecoratorValidator) isDisabled() bool {
+func (j jiraDecoratorProcessor) isDisabled() bool {
 	return featureDisabled(j.config, [][]string{
 		{"CHYLE", "DECORATORS", "JIRA"},
 		{"CHYLE", "EXTRACTORS", "JIRAISSUEID"},
@@ -39,12 +39,12 @@ func (j jiraDecoratorValidator) isDisabled() bool {
 }
 
 // validateExtractor checks if jira issue id extractor is defined
-func (j jiraDecoratorValidator) validateExtractor() error {
+func (j jiraDecoratorProcessor) validateExtractor() error {
 	return validateSubConfigPool(j.config, []string{"CHYLE", "EXTRACTORS", "JIRAISSUEID"}, []string{"ORIGKEY", "DESTKEY", "REG"})
 }
 
 // validateCredentials checks jira credentials to access remote api
-func (j jiraDecoratorValidator) validateCredentials() error {
+func (j jiraDecoratorProcessor) validateCredentials() error {
 	if err := validateSubConfigPool(j.config, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS"}, []string{"URL", "USERNAME", "PASSWORD"}); err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (j jiraDecoratorValidator) validateCredentials() error {
 }
 
 // validateKeys checks key mapping between fields extracted from jira api and fields added to final struct
-func (j jiraDecoratorValidator) validateKeys() error {
+func (j jiraDecoratorProcessor) validateKeys() error {
 	keys, err := j.config.FindChildrenKeys("CHYLE", "DECORATORS", "JIRA", "KEYS")
 
 	if err != nil {

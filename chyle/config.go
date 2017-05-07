@@ -7,10 +7,9 @@ import (
 	"github.com/antham/envh"
 )
 
-// validater must be implemented to add a validator when settings
-// struct fields
-type validater interface {
-	validate() (bool, error)
+// configurater must be implemented to process custom config
+type configurater interface {
+	process() (bool, error)
 }
 
 var chyleConfig CHYLE
@@ -89,12 +88,12 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 		return walker(fullconfig, keyChain)
 	}
 
-	if validator, ok := map[string]func() validater{
-		"CHYLE_DECORATORS_JIRA": func() validater { return jiraDecoratorValidator{fullconfig} },
-		"CHYLE_SENDERS_GITHUB":  func() validater { return githubSenderValidator{fullconfig} },
-		"CHYLE_SENDERS_STDOUT":  func() validater { return stdoutSenderValidator{fullconfig} },
+	if processor, ok := map[string]func() configurater{
+		"CHYLE_DECORATORS_JIRA": func() configurater { return jiraDecoratorProcessor{fullconfig} },
+		"CHYLE_SENDERS_GITHUB":  func() configurater { return githubSenderProcessor{fullconfig} },
+		"CHYLE_SENDERS_STDOUT":  func() configurater { return stdoutSenderProcessor{fullconfig} },
 	}[strings.Join(keyChain, "_")]; ok {
-		return validator().validate()
+		return processor().process()
 	}
 
 	return false, nil

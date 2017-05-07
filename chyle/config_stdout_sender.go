@@ -7,12 +7,12 @@ import (
 	"github.com/antham/envh"
 )
 
-// stdoutSenderValidator validates stdout sender config defined through environment variables
-type stdoutSenderValidator struct {
+// stdoutSenderProcessor validates stdout sender config defined through environment variables
+type stdoutSenderProcessor struct {
 	config *envh.EnvTree
 }
 
-func (s stdoutSenderValidator) validate() (bool, error) {
+func (s stdoutSenderProcessor) process() (bool, error) {
 	if s.isDisabled() {
 		return false, nil
 	}
@@ -21,12 +21,12 @@ func (s stdoutSenderValidator) validate() (bool, error) {
 }
 
 // isDisabled checks if stdout sender is enabled
-func (s stdoutSenderValidator) isDisabled() bool {
+func (s stdoutSenderProcessor) isDisabled() bool {
 	return featureDisabled(s.config, [][]string{{"CHYLE", "SENDERS", "STDOUT"}})
 }
 
 // validateFormat checks format is a supported stdout format
-func (s stdoutSenderValidator) validateFormat() error {
+func (s stdoutSenderProcessor) validateFormat() error {
 	var err error
 	var format string
 	keyChain := []string{"CHYLE", "SENDERS", "STDOUT"}
@@ -47,7 +47,7 @@ func (s stdoutSenderValidator) validateFormat() error {
 
 // validateTemplateFormat checks a template key is defined
 // and template is a valid template
-func (s stdoutSenderValidator) validateTemplateFormat() error {
+func (s stdoutSenderProcessor) validateTemplateFormat() error {
 	tmplKeyChain := []string{"CHYLE", "SENDERS", "STDOUT", "TEMPLATE"}
 
 	if ok, err := s.config.HasSubTreeValue(tmplKeyChain...); !ok || err != nil {
