@@ -1,5 +1,12 @@
 package chyle
 
+import (
+	"bytes"
+	"net/http"
+
+	"github.com/tidwall/gjson"
+)
+
 // decorater extends data from commit hashmap with data picked from third part service
 type decorater interface {
 	decorate(*map[string]interface{}) (*map[string]interface{}, error)
@@ -57,4 +64,30 @@ func createDecorators() *map[string][]decorater {
 	}
 
 	return &results
+}
+
+// decorateMapFromJSONResponse fetch JSON datas and add the result to original commitMap array
+func decorateMapFromJSONResponse(client *http.Client, request *http.Request, keys map[string]string, commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+	rep, err := client.Do(request)
+
+	if err != nil {
+		return commitMap, err
+	}
+
+	buf := bytes.NewBuffer([]byte{})
+	err = rep.Write(buf)
+
+	if err != nil {
+		return commitMap, err
+	}
+
+	for identifier, key := range keys {
+		(*commitMap)[identifier] = nil
+
+		if gjson.Get(buf.String(), key).Exists() {
+			(*commitMap)[identifier] = gjson.Get(buf.String(), key).Value()
+		}
+	}
+
+	return commitMap, nil
 }
