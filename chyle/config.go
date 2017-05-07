@@ -8,6 +8,12 @@ import (
 	"github.com/antham/envh"
 )
 
+// validater must be implemented to add a validator when settings
+// struct fields
+type validater interface {
+	validate() (bool, error)
+}
+
 var chyleConfig CHYLE
 
 // CHYLE hold config extracted from environment variables
@@ -74,7 +80,6 @@ type CHYLE struct {
 func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
 	if walker, ok := map[string]func(*envh.EnvTree, []string) (bool, error){
 		"CHYLE_DECORATORS_ENV":       c.validateAndSetChyleDecoratorsEnv,
-		"CHYLE_DECORATORS_JIRA":      c.validateChyleJiraDecorators,
 		"CHYLE_DECORATORS_JIRA_KEYS": c.setJiraKeys,
 		"CHYLE_EXTRACTORS":           c.validateChyleExtractors,
 		"CHYLE_FEATURES":             c.setFeatures,
@@ -85,6 +90,12 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 		"CHYLE_SENDERS_STDOUT":       c.validateChyleSendersStdout,
 	}[strings.Join(keyChain, "_")]; ok {
 		return walker(fullconfig, keyChain)
+	}
+
+	if validator, ok := map[string]func() validater{
+		"CHYLE_DECORATORS_JIRA": func() validater { return jiraDecoratorValidator{fullconfig} },
+	}[strings.Join(keyChain, "_")]; ok {
+		return validator().validate()
 	}
 
 	return false, nil
@@ -314,37 +325,6 @@ func (c *CHYLE) setJiraKeys(fullconfig *envh.EnvTree, keyChain []string) (bool, 
 	}
 
 	return true, nil
-}
-
-func (c *CHYLE) validateChyleJiraDecorators(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	if featureDisabled(fullconfig, [][]string{
-		{"CHYLE", "DECORATORS", "JIRA"},
-		{"CHYLE", "EXTRACTORS", "JIRAISSUEID"},
-	}) {
-		return false, nil
-	}
-
-	if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS"}, []string{"URL", "USERNAME", "PASSWORD"}); err != nil {
-		return false, err
-	}
-
-	if err := validateURL(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL"}); err != nil {
-		return false, err
-	}
-
-	keys, err := fullconfig.FindChildrenKeys("CHYLE", "DECORATORS", "JIRA", "KEYS")
-
-	if err != nil {
-		return false, fmt.Errorf(`define at least one environment variable couple "CHYLE_DECORATORS_JIRA_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_JIRA_KEYS_*_FIELD", replace "*" with your own naming`)
-	}
-
-	for _, key := range keys {
-		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "JIRA", "KEYS", key}, []string{"DESTKEY", "FIELD"}); err != nil {
-			return false, err
-		}
-	}
-
-	return false, validateSubConfigPool(fullconfig, []string{"CHYLE", "EXTRACTORS", "JIRAISSUEID"}, []string{"ORIGKEY", "DESTKEY", "REG"})
 }
 
 func resolveConfig(envConfig *envh.EnvTree) error {
