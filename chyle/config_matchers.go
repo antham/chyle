@@ -7,12 +7,11 @@ import (
 // matchersConfigurator validates jira config
 // defined through environment variables
 type matchersConfigurator struct {
-	chyleConfig *CHYLE
 	config      *envh.EnvTree
 	definedKeys []string
 }
 
-func (m *matchersConfigurator) process() (bool, error) {
+func (m *matchersConfigurator) process(config *CHYLE) (bool, error) {
 	if m.isDisabled() {
 		return true, nil
 	}
@@ -26,7 +25,7 @@ func (m *matchersConfigurator) process() (bool, error) {
 		}
 	}
 
-	m.setMatchers()
+	m.setMatchers(config)
 
 	return true, nil
 }
@@ -73,10 +72,10 @@ func (m *matchersConfigurator) validateTypeMatcher() error {
 }
 
 // setMatchers update chyleConfig with extracted matchers
-func (m *matchersConfigurator) setMatchers() {
-	m.chyleConfig.MATCHERS = map[string]string{}
+func (m *matchersConfigurator) setMatchers(config *CHYLE) {
+	config.MATCHERS = map[string]string{}
 
 	for _, key := range m.definedKeys {
-		m.chyleConfig.MATCHERS[key] = m.config.FindStringUnsecured("CHYLE", "MATCHERS", key)
+		config.MATCHERS[key] = m.config.FindStringUnsecured("CHYLE", "MATCHERS", key)
 	}
 }

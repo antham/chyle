@@ -7,12 +7,11 @@ import (
 // extractorsConfigurator validates jira config
 // defined through environment variables
 type extractorsConfigurator struct {
-	chyleConfig *CHYLE
 	config      *envh.EnvTree
 	definedKeys []string
 }
 
-func (e *extractorsConfigurator) process() (bool, error) {
+func (e *extractorsConfigurator) process(config *CHYLE) (bool, error) {
 	if e.isDisabled() {
 		return true, nil
 	}
@@ -25,7 +24,7 @@ func (e *extractorsConfigurator) process() (bool, error) {
 		}
 	}
 
-	e.setExtractors()
+	e.setExtractors(config)
 
 	return true, nil
 }
@@ -53,14 +52,14 @@ func (e *extractorsConfigurator) validateExtractors() error {
 }
 
 // setExtractors update chyleConfig with extracted extractors
-func (e *extractorsConfigurator) setExtractors() {
-	e.chyleConfig.EXTRACTORS = map[string]map[string]string{}
+func (e *extractorsConfigurator) setExtractors(config *CHYLE) {
+	config.EXTRACTORS = map[string]map[string]string{}
 
 	for _, key := range e.definedKeys {
-		e.chyleConfig.EXTRACTORS[key] = map[string]string{}
+		config.EXTRACTORS[key] = map[string]string{}
 
 		for _, field := range []string{"ORIGKEY", "DESTKEY", "REG"} {
-			e.chyleConfig.EXTRACTORS[key][field] = e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, field)
+			config.EXTRACTORS[key][field] = e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, field)
 		}
 	}
 }

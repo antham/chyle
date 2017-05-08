@@ -9,7 +9,7 @@ import (
 
 // configurater must be implemented to process custom config
 type configurater interface {
-	process() (bool, error)
+	process(config *CHYLE) (bool, error)
 }
 
 var chyleConfig CHYLE
@@ -85,14 +85,14 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	}
 
 	if processor, ok := map[string]func() configurater{
-		"CHYLE_EXTRACTORS":      func() configurater { return &extractorsConfigurator{chyleConfig: c, config: fullconfig} },
-		"CHYLE_DECORATORS_ENV":  func() configurater { return &envDecoratorConfigurator{chyleConfig: c, config: fullconfig} },
-		"CHYLE_DECORATORS_JIRA": func() configurater { return &jiraDecoratorConfigurator{chyleConfig: c, config: fullconfig} },
-		"CHYLE_SENDERS_GITHUB":  func() configurater { return githubSenderConfigurator{fullconfig} },
-		"CHYLE_SENDERS_STDOUT":  func() configurater { return stdoutSenderConfigurator{fullconfig} },
-		"CHYLE_MATCHERS":        func() configurater { return &matchersConfigurator{chyleConfig: c, config: fullconfig} },
+		"CHYLE_DECORATORS_ENV":  func() configurater { return &envDecoratorConfigurator{config: fullconfig} },
+		"CHYLE_DECORATORS_JIRA": func() configurater { return &jiraDecoratorConfigurator{config: fullconfig} },
+		"CHYLE_EXTRACTORS":      func() configurater { return &extractorsConfigurator{config: fullconfig} },
+		"CHYLE_MATCHERS":        func() configurater { return &matchersConfigurator{config: fullconfig} },
+		"CHYLE_SENDERS_GITHUB":  func() configurater { return &githubSenderConfigurator{config: fullconfig} },
+		"CHYLE_SENDERS_STDOUT":  func() configurater { return &stdoutSenderConfigurator{config: fullconfig} },
 	}[strings.Join(keyChain, "_")]; ok {
-		return processor().process()
+		return processor().process(c)
 	}
 
 	return false, nil

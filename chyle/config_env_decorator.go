@@ -7,12 +7,11 @@ import (
 // envDecoratorConfigurator validates environment variables decorator config
 // defined through environment variables
 type envDecoratorConfigurator struct {
-	chyleConfig *CHYLE
 	config      *envh.EnvTree
 	definedKeys []string
 }
 
-func (e *envDecoratorConfigurator) process() (bool, error) {
+func (e *envDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 	if e.isDisabled() {
 		return true, nil
 	}
@@ -25,7 +24,7 @@ func (e *envDecoratorConfigurator) process() (bool, error) {
 		}
 	}
 
-	e.setEnvDecorator()
+	e.setEnvDecorator(config)
 
 	return true, nil
 }
@@ -49,14 +48,14 @@ func (e *envDecoratorConfigurator) validateEnvironmentVariables() error {
 }
 
 // setEnvDecorator update decorator environment variables
-func (e *envDecoratorConfigurator) setEnvDecorator() {
-	e.chyleConfig.DECORATORS.ENV = map[string]map[string]string{}
+func (e *envDecoratorConfigurator) setEnvDecorator(config *CHYLE) {
+	config.DECORATORS.ENV = map[string]map[string]string{}
 
 	for _, key := range e.definedKeys {
-		e.chyleConfig.DECORATORS.ENV[key] = map[string]string{}
+		config.DECORATORS.ENV[key] = map[string]string{}
 
 		for _, field := range []string{"DESTKEY", "VARNAME"} {
-			e.chyleConfig.DECORATORS.ENV[key][field] = e.config.FindStringUnsecured("CHYLE", "DECORATORS", "ENV", key, field)
+			config.DECORATORS.ENV[key][field] = e.config.FindStringUnsecured("CHYLE", "DECORATORS", "ENV", key, field)
 		}
 	}
 }

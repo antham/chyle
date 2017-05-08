@@ -9,12 +9,11 @@ import (
 // jiraDecoratorConfigurator validates jira config
 // defined through environment variables
 type jiraDecoratorConfigurator struct {
-	chyleConfig *CHYLE
 	config      *envh.EnvTree
 	definedKeys []string
 }
 
-func (j *jiraDecoratorConfigurator) process() (bool, error) {
+func (j *jiraDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 	if j.isDisabled() {
 		return true, nil
 	}
@@ -29,8 +28,8 @@ func (j *jiraDecoratorConfigurator) process() (bool, error) {
 		}
 	}
 
-	j.setKeys()
-	j.setCredentials()
+	j.setKeys(config)
+	j.setCredentials(config)
 
 	return true, nil
 }
@@ -81,15 +80,15 @@ func (j *jiraDecoratorConfigurator) validateKeys() error {
 }
 
 // setCredentials update jira credentials
-func (j *jiraDecoratorConfigurator) setCredentials() {
-	j.chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL")
-	j.chyleConfig.DECORATORS.JIRA.CREDENTIALS.USERNAME = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "USERNAME")
-	j.chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "PASSWORD")
+func (j *jiraDecoratorConfigurator) setCredentials(config *CHYLE) {
+	config.DECORATORS.JIRA.CREDENTIALS.URL = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL")
+	config.DECORATORS.JIRA.CREDENTIALS.USERNAME = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "USERNAME")
+	config.DECORATORS.JIRA.CREDENTIALS.PASSWORD = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "PASSWORD")
 }
 
 // setKeys update jira keys
-func (j *jiraDecoratorConfigurator) setKeys() {
-	j.chyleConfig.DECORATORS.JIRA.KEYS = map[string]string{}
+func (j *jiraDecoratorConfigurator) setKeys(config *CHYLE) {
+	config.DECORATORS.JIRA.KEYS = map[string]string{}
 
 	for _, key := range j.definedKeys {
 		datas := map[string]string{}
@@ -98,6 +97,6 @@ func (j *jiraDecoratorConfigurator) setKeys() {
 			datas[field] = j.config.FindStringUnsecured(append([]string{"CHYLE", "DECORATORS", "JIRA", "KEYS"}, key, field)...)
 		}
 
-		j.chyleConfig.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["FIELD"]
+		config.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["FIELD"]
 	}
 }
