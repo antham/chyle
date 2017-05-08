@@ -8,6 +8,7 @@ import (
 )
 
 // githubRelease follows https://developer.github.com/v3/repos/releases/#create-a-release
+// codebeat:disable[TOO_MANY_IVARS]
 type githubRelease struct {
 	TagName         string `json:"tag_name"`
 	TargetCommitish string `json:"target_commitish,omitempty"`
