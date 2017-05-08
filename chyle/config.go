@@ -77,18 +77,17 @@ type CHYLE struct {
 // Walk traverses struct to populate or validate fields
 func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
 	if walker, ok := map[string]func(*envh.EnvTree, []string) (bool, error){
-		"CHYLE_DECORATORS_ENV":       c.validateAndSetChyleDecoratorsEnv,
-		"CHYLE_DECORATORS_JIRA_KEYS": c.setJiraKeys,
-		"CHYLE_EXTRACTORS":           c.validateChyleExtractors,
-		"CHYLE_FEATURES":             c.setFeatures,
-		"CHYLE_GIT_REFERENCE":        c.validateChyleGitReference,
-		"CHYLE_GIT_REPOSITORY":       c.validateChyleGitRepository,
+		"CHYLE_DECORATORS_ENV": c.validateAndSetChyleDecoratorsEnv,
+		"CHYLE_EXTRACTORS":     c.validateChyleExtractors,
+		"CHYLE_FEATURES":       c.setFeatures,
+		"CHYLE_GIT_REFERENCE":  c.validateChyleGitReference,
+		"CHYLE_GIT_REPOSITORY": c.validateChyleGitRepository,
 	}[strings.Join(keyChain, "_")]; ok {
 		return walker(fullconfig, keyChain)
 	}
 
 	if processor, ok := map[string]func() configurater{
-		"CHYLE_DECORATORS_JIRA": func() configurater { return jiraDecoratorProcessor{fullconfig} },
+		"CHYLE_DECORATORS_JIRA": func() configurater { return jiraDecoratorProcessor{chyleConfig: c, config: fullconfig} },
 		"CHYLE_SENDERS_GITHUB":  func() configurater { return githubSenderProcessor{fullconfig} },
 		"CHYLE_SENDERS_STDOUT":  func() configurater { return stdoutSenderProcessor{fullconfig} },
 		"CHYLE_MATCHERS":        func() configurater { return &matchersConfigurator{chyleConfig: c, config: fullconfig} },
@@ -213,24 +212,6 @@ func (c *CHYLE) setChyleExtractors(fullconfig *envh.EnvTree, keyChain []string) 
 	}
 
 	return nil
-}
-
-func (c *CHYLE) setJiraKeys(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	keys := fullconfig.FindChildrenKeysUnsecured(keyChain...)
-
-	c.DECORATORS.JIRA.KEYS = map[string]string{}
-
-	for _, key := range keys {
-		datas := map[string]string{}
-
-		for _, field := range []string{"DESTKEY", "FIELD"} {
-			datas[field] = fullconfig.FindStringUnsecured(append(keyChain, key, field)...)
-		}
-
-		c.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["FIELD"]
-	}
-
-	return true, nil
 }
 
 func resolveConfig(envConfig *envh.EnvTree) error {

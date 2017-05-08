@@ -9,12 +9,14 @@ import (
 // jiraDecoratorProcessor validates jira config
 // defined through environment variables
 type jiraDecoratorProcessor struct {
-	config *envh.EnvTree
+	chyleConfig *CHYLE
+	config      *envh.EnvTree
+	definedKeys []string
 }
 
 func (j jiraDecoratorProcessor) process() (bool, error) {
 	if j.isDisabled() {
-		return false, nil
+		return true, nil
 	}
 
 	for _, f := range []func() error{
@@ -23,11 +25,13 @@ func (j jiraDecoratorProcessor) process() (bool, error) {
 		j.validateExtractor,
 	} {
 		if err := f(); err != nil {
-			return false, err
+			return true, err
 		}
 	}
 
-	return false, nil
+	j.setKeys()
+
+	return true, nil
 }
 
 // isDisabled checks if jira decorator is enabled
@@ -68,7 +72,24 @@ func (j jiraDecoratorProcessor) validateKeys() error {
 		if err := validateSubConfigPool(j.config, []string{"CHYLE", "DECORATORS", "JIRA", "KEYS", key}, []string{"DESTKEY", "FIELD"}); err != nil {
 			return err
 		}
+
+		j.definedKeys = append(j.definedKeys, key)
 	}
 
 	return nil
+}
+
+// setKeys update jira keys
+func (j jiraDecoratorProcessor) setKeys() {
+	j.chyleConfig.DECORATORS.JIRA.KEYS = map[string]string{}
+
+	for _, key := range j.definedKeys {
+		datas := map[string]string{}
+
+		for _, field := range []string{"DESTKEY", "FIELD"} {
+			datas[field] = j.config.FindStringUnsecured(append([]string{"CHYLE", "DECORATORS", "JIRA", "KEYS"}, key, field)...)
+		}
+
+		j.chyleConfig.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["FIELD"]
+	}
 }
