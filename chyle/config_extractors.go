@@ -16,6 +16,8 @@ func (e *extractorsConfigurator) process(config *CHYLE) (bool, error) {
 		return true, nil
 	}
 
+	config.FEATURES.HASEXTRACTORS = true
+
 	for _, f := range []func() error{
 		e.validateExtractors,
 	} {

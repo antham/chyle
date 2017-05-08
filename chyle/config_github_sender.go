@@ -14,6 +14,9 @@ func (g *githubSenderConfigurator) process(config *CHYLE) (bool, error) {
 		return false, nil
 	}
 
+	config.FEATURES.HASSENDERS = true
+	config.FEATURES.HASGITHUBRELEASESENDER = true
+
 	for _, f := range []func() error{
 		g.validateCredentials,
 		g.validateReleaseMandatoryFields,

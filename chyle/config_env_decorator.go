@@ -16,6 +16,9 @@ func (e *envDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 		return true, nil
 	}
 
+	config.FEATURES.HASDECORATORS = true
+	config.FEATURES.HASENVDECORATOR = true
+
 	for _, f := range []func() error{
 		e.validateEnvironmentVariables,
 	} {

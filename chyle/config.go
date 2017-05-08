@@ -77,7 +77,7 @@ type CHYLE struct {
 // Walk traverses struct to populate or validate fields
 func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
 	if walker, ok := map[string]func(*envh.EnvTree, []string) (bool, error){
-		"CHYLE_FEATURES":       c.setFeatures,
+		"CHYLE_FEATURES":       func(*envh.EnvTree, []string) (bool, error) { return true, nil },
 		"CHYLE_GIT_REFERENCE":  c.validateChyleGitReference,
 		"CHYLE_GIT_REPOSITORY": c.validateChyleGitRepository,
 	}[strings.Join(keyChain, "_")]; ok {
@@ -96,56 +96,6 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	}
 
 	return false, nil
-}
-
-func (c *CHYLE) setFeatures(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	structs := []struct {
-		ref   *bool
-		chain []string
-	}{
-		{
-			&(c.FEATURES.HASDECORATORS),
-			[]string{"CHYLE", "DECORATORS"},
-		},
-		{
-			&(c.FEATURES.HASEXTRACTORS),
-			[]string{"CHYLE", "EXTRACTORS"},
-		},
-		{
-			&(c.FEATURES.HASMATCHERS),
-			[]string{"CHYLE", "MATCHERS"},
-		},
-		{
-			&(c.FEATURES.HASSENDERS),
-			[]string{"CHYLE", "SENDERS"},
-		},
-		{
-			&(c.FEATURES.HASJIRADECORATOR),
-			[]string{"CHYLE", "DECORATORS", "JIRA"},
-		},
-		{
-			&(c.FEATURES.HASENVDECORATOR),
-			[]string{"CHYLE", "DECORATORS", "ENV"},
-		},
-		{
-			&(c.FEATURES.HASGITHUBRELEASESENDER),
-			[]string{"CHYLE", "SENDERS", "GITHUB"},
-		},
-		{
-			&(c.FEATURES.HASSTDOUTSENDER),
-			[]string{"CHYLE", "SENDERS", "STDOUT"},
-		},
-	}
-
-	for _, s := range structs {
-		if fullconfig.IsExistingSubTree(s.chain...) {
-			*(s.ref) = true
-		} else {
-			*(s.ref) = false
-		}
-	}
-
-	return true, nil
 }
 
 func (c *CHYLE) validateChyleGitRepository(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {

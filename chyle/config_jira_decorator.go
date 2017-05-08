@@ -18,6 +18,9 @@ func (j *jiraDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 		return true, nil
 	}
 
+	config.FEATURES.HASDECORATORS = true
+	config.FEATURES.HASJIRADECORATOR = true
+
 	for _, f := range []func() error{
 		j.validateCredentials,
 		j.validateKeys,
