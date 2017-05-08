@@ -6,15 +6,15 @@ import (
 	"github.com/antham/envh"
 )
 
-// jiraDecoratorProcessor validates jira config
+// jiraDecoratorConfigurator validates jira config
 // defined through environment variables
-type jiraDecoratorProcessor struct {
+type jiraDecoratorConfigurator struct {
 	chyleConfig *CHYLE
 	config      *envh.EnvTree
 	definedKeys []string
 }
 
-func (j jiraDecoratorProcessor) process() (bool, error) {
+func (j jiraDecoratorConfigurator) process() (bool, error) {
 	if j.isDisabled() {
 		return true, nil
 	}
@@ -35,7 +35,7 @@ func (j jiraDecoratorProcessor) process() (bool, error) {
 }
 
 // isDisabled checks if jira decorator is enabled
-func (j jiraDecoratorProcessor) isDisabled() bool {
+func (j jiraDecoratorConfigurator) isDisabled() bool {
 	return featureDisabled(j.config, [][]string{
 		{"CHYLE", "DECORATORS", "JIRA"},
 		{"CHYLE", "EXTRACTORS", "JIRAISSUEID"},
@@ -43,12 +43,12 @@ func (j jiraDecoratorProcessor) isDisabled() bool {
 }
 
 // validateExtractor checks if jira issue id extractor is defined
-func (j jiraDecoratorProcessor) validateExtractor() error {
+func (j jiraDecoratorConfigurator) validateExtractor() error {
 	return validateSubConfigPool(j.config, []string{"CHYLE", "EXTRACTORS", "JIRAISSUEID"}, []string{"ORIGKEY", "DESTKEY", "REG"})
 }
 
 // validateCredentials checks jira credentials to access remote api
-func (j jiraDecoratorProcessor) validateCredentials() error {
+func (j jiraDecoratorConfigurator) validateCredentials() error {
 	if err := validateSubConfigPool(j.config, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS"}, []string{"URL", "USERNAME", "PASSWORD"}); err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func (j jiraDecoratorProcessor) validateCredentials() error {
 }
 
 // validateKeys checks key mapping between fields extracted from jira api and fields added to final struct
-func (j jiraDecoratorProcessor) validateKeys() error {
+func (j jiraDecoratorConfigurator) validateKeys() error {
 	keys, err := j.config.FindChildrenKeys("CHYLE", "DECORATORS", "JIRA", "KEYS")
 
 	if err != nil {
@@ -80,7 +80,7 @@ func (j jiraDecoratorProcessor) validateKeys() error {
 }
 
 // setKeys update jira keys
-func (j jiraDecoratorProcessor) setKeys() {
+func (j jiraDecoratorConfigurator) setKeys() {
 	j.chyleConfig.DECORATORS.JIRA.KEYS = map[string]string{}
 
 	for _, key := range j.definedKeys {

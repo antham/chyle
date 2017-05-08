@@ -4,15 +4,15 @@ import (
 	"github.com/antham/envh"
 )
 
-// envDecoratorProcessor validates environment variables decorator config
+// envDecoratorConfigurator validates environment variables decorator config
 // defined through environment variables
-type envDecoratorProcessor struct {
+type envDecoratorConfigurator struct {
 	chyleConfig *CHYLE
 	config      *envh.EnvTree
 	definedKeys []string
 }
 
-func (e envDecoratorProcessor) process() (bool, error) {
+func (e envDecoratorConfigurator) process() (bool, error) {
 	if e.isDisabled() {
 		return true, nil
 	}
@@ -31,12 +31,12 @@ func (e envDecoratorProcessor) process() (bool, error) {
 }
 
 // isDisabled checks if environment variable decorator is enabled
-func (e envDecoratorProcessor) isDisabled() bool {
+func (e envDecoratorConfigurator) isDisabled() bool {
 	return featureDisabled(e.config, [][]string{{"CHYLE", "DECORATORS", "ENV"}})
 }
 
 // validateEnvironmentVariables checks env pairs are defined
-func (e envDecoratorProcessor) validateEnvironmentVariables() error {
+func (e envDecoratorConfigurator) validateEnvironmentVariables() error {
 	for _, key := range e.config.FindChildrenKeysUnsecured("CHYLE", "DECORATORS", "ENV") {
 		if err := validateSubConfigPool(e.config, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "VARNAME"}); err != nil {
 			return err
@@ -49,7 +49,7 @@ func (e envDecoratorProcessor) validateEnvironmentVariables() error {
 }
 
 // setEnvDecorator update decorator environment variables
-func (e envDecoratorProcessor) setEnvDecorator() {
+func (e envDecoratorConfigurator) setEnvDecorator() {
 	e.chyleConfig.DECORATORS.ENV = map[string]map[string]string{}
 
 	for _, key := range e.definedKeys {
