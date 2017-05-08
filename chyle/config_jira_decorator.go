@@ -30,6 +30,7 @@ func (j *jiraDecoratorConfigurator) process() (bool, error) {
 	}
 
 	j.setKeys()
+	j.setCredentials()
 
 	return true, nil
 }
@@ -77,6 +78,13 @@ func (j *jiraDecoratorConfigurator) validateKeys() error {
 	}
 
 	return nil
+}
+
+// setCredentials update jira credentials
+func (j *jiraDecoratorConfigurator) setCredentials() {
+	j.chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL")
+	j.chyleConfig.DECORATORS.JIRA.CREDENTIALS.USERNAME = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "USERNAME")
+	j.chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "PASSWORD")
 }
 
 // setKeys update jira keys
