@@ -14,6 +14,8 @@ type configurater interface {
 
 var chyleConfig CHYLE
 
+// codebeat:disable[TOO_MANY_IVARS]
+
 // CHYLE hold config extracted from environment variables
 type CHYLE struct {
 	FEATURES struct {
@@ -73,6 +75,8 @@ type CHYLE struct {
 		}
 	}
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // Walk traverses struct to populate or validate fields
 func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {

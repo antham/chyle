@@ -7,8 +7,9 @@ import (
 	"net/http"
 )
 
-// githubRelease follows https://developer.github.com/v3/repos/releases/#create-a-release
 // codebeat:disable[TOO_MANY_IVARS]
+
+// githubRelease follows https://developer.github.com/v3/repos/releases/#create-a-release
 type githubRelease struct {
 	TagName         string `json:"tag_name"`
 	TargetCommitish string `json:"target_commitish,omitempty"`
@@ -17,6 +18,8 @@ type githubRelease struct {
 	Draft           bool   `json:"draft,omitempty"`
 	PreRelease      bool   `json:"prerelease,omitempty"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // ErrGithubSender handles error regarding github api
 // it outputs direct errors coming from request bu as well
