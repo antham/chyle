@@ -77,7 +77,6 @@ type CHYLE struct {
 // Walk traverses struct to populate or validate fields
 func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
 	if walker, ok := map[string]func(*envh.EnvTree, []string) (bool, error){
-		"CHYLE_DECORATORS_ENV": c.validateAndSetChyleDecoratorsEnv,
 		"CHYLE_EXTRACTORS":     c.validateChyleExtractors,
 		"CHYLE_FEATURES":       c.setFeatures,
 		"CHYLE_GIT_REFERENCE":  c.validateChyleGitReference,
@@ -87,6 +86,7 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	}
 
 	if processor, ok := map[string]func() configurater{
+		"CHYLE_DECORATORS_ENV":  func() configurater { return envDecoratorProcessor{chyleConfig: c, config: fullconfig} },
 		"CHYLE_DECORATORS_JIRA": func() configurater { return jiraDecoratorProcessor{chyleConfig: c, config: fullconfig} },
 		"CHYLE_SENDERS_GITHUB":  func() configurater { return githubSenderProcessor{fullconfig} },
 		"CHYLE_SENDERS_STDOUT":  func() configurater { return stdoutSenderProcessor{fullconfig} },
@@ -154,28 +154,6 @@ func (c *CHYLE) validateChyleGitRepository(fullconfig *envh.EnvTree, keyChain []
 
 func (c *CHYLE) validateChyleGitReference(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
 	return false, validateSubConfigPool(fullconfig, []string{"CHYLE", "GIT", "REFERENCE"}, []string{"FROM", "TO"})
-}
-
-func (c *CHYLE) validateAndSetChyleDecoratorsEnv(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	if featureDisabled(fullconfig, [][]string{{"CHYLE", "DECORATORS", "ENV"}}) {
-		return true, nil
-	}
-
-	c.DECORATORS.ENV = map[string]map[string]string{}
-
-	for _, key := range fullconfig.FindChildrenKeysUnsecured("CHYLE", "DECORATORS", "ENV") {
-		c.DECORATORS.ENV[key] = map[string]string{}
-
-		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "VARNAME"}); err != nil {
-			return true, err
-		}
-
-		for _, field := range []string{"DESTKEY", "VARNAME"} {
-			c.DECORATORS.ENV[key][field] = fullconfig.FindStringUnsecured("CHYLE", "DECORATORS", "ENV", key, field)
-		}
-	}
-
-	return true, nil
 }
 
 func (c *CHYLE) validateChyleExtractors(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
