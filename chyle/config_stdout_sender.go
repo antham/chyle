@@ -20,11 +20,7 @@ func (s *stdoutSenderConfigurator) process(config *CHYLE) (bool, error) {
 	config.FEATURES.HASSENDERS = true
 	config.FEATURES.HASSTDOUTSENDER = true
 
-	if err := s.validateFormat(); err != nil {
-		return false, err
-	}
-
-	return false, nil
+	return false, s.validateFormat()
 }
 
 // isDisabled checks if stdout sender is enabled
