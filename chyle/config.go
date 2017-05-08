@@ -77,7 +77,6 @@ type CHYLE struct {
 // Walk traverses struct to populate or validate fields
 func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
 	if walker, ok := map[string]func(*envh.EnvTree, []string) (bool, error){
-		"CHYLE_EXTRACTORS":     c.validateChyleExtractors,
 		"CHYLE_FEATURES":       c.setFeatures,
 		"CHYLE_GIT_REFERENCE":  c.validateChyleGitReference,
 		"CHYLE_GIT_REPOSITORY": c.validateChyleGitRepository,
@@ -86,6 +85,7 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	}
 
 	if processor, ok := map[string]func() configurater{
+		"CHYLE_EXTRACTORS":      func() configurater { return &extractorsConfigurator{chyleConfig: c, config: fullconfig} },
 		"CHYLE_DECORATORS_ENV":  func() configurater { return &envDecoratorConfigurator{chyleConfig: c, config: fullconfig} },
 		"CHYLE_DECORATORS_JIRA": func() configurater { return &jiraDecoratorConfigurator{chyleConfig: c, config: fullconfig} },
 		"CHYLE_SENDERS_GITHUB":  func() configurater { return githubSenderConfigurator{fullconfig} },
@@ -154,42 +154,6 @@ func (c *CHYLE) validateChyleGitRepository(fullconfig *envh.EnvTree, keyChain []
 
 func (c *CHYLE) validateChyleGitReference(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
 	return false, validateSubConfigPool(fullconfig, []string{"CHYLE", "GIT", "REFERENCE"}, []string{"FROM", "TO"})
-}
-
-func (c *CHYLE) validateChyleExtractors(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	if featureDisabled(fullconfig, [][]string{{"CHYLE", "EXTRACTORS"}}) {
-		return true, nil
-	}
-
-	for _, key := range fullconfig.FindChildrenKeysUnsecured("CHYLE", "EXTRACTORS") {
-		if err := validateSubConfigPool(fullconfig, []string{"CHYLE", "EXTRACTORS", key}, []string{"ORIGKEY", "DESTKEY", "REG"}); err != nil {
-			return true, err
-		}
-	}
-
-	return true, c.setChyleExtractors(fullconfig, keyChain)
-}
-
-func (c *CHYLE) setChyleExtractors(fullconfig *envh.EnvTree, keyChain []string) error {
-	c.EXTRACTORS = map[string]map[string]string{}
-
-	for _, key := range fullconfig.FindChildrenKeysUnsecured(keyChain...) {
-		c.EXTRACTORS[key] = map[string]string{}
-
-		for _, field := range []string{"ORIGKEY", "DESTKEY", "REG"} {
-			chain := []string{"CHYLE", "EXTRACTORS", key, field}
-
-			value := fullconfig.FindStringUnsecured(chain...)
-
-			if err := validateRegexp(fullconfig, chain); err != nil {
-				return err
-			}
-
-			c.EXTRACTORS[key][field] = value
-		}
-	}
-
-	return nil
 }
 
 func resolveConfig(envConfig *envh.EnvTree) error {
