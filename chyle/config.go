@@ -86,8 +86,8 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	}
 
 	if processor, ok := map[string]func() configurater{
-		"CHYLE_DECORATORS_ENV":  func() configurater { return envDecoratorConfigurator{chyleConfig: c, config: fullconfig} },
-		"CHYLE_DECORATORS_JIRA": func() configurater { return jiraDecoratorConfigurator{chyleConfig: c, config: fullconfig} },
+		"CHYLE_DECORATORS_ENV":  func() configurater { return &envDecoratorConfigurator{chyleConfig: c, config: fullconfig} },
+		"CHYLE_DECORATORS_JIRA": func() configurater { return &jiraDecoratorConfigurator{chyleConfig: c, config: fullconfig} },
 		"CHYLE_SENDERS_GITHUB":  func() configurater { return githubSenderConfigurator{fullconfig} },
 		"CHYLE_SENDERS_STDOUT":  func() configurater { return stdoutSenderConfigurator{fullconfig} },
 		"CHYLE_MATCHERS":        func() configurater { return &matchersConfigurator{chyleConfig: c, config: fullconfig} },
