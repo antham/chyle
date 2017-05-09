@@ -1,105 +1,38 @@
 package chyle
 
 import (
-	"fmt"
-
 	"github.com/antham/envh"
 )
 
-// jiraDecoratorConfigurator validates jira config
-// defined through environment variables
-type jiraDecoratorConfigurator struct {
-	config      *envh.EnvTree
-	definedKeys []string
-}
-
-func (j *jiraDecoratorConfigurator) process(config *CHYLE) (bool, error) {
-	if j.isDisabled() {
-		return true, nil
-	}
-
-	config.FEATURES.HASDECORATORS = true
-	config.FEATURES.HASJIRADECORATOR = true
-
-	for _, f := range []func() error{
-		j.validateCredentials,
-		j.validateKeys,
-		j.validateExtractor,
-	} {
-		if err := f(); err != nil {
-			return true, err
-		}
-	}
-
-	j.setKeys(config)
-	j.setCredentials(config)
-
-	return true, nil
-}
-
-// isDisabled checks if jira decorator is enabled
-func (j *jiraDecoratorConfigurator) isDisabled() bool {
-	return featureDisabled(j.config, [][]string{
-		{"CHYLE", "DECORATORS", "JIRA"},
-		{"CHYLE", "EXTRACTORS", "JIRAISSUEID"},
-	})
-}
-
-// validateExtractor checks if jira issue id extractor is defined
-func (j *jiraDecoratorConfigurator) validateExtractor() error {
-	return validateSubConfigPool(j.config, []string{"CHYLE", "EXTRACTORS", "JIRAISSUEID"}, []string{"ORIGKEY", "DESTKEY", "REG"})
-}
-
-// validateCredentials checks jira credentials to access remote api
-func (j *jiraDecoratorConfigurator) validateCredentials() error {
-	if err := validateSubConfigPool(j.config, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS"}, []string{"URL", "USERNAME", "PASSWORD"}); err != nil {
-		return err
-	}
-
-	if err := validateURL(j.config, []string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL"}); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateKeys checks key mapping between fields extracted from jira api and fields added to final struct
-func (j *jiraDecoratorConfigurator) validateKeys() error {
-	keys, err := j.config.FindChildrenKeys("CHYLE", "DECORATORS", "JIRA", "KEYS")
-
-	if err != nil {
-		return fmt.Errorf(`define at least one environment variable couple "CHYLE_DECORATORS_JIRA_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_JIRA_KEYS_*_FIELD", replace "*" with your own naming`)
-	}
-
-	for _, key := range keys {
-		if err := validateSubConfigPool(j.config, []string{"CHYLE", "DECORATORS", "JIRA", "KEYS", key}, []string{"DESTKEY", "FIELD"}); err != nil {
-			return err
-		}
-
-		j.definedKeys = append(j.definedKeys, key)
-	}
-
-	return nil
-}
-
-// setCredentials update jira credentials
-func (j *jiraDecoratorConfigurator) setCredentials(config *CHYLE) {
-	config.DECORATORS.JIRA.CREDENTIALS.URL = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL")
-	config.DECORATORS.JIRA.CREDENTIALS.USERNAME = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "USERNAME")
-	config.DECORATORS.JIRA.CREDENTIALS.PASSWORD = j.config.FindStringUnsecured("CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "PASSWORD")
-}
-
-// setKeys update jira keys
-func (j *jiraDecoratorConfigurator) setKeys(config *CHYLE) {
-	config.DECORATORS.JIRA.KEYS = map[string]string{}
-
-	for _, key := range j.definedKeys {
-		datas := map[string]string{}
-
-		for _, field := range []string{"DESTKEY", "FIELD"} {
-			datas[field] = j.config.FindStringUnsecured(append([]string{"CHYLE", "DECORATORS", "JIRA", "KEYS"}, key, field)...)
-		}
-
-		config.DECORATORS.JIRA.KEYS[datas["DESTKEY"]] = datas["FIELD"]
+// jiraDecoratorConfigurator creates a jira configurater from apiDecoratorConfigurator
+func jiraDecoratorConfigurator(config *envh.EnvTree) configurater {
+	return &apiDecoratorConfigurator{
+		config: config,
+		apiDecoratorConfig: apiDecoratorConfig{
+			"JIRAISSUEID",
+			"JIRA",
+			&chyleConfig.DECORATORS.JIRA.KEYS,
+			[]struct {
+				ref      *string
+				keyChain []string
+			}{
+				{
+					&chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL,
+					[]string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "URL"},
+				},
+				{
+					&chyleConfig.DECORATORS.JIRA.CREDENTIALS.USERNAME,
+					[]string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "USERNAME"},
+				},
+				{
+					&chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD,
+					[]string{"CHYLE", "DECORATORS", "JIRA", "CREDENTIALS", "PASSWORD"},
+				},
+			},
+			[]*bool{
+				&chyleConfig.FEATURES.HASDECORATORS,
+				&chyleConfig.FEATURES.HASJIRADECORATOR,
+			},
+		},
 	}
 }

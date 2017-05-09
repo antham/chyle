@@ -90,7 +90,7 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 
 	if processor, ok := map[string]func() configurater{
 		"CHYLE_DECORATORS_ENV":  func() configurater { return &envDecoratorConfigurator{config: fullconfig} },
-		"CHYLE_DECORATORS_JIRA": func() configurater { return &jiraDecoratorConfigurator{config: fullconfig} },
+		"CHYLE_DECORATORS_JIRA": func() configurater { return jiraDecoratorConfigurator(fullconfig) },
 		"CHYLE_EXTRACTORS":      func() configurater { return &extractorsConfigurator{config: fullconfig} },
 		"CHYLE_MATCHERS":        func() configurater { return &matchersConfigurator{config: fullconfig} },
 		"CHYLE_SENDERS_GITHUB":  func() configurater { return &githubSenderConfigurator{config: fullconfig} },
