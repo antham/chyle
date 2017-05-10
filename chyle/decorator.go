@@ -66,9 +66,17 @@ func createDecorators() *map[string][]decorater {
 	return &results
 }
 
-// decorateMapFromJSONResponse fetch JSON datas and add the result to original commitMap array
-func decorateMapFromJSONResponse(client *http.Client, request *http.Request, keys map[string]string, commitMap *map[string]interface{}) (*map[string]interface{}, error) {
-	rep, err := client.Do(request)
+// jSONResponseDecorator extracts datas from a JSON api using defined keys
+// and add it to final commitMap data structure
+type jSONResponseDecorator struct {
+	client  *http.Client
+	request *http.Request
+	pairs   map[string]string
+}
+
+// decorate fetch JSON datas and add the result to original commitMap array
+func (j jSONResponseDecorator) decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+	rep, err := j.client.Do(j.request)
 
 	if err != nil {
 		return commitMap, err
@@ -81,7 +89,7 @@ func decorateMapFromJSONResponse(client *http.Client, request *http.Request, key
 		return commitMap, err
 	}
 
-	for identifier, key := range keys {
+	for identifier, key := range j.pairs {
 		(*commitMap)[identifier] = nil
 
 		if gjson.Get(buf.String(), key).Exists() {

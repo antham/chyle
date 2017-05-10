@@ -27,7 +27,7 @@ func (j jiraIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[st
 	req.SetBasicAuth(chyleConfig.DECORATORS.JIRA.CREDENTIALS.USERNAME, chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD)
 	req.Header.Set("Content-Type", "application/json")
 
-	return decorateMapFromJSONResponse(&j.client, req, chyleConfig.DECORATORS.JIRA.KEYS, commitMap)
+	return jSONResponseDecorator{&j.client, req, chyleConfig.DECORATORS.JIRA.KEYS}.decorate(commitMap)
 }
 
 // buildJiraIssueDecorator create a new jira ticket decorator
