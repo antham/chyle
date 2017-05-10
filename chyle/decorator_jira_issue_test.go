@@ -16,6 +16,7 @@ func TestJiraDecorator(t *testing.T) {
 	chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD = "test"
 	chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL = "http://test.com"
 	chyleConfig.DECORATORS.JIRA.KEYS["jiraIssueKey"] = "key"
+	chyleConfig.DECORATORS.JIRA.KEYS["whatever"] = "whatever"
 
 	defer gock.Off()
 
@@ -34,6 +35,7 @@ func TestJiraDecorator(t *testing.T) {
 		"test":         "test",
 		"jiraIssueId":  "10000",
 		"jiraIssueKey": "EX-1",
+		"whatever":     nil,
 	}
 
 	assert.NoError(t, err, "Must return no errors")
