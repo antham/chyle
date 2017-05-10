@@ -4,7 +4,11 @@ go:
   - 1.8
 
 before_install:
-  - export PATH=$PATH:/tmp/
+  - export BIN_PATH=$HOME/bin
+  - mkdir $BIN_PATH
+  - export PATH=$BIN_PATH:$PATH
+  - wget -O $BIN_PATH/doc-hunt https://github.com/antham/doc-hunt/releases/download/v2.1.1/doc-hunt_linux_amd64
+  - chmod 777 $BIN_PATH/doc-hunt
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo
   - go get github.com/Masterminds/glide
