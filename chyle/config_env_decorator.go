@@ -40,7 +40,7 @@ func (e *envDecoratorConfigurator) isDisabled() bool {
 // validateEnvironmentVariables checks env pairs are defined
 func (e *envDecoratorConfigurator) validateEnvironmentVariables() error {
 	for _, key := range e.config.FindChildrenKeysUnsecured("CHYLE", "DECORATORS", "ENV") {
-		if err := validateSubConfigPool(e.config, []string{"CHYLE", "DECORATORS", "ENV", key}, []string{"DESTKEY", "VARNAME"}); err != nil {
+		if err := validateEnvironmentVariablesDefinition(e.config, [][]string{{"CHYLE", "DECORATORS", "ENV", key, "DESTKEY"}, {"CHYLE", "DECORATORS", "ENV", key, "VARNAME"}}); err != nil {
 			return err
 		}
 

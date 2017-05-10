@@ -25,14 +25,14 @@ func (e ErrMissingEnvVar) Error() string {
 	}
 }
 
-func validateSubConfigPool(conf *envh.EnvTree, prefix []string, keys []string) error {
+func validateEnvironmentVariablesDefinition(conf *envh.EnvTree, keyChains [][]string) error {
 	undefinedKeys := []string{}
 
-	for _, key := range keys {
-		ok, err := conf.HasSubTreeValue(append(prefix, key)...)
+	for _, keyChain := range keyChains {
+		ok, err := conf.HasSubTreeValue(keyChain...)
 
 		if !ok || err != nil {
-			undefinedKeys = append(undefinedKeys, strings.Join(append(prefix, key), "_"))
+			undefinedKeys = append(undefinedKeys, strings.Join(keyChain, "_"))
 		}
 	}
 

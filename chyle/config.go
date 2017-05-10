@@ -103,11 +103,11 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 }
 
 func (c *CHYLE) validateChyleGitRepository(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	return false, validateSubConfigPool(fullconfig, []string{"CHYLE", "GIT", "REPOSITORY"}, []string{"PATH"})
+	return false, validateEnvironmentVariablesDefinition(fullconfig, [][]string{{"CHYLE", "GIT", "REPOSITORY", "PATH"}})
 }
 
 func (c *CHYLE) validateChyleGitReference(fullconfig *envh.EnvTree, keyChain []string) (bool, error) {
-	return false, validateSubConfigPool(fullconfig, []string{"CHYLE", "GIT", "REFERENCE"}, []string{"FROM", "TO"})
+	return false, validateEnvironmentVariablesDefinition(fullconfig, [][]string{{"CHYLE", "GIT", "REFERENCE", "FROM"}, {"CHYLE", "GIT", "REFERENCE", "TO"}})
 }
 
 func resolveConfig(envConfig *envh.EnvTree) error {
