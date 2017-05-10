@@ -35,7 +35,7 @@ func (j jiraIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[st
 	return decorateMapFromJSONResponse(&j.client, req, chyleConfig.DECORATORS.JIRA.KEYS, commitMap)
 }
 
-// buildJiraDecorator create a new jira ticket decorator
-func buildJiraDecorator() decorater {
+// buildJiraIssueDecorator create a new jira ticket decorator
+func buildJiraIssueDecorator() decorater {
 	return jiraIssueDecorator{http.Client{}}
 }

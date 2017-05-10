@@ -56,7 +56,7 @@ func createDecorators() *map[string][]decorater {
 	results := map[string][]decorater{"metadatas": {}, "datas": {}}
 
 	if chyleConfig.FEATURES.HASJIRADECORATOR {
-		results["datas"] = append(results["datas"], buildJiraDecorator())
+		results["datas"] = append(results["datas"], buildJiraIssueDecorator())
 	}
 
 	if chyleConfig.FEATURES.HASENVDECORATOR {
