@@ -64,17 +64,29 @@ func (a *apiDecoratorConfigurator) isDisabled() bool {
 // validateExtractor checks if an extractor is defined to get
 // data needed to contact remote api
 func (a *apiDecoratorConfigurator) validateExtractor() error {
-	return validateSubConfigPool(a.config, []string{"CHYLE", "EXTRACTORS", a.extractorKey}, []string{"ORIGKEY", "DESTKEY", "REG"})
+	return validateEnvironmentVariablesDefinition(a.config, [][]string{{"CHYLE", "EXTRACTORS", a.extractorKey, "ORIGKEY"}, {"CHYLE", "EXTRACTORS", a.extractorKey, "DESTKEY"}, {"CHYLE", "EXTRACTORS", a.extractorKey, "REG"}})
 }
 
 // validateCredentials checks credentials are defined to contact api
 func (a *apiDecoratorConfigurator) validateCredentials() error {
-	if err := validateSubConfigPool(a.config, []string{"CHYLE", "DECORATORS", a.decoratorKey, "CREDENTIALS"}, []string{"URL", "USERNAME", "PASSWORD"}); err != nil {
+	keyChains := [][]string{}
+
+	for _, ref := range a.credentialsRefs {
+		keyChains = append(keyChains, ref.keyChain)
+	}
+
+	if err := validateEnvironmentVariablesDefinition(a.config, keyChains); err != nil {
 		return err
 	}
 
-	if err := validateURL(a.config, []string{"CHYLE", "DECORATORS", a.decoratorKey, "CREDENTIALS", "URL"}); err != nil {
-		return err
+	for _, keyChain := range keyChains {
+		if keyChain[len(keyChain)-1] != "URL" {
+			continue
+		}
+
+		if err := validateURL(a.config, keyChain); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -89,7 +101,7 @@ func (a *apiDecoratorConfigurator) validateKeys() error {
 	}
 
 	for _, key := range keys {
-		if err := validateSubConfigPool(a.config, []string{"CHYLE", "DECORATORS", a.decoratorKey, "KEYS", key}, []string{"DESTKEY", "FIELD"}); err != nil {
+		if err := validateEnvironmentVariablesDefinition(a.config, [][]string{{"CHYLE", "DECORATORS", a.decoratorKey, "KEYS", key, "DESTKEY"}, {"CHYLE", "DECORATORS", a.decoratorKey, "KEYS", key, "FIELD"}}); err != nil {
 			return err
 		}
 

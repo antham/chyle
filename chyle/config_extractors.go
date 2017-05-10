@@ -39,7 +39,7 @@ func (e *extractorsConfigurator) isDisabled() bool {
 // validateExtractors checks threesome extractor fields
 func (e *extractorsConfigurator) validateExtractors() error {
 	for _, key := range e.config.FindChildrenKeysUnsecured("CHYLE", "EXTRACTORS") {
-		if err := validateSubConfigPool(e.config, []string{"CHYLE", "EXTRACTORS", key}, []string{"ORIGKEY", "DESTKEY", "REG"}); err != nil {
+		if err := validateEnvironmentVariablesDefinition(e.config, [][]string{{"CHYLE", "EXTRACTORS", key, "ORIGKEY"}, {"CHYLE", "EXTRACTORS", key, "DESTKEY"}, {"CHYLE", "EXTRACTORS", key, "REG"}}); err != nil {
 			return err
 		}
 

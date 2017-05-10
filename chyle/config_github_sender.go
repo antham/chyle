@@ -37,12 +37,12 @@ func (g *githubSenderConfigurator) isDisabled() bool {
 
 // validateCredentials checks github credentials to access remote api
 func (g *githubSenderConfigurator) validateCredentials() error {
-	return validateSubConfigPool(g.config, []string{"CHYLE", "SENDERS", "GITHUB", "CREDENTIALS"}, []string{"OAUTHTOKEN", "OWNER"})
+	return validateEnvironmentVariablesDefinition(g.config, [][]string{{"CHYLE", "SENDERS", "GITHUB", "CREDENTIALS", "OAUTHTOKEN"}, {"CHYLE", "SENDERS", "GITHUB", "CREDENTIALS", "OWNER"}})
 }
 
 // validateReleaseMandatoryFields checks release mandatory field definition
 func (g *githubSenderConfigurator) validateReleaseMandatoryFields() error {
-	if err := validateSubConfigPool(g.config, []string{"CHYLE", "SENDERS", "GITHUB", "RELEASE"}, []string{"TAGNAME", "TEMPLATE"}); err != nil {
+	if err := validateEnvironmentVariablesDefinition(g.config, [][]string{{"CHYLE", "SENDERS", "GITHUB", "RELEASE", "TAGNAME"}, {"CHYLE", "SENDERS", "GITHUB", "RELEASE", "TEMPLATE"}}); err != nil {
 		return err
 	}
 
@@ -55,5 +55,5 @@ func (g *githubSenderConfigurator) validateReleaseMandatoryFields() error {
 
 // validateRepositoryName checks if github repository name is defined
 func (g *githubSenderConfigurator) validateRepositoryName() error {
-	return validateSubConfigPool(g.config, []string{"CHYLE", "SENDERS", "GITHUB", "REPOSITORY"}, []string{"NAME"})
+	return validateEnvironmentVariablesDefinition(g.config, [][]string{{"CHYLE", "SENDERS", "GITHUB", "REPOSITORY", "NAME"}})
 }
