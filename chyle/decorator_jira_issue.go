@@ -12,15 +12,10 @@ type jiraIssueDecorator struct {
 // decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
 func (j jiraIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
+	var ok bool
 
-	if data, ok := (*commitMap)["jiraIssueId"]; true {
-		if !ok {
-			return commitMap, nil
-		}
-
-		if data, ok := data.(string); ok {
-			ID = data
-		}
+	if ID, ok = (*commitMap)["jiraIssueId"].(string); !ok {
+		return commitMap, nil
 	}
 
 	req, err := http.NewRequest("GET", chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL+"/rest/api/2/issue/"+ID, nil)
