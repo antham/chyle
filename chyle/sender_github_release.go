@@ -20,19 +20,6 @@ type githubRelease struct {
 }
 
 // codebeat:enable[TOO_MANY_IVARS]
-
-// ErrGithubSender handles error regarding github api
-// it outputs direct errors coming from request bu as well
-// api return payload
-type ErrGithubSender struct {
-	msg string
-	err error
-}
-
-func (e ErrGithubSender) Error() string {
-	return fmt.Sprintf("%s : %s", e.msg, e.err)
-}
-
 // buildGithubReleaseSender create a new GithubReleaseSender object from viper config
 func buildGithubReleaseSender() sender {
 	return newGithubReleaseSender(&http.Client{})
@@ -70,8 +57,6 @@ func (g githubReleaseSender) buildBody(changelog *Changelog) ([]byte, error) {
 
 // createRelease creates a release on github
 func (g githubReleaseSender) createRelease(body []byte) error {
-	errMsg := "can't create github release"
-
 	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", chyleConfig.SENDERS.GITHUB.CREDENTIALS.OWNER, chyleConfig.SENDERS.GITHUB.REPOSITORY.NAME)
 
 	req, err := http.NewRequest("POST", URL, bytes.NewBuffer(body))
@@ -86,17 +71,9 @@ func (g githubReleaseSender) createRelease(body []byte) error {
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
-	status, body, err := sendRequest(g.client, req)
+	_, _, err = sendRequest(g.client, req)
 
-	if err != nil {
-		return ErrGithubSender{errMsg, err}
-	}
-
-	if status != 201 {
-		return ErrGithubSender{errMsg, fmt.Errorf(string(body))}
-	}
-
-	return nil
+	return addCustomMessageToError("can't create github release", err)
 }
 
 // getReleaseID retrieves github release ID from a given tag name
@@ -122,20 +99,16 @@ func (g githubReleaseSender) getReleaseID() (int, error) {
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
-	status, body, err := sendRequest(g.client, req)
+	_, body, err := sendRequest(g.client, req)
 
 	if err != nil {
-		return 0, ErrGithubSender{errMsg, err}
-	}
-
-	if status != 200 {
-		return 0, ErrGithubSender{errMsg, fmt.Errorf(string(body))}
+		return 0, addCustomMessageToError(errMsg, err)
 	}
 
 	err = json.Unmarshal(body, &release)
 
 	if err != nil {
-		return 0, ErrGithubSender{errMsg, fmt.Errorf("can't decode json body")}
+		return 0, addCustomMessageToError(errMsg, err)
 	}
 
 	return release.ID, nil
@@ -149,7 +122,6 @@ func (g githubReleaseSender) updateRelease(body []byte) error {
 		return err
 	}
 
-	errMsg := fmt.Sprintf("can't update github release %s", chyleConfig.SENDERS.GITHUB.RELEASE.TAGNAME)
 	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/%d", chyleConfig.SENDERS.GITHUB.CREDENTIALS.OWNER, chyleConfig.SENDERS.GITHUB.REPOSITORY.NAME, ID)
 
 	req, err := http.NewRequest("PATCH", URL, bytes.NewBuffer(body))
@@ -164,17 +136,9 @@ func (g githubReleaseSender) updateRelease(body []byte) error {
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
-	status, body, err := sendRequest(g.client, req)
+	_, _, err = sendRequest(g.client, req)
 
-	if err != nil {
-		return ErrGithubSender{errMsg, err}
-	}
-
-	if status != 200 {
-		return ErrGithubSender{errMsg, fmt.Errorf(string(body))}
-	}
-
-	return nil
+	return addCustomMessageToError(fmt.Sprintf("can't update github release %s", chyleConfig.SENDERS.GITHUB.RELEASE.TAGNAME), err)
 }
 
 // Send push changelog to github release
