@@ -1,6 +1,7 @@
 package chyle
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -11,14 +12,18 @@ type jiraIssueDecorator struct {
 
 // decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
 func (j jiraIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
-	var ID string
-	var ok bool
+	var URLpattern string
 
-	if ID, ok = (*commitMap)["jiraIssueId"].(string); !ok {
+	switch (*commitMap)["jiraIssueId"].(type) {
+	case string:
+		URLpattern = "%s/rest/api/2/issue/%s"
+	case int64:
+		URLpattern = "%s/rest/api/2/issue/%d"
+	default:
 		return commitMap, nil
 	}
 
-	req, err := http.NewRequest("GET", chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL+"/rest/api/2/issue/"+ID, nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(URLpattern, chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL, (*commitMap)["jiraIssueId"]), nil)
 
 	if err != nil {
 		return commitMap, err
