@@ -76,18 +76,13 @@ type jSONResponseDecorator struct {
 
 // decorate fetch JSON datas and add the result to original commitMap array
 func (j jSONResponseDecorator) decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
-	rep, err := j.client.Do(j.request)
+	_, body, err := sendRequest(j.client, j.request)
 
 	if err != nil {
 		return commitMap, err
 	}
 
-	buf := bytes.NewBuffer([]byte{})
-	err = rep.Write(buf)
-
-	if err != nil {
-		return commitMap, err
-	}
+	buf := bytes.NewBuffer(body)
 
 	for identifier, key := range j.pairs {
 		(*commitMap)[identifier] = nil
