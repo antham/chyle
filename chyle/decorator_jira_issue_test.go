@@ -24,22 +24,40 @@ func TestJiraDecorator(t *testing.T) {
 		Reply(200).
 		BodyString(`{"expand":"renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations","id":"10000","self":"http://test.com/jira/rest/api/2/issue/10000","key":"EX-1","names":{"watcher":"watcher","attachment":"attachment","sub-tasks":"sub-tasks","description":"description","project":"project","comment":"comment","issuelinks":"issuelinks","worklog":"worklog","updated":"updated","timetracking":"timetracking"	}}`)
 
+	gock.New("http://test.com/rest/api/2/issue/EX-1").
+		Reply(200).
+		BodyString(`{"expand":"renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations","id":"10000","self":"http://test.com/jira/rest/api/2/issue/10000","key":"EX-1","names":{"watcher":"watcher","attachment":"attachment","sub-tasks":"sub-tasks","description":"description","project":"project","comment":"comment","issuelinks":"issuelinks","worklog":"worklog","updated":"updated","timetracking":"timetracking"	}}`)
+
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
 	j := jiraIssueDecorator{*client}
 
-	result, err := j.decorate(&map[string]interface{}{"test": "test", "jiraIssueId": "10000"})
+	// request with issue id
+	result, err := j.decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
 
 	expected := map[string]interface{}{
 		"test":         "test",
-		"jiraIssueId":  "10000",
+		"jiraIssueId":  int64(10000),
 		"jiraIssueKey": "EX-1",
 		"whatever":     nil,
 	}
 
-	assert.NoError(t, err, "Must return no errors")
-	assert.Equal(t, expected, *result, "Must return same struct than the one submitted")
+	assert.NoError(t, err)
+	assert.Equal(t, expected, *result)
+
+	// request with issue key
+	result, err = j.decorate(&map[string]interface{}{"test": "test", "jiraIssueId": "EX-1"})
+
+	expected = map[string]interface{}{
+		"test":         "test",
+		"jiraIssueId":  "EX-1",
+		"jiraIssueKey": "EX-1",
+		"whatever":     nil,
+	}
+
+	assert.NoError(t, err)
+	assert.Equal(t, expected, *result)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
