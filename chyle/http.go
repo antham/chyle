@@ -19,6 +19,18 @@ func (e ErrCantReadHTTPResponse) Error() string {
 	return fmt.Sprintf("can't read http response from %s", e.URL)
 }
 
+// ErrWrongHTTPStatusCode is triggered when status code is greater or equal to
+// 400
+type ErrWrongHTTPStatusCode struct {
+	request *http.Request
+	body    []byte
+}
+
+// Error output error as string
+func (e ErrWrongHTTPStatusCode) Error() string {
+	return fmt.Sprintf("an error occured when contacting remote api through %s, status code %d, body %s", e.request.URL, e.request.Response.StatusCode, e.body)
+}
+
 // setHeaders setup headers on request from a map header key -> header value
 func setHeaders(request *http.Request, headers map[string]string) {
 	for k, v := range headers {
@@ -47,6 +59,10 @@ func sendRequest(client *http.Client, request *http.Request) (int, []byte, error
 
 	if err != nil {
 		return 0, nil, ErrCantReadHTTPResponse{request.URL}
+	}
+
+	if rep.StatusCode >= 400 {
+		return rep.StatusCode, b, ErrWrongHTTPStatusCode{request, b}
 	}
 
 	return rep.StatusCode, b, nil
