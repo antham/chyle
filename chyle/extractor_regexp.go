@@ -37,7 +37,7 @@ func (r regexpExtractor) extract(commitMap *map[string]interface{}) *map[string]
 		result = results[1]
 	}
 
-	b, err := strconv.ParseBool(result)
+	b, err := parseBool(result)
 
 	if err == nil {
 		(*commitMap)[r.identifier] = b
