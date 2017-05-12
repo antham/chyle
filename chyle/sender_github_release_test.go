@@ -13,12 +13,12 @@ import (
 func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 	chyleConfig = CHYLE{}
 	chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-	chyleConfig.SENDERS.GITHUB.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
-	chyleConfig.SENDERS.GITHUB.RELEASE.TAGNAME = "v1.0.0"
-	chyleConfig.SENDERS.GITHUB.RELEASE.NAME = "TEST"
-	chyleConfig.SENDERS.GITHUB.CREDENTIALS.OWNER = "user"
-	chyleConfig.SENDERS.GITHUB.REPOSITORY.NAME = "test"
-	chyleConfig.SENDERS.GITHUB.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v1.0.0"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME = "TEST"
+	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "user"
+	chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
+	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 
 	defer gock.Off()
 
@@ -57,12 +57,12 @@ func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 	chyleConfig = CHYLE{}
 	chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-	chyleConfig.SENDERS.GITHUB.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
-	chyleConfig.SENDERS.GITHUB.RELEASE.TAGNAME = "v1.0.0"
-	chyleConfig.SENDERS.GITHUB.RELEASE.NAME = "TEST"
-	chyleConfig.SENDERS.GITHUB.CREDENTIALS.OWNER = "test"
-	chyleConfig.SENDERS.GITHUB.REPOSITORY.NAME = "test"
-	chyleConfig.SENDERS.GITHUB.CREDENTIALS.OAUTHTOKEN = "d0b934ea223577f7e5cc6599e40b1822"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v1.0.0"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME = "TEST"
+	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "test"
+	chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
+	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d0b934ea223577f7e5cc6599e40b1822"
 
 	defer gock.Off()
 
@@ -96,13 +96,13 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 	chyleConfig = CHYLE{}
 	chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-	chyleConfig.SENDERS.GITHUB.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
-	chyleConfig.SENDERS.GITHUB.RELEASE.TAGNAME = "v1.0.0"
-	chyleConfig.SENDERS.GITHUB.RELEASE.NAME = "TEST"
-	chyleConfig.SENDERS.GITHUB.CREDENTIALS.OWNER = "test"
-	chyleConfig.SENDERS.GITHUB.REPOSITORY.NAME = "test"
-	chyleConfig.SENDERS.GITHUB.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
-	chyleConfig.SENDERS.GITHUB.RELEASE.UPDATE = true
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v1.0.0"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME = "TEST"
+	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "test"
+	chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
+	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.UPDATE = true
 
 	defer gock.Off()
 
@@ -148,13 +148,13 @@ func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
 	chyleConfig = CHYLE{}
 	chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-	chyleConfig.SENDERS.GITHUB.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
-	chyleConfig.SENDERS.GITHUB.RELEASE.TAGNAME = "v1.0.0"
-	chyleConfig.SENDERS.GITHUB.RELEASE.NAME = "TEST"
-	chyleConfig.SENDERS.GITHUB.CREDENTIALS.OWNER = "test"
-	chyleConfig.SENDERS.GITHUB.REPOSITORY.NAME = "test"
-	chyleConfig.SENDERS.GITHUB.CREDENTIALS.OAUTHTOKEN = "d0b934ea223577f7e5cc6599e40b1822"
-	chyleConfig.SENDERS.GITHUB.RELEASE.UPDATE = true
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v1.0.0"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME = "TEST"
+	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "test"
+	chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
+	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d0b934ea223577f7e5cc6599e40b1822"
+	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.UPDATE = true
 
 	defer gock.Off()
 

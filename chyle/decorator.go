@@ -55,11 +55,11 @@ func decorate(decorators *map[string][]decorater, changelog *Changelog) (*Change
 func createDecorators() *map[string][]decorater {
 	results := map[string][]decorater{"metadatas": {}, "datas": {}}
 
-	if chyleConfig.FEATURES.HASJIRADECORATOR {
+	if chyleConfig.FEATURES.HASJIRAISSUEDECORATOR {
 		results["datas"] = append(results["datas"], buildJiraIssueDecorator())
 	}
 
-	if chyleConfig.FEATURES.HASGITHUBDECORATOR {
+	if chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR {
 		results["datas"] = append(results["datas"], buildGithubIssueDecorator())
 	}
 
