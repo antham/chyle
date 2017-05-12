@@ -80,7 +80,11 @@ type jSONResponseDecorator struct {
 
 // decorate fetch JSON datas and add the result to original commitMap array
 func (j jSONResponseDecorator) decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
-	_, body, err := sendRequest(j.client, j.request)
+	statusCode, body, err := sendRequest(j.client, j.request)
+
+	if statusCode == 404 {
+		return commitMap, nil
+	}
 
 	if err != nil {
 		return commitMap, err
