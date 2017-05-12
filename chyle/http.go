@@ -16,7 +16,7 @@ type ErrResponse struct {
 
 // Error output error as string
 func (e ErrResponse) Error() string {
-	return fmt.Sprintf("an error occured when contacting remote api through %s, status code %d, body %s", e.request.URL, e.response.StatusCode, e.body)
+	return fmt.Sprintf("an error occurred when contacting remote api through %s, status code %d, body %s", e.request.URL, e.response.StatusCode, e.body)
 }
 
 // setHeaders setup headers on request from a map header key -> header value
