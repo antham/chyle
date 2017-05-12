@@ -6,6 +6,8 @@ import (
 	"github.com/antham/envh"
 )
 
+// codebeat:disable[TOO_MANY_IVARS]
+
 // apiDecoratorConfig declares datas needed
 // to validate an api configuration
 type apiDecoratorConfig struct {
@@ -18,6 +20,8 @@ type apiDecoratorConfig struct {
 	}
 	featureRefs []*bool
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // apiDecoratorConfigurator is a generic api
 // decorator configurator it must be used with
