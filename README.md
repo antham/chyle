@@ -25,7 +25,7 @@ Global Flags:
 
 ## How it works ?
 
-Chyle fetch a range of commits using given criterias from a git repository. From those commits you can extract relevant datas like commit message, author, and so on, and add it to original payload. We can afterwards, contact an external apis to enrich our payload with various useful datas (currently only jira ticket api is added). Finally, we can publish what we harvested to an external api for instance (currently only github release is added) and/or stdout.
+Chyle fetch a range of commits using given criterias from a git repository. From those commits you can extract relevant datas like commit message, author, and so on, and add it to original payload. We can afterwards, contact an external apis to enrich our payload with various useful datas. Finally, we can publish what we harvested to an external api for instance (currently only github release is added) and/or stdout.
 
 ## Setup
 
@@ -39,7 +39,7 @@ You need afterwards to configure each module through environments variables : th
 * [Matchers](#matchers)
 * [Extractors](#extractors)
 * [Decorators](#decorators)
-  * [Jira ticket api](#jira-ticket-api)
+  * [Jira issue api](#jira-issue-api)
   * [Github issue api](#github-issue-api)
   * [Environment variable](#environment-variable)
 * [Senders](#senders)
@@ -82,9 +82,10 @@ CHYLE_EXTRACTORS_*_REG | A regexp used to extract a data
 
 Decorators enrich your changelog with datas.
 
-#### Jira ticket api
+#### Jira issue api
 
-First, you need to use an extractor to define a "jiraIssueId" key to extract jira ticket id, let's consider our id is in commit message we would add as environment variable.
+Have a look to the [api documentation](https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-getIssue) to know what you can fetch from this api.
+First, you need to use an extractor to define a "jiraIssueId" key to extract jira issue id, let's consider our id is in commit message we would add as environment variable.
 
 Name | Value
 ------------ | -------------
@@ -107,10 +108,10 @@ Name | Value
 CHYLE_DECORATORS_JIRA_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
 CHYLE_DECORATORS_JIRA_KEYS_*_FIELD | The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")
 
-#### Github ticket api
+#### Github issue api
 
-You can get pull request datas or ticket datas from this decorator as described in [api documentation](https://developer.github.com/v3/issues/#get-a-single-issue).
-First, you need to use an extractor to define a "githubIssueId" key to extract github ticket id, let's consider our id is in commit message we would add as environment variable.
+You can get pull request datas or issue datas from this decorator as described in [api documentation](https://developer.github.com/v3/issues/#get-a-single-issue).
+First, you need to use an extractor to define a "githubIssueId" key to extract github issue id, let's consider our id is in commit message we would add as environment variable.
 
 Name | Value
 ------------ | -------------
@@ -118,17 +119,19 @@ CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY | message
 CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY | githubIssueId
 CHYLE_EXTRACTORS_GITHUBISSUEID_REG | "(\w+-\d+)"
 
-You need to define github credentials and endpoint.
+You need to define github credentials.
 
 Name | Value
 ------------ | -------------
+CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN | Github oauth token used to fetch issue datas
+CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER | Github owner
 
 To extract data, you need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * with a name convenient to you, you can get as many value as you want.
 
 Name | Value
 ------------ | ------------
 CHYLE_DECORATORS_GITHUB_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
-CHYLE_DECORATORS_GITHUB_KEYS_*_FIELD | The field to extract from github api response payload, use dot notation to extract a deep value (eg: "fields.summary")
+CHYLE_DECORATORS_GITHUB_KEYS_*_FIELD | The field to extract from github issue api response payload, use dot notation to extract a deep value (eg: "fields.summary")
 
 #### Environment variable
 
@@ -156,7 +159,7 @@ CHYLE_SENDERS_STDOUT_TEMPLATE | Linked to "template" stdout format, it must be s
 
 #### Github release api
 
-It creates a new release in [github](https://developer.github.com/v3/repos/releases/#create-a-release) with a template from datas you harvested.
+It creates a new release in github with a template from datas you harvested, look at the [documentation](https://developer.github.com/v3/repos/releases/#create-a-release) to have more details about what you can do.
 
 Name | Value
 ------------ | -------------
