@@ -104,7 +104,7 @@ func TestGithubIssueDecoratorWithAnErrorStatusCode(t *testing.T) {
 
 	_, err := j.decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
 
-	assert.EqualError(t, err, `an error occured when contacting remote api through https://api.github.com/repos/user/repository/issues/10000, status code 401, body {"message": "Bad credentials","documentation_url": "https://developer.github.com/v3"}`)
+	assert.EqualError(t, err, `an error occurred when contacting remote api through https://api.github.com/repos/user/repository/issues/10000, status code 401, body {"message": "Bad credentials","documentation_url": "https://developer.github.com/v3"}`)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
