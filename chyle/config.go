@@ -24,6 +24,7 @@ type CHYLE struct {
 		HASDECORATORS          bool
 		HASSENDERS             bool
 		HASJIRADECORATOR       bool
+		HASGITHUBDECORATOR     bool
 		HASENVDECORATOR        bool
 		HASGITHUBRELEASESENDER bool
 		HASSTDOUTSENDER        bool
@@ -40,6 +41,16 @@ type CHYLE struct {
 	MATCHERS   map[string]string
 	EXTRACTORS map[string]map[string]string
 	DECORATORS struct {
+		GITHUB struct {
+			CREDENTIALS struct {
+				OAUTHTOKEN string
+				OWNER      string
+			}
+			REPOSITORY struct {
+				NAME string
+			}
+			KEYS map[string]string
+		}
 		JIRA struct {
 			CREDENTIALS struct {
 				URL      string
@@ -89,12 +100,13 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	}
 
 	if processor, ok := map[string]func() configurater{
-		"CHYLE_DECORATORS_ENV":  func() configurater { return &envDecoratorConfigurator{config: fullconfig} },
-		"CHYLE_DECORATORS_JIRA": func() configurater { return jiraDecoratorConfigurator(fullconfig) },
-		"CHYLE_EXTRACTORS":      func() configurater { return &extractorsConfigurator{config: fullconfig} },
-		"CHYLE_MATCHERS":        func() configurater { return &matchersConfigurator{config: fullconfig} },
-		"CHYLE_SENDERS_GITHUB":  func() configurater { return &githubSenderConfigurator{config: fullconfig} },
-		"CHYLE_SENDERS_STDOUT":  func() configurater { return &stdoutSenderConfigurator{config: fullconfig} },
+		"CHYLE_DECORATORS_ENV":    func() configurater { return &envDecoratorConfigurator{config: fullconfig} },
+		"CHYLE_DECORATORS_JIRA":   func() configurater { return jiraDecoratorConfigurator(fullconfig) },
+		"CHYLE_DECORATORS_GITHUB": func() configurater { return githubDecoratorConfigurator(fullconfig) },
+		"CHYLE_EXTRACTORS":        func() configurater { return &extractorsConfigurator{config: fullconfig} },
+		"CHYLE_MATCHERS":          func() configurater { return &matchersConfigurator{config: fullconfig} },
+		"CHYLE_SENDERS_GITHUB":    func() configurater { return &githubSenderConfigurator{config: fullconfig} },
+		"CHYLE_SENDERS_STDOUT":    func() configurater { return &stdoutSenderConfigurator{config: fullconfig} },
 	}[strings.Join(keyChain, "_")]; ok {
 		return processor().process(c)
 	}

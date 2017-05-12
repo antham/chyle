@@ -40,6 +40,7 @@ You need afterwards to configure each module through environments variables : th
 * [Extractors](#extractors)
 * [Decorators](#decorators)
   * [Jira ticket api](#jira-ticket-api)
+  * [Github issue api](#github-issue-api)
   * [Environment variable](#environment-variable)
 * [Senders](#senders)
   * [Stdout](#stdout)
@@ -105,6 +106,29 @@ Name | Value
 ------------ | ------------
 CHYLE_DECORATORS_JIRA_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
 CHYLE_DECORATORS_JIRA_KEYS_*_FIELD | The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")
+
+#### Github ticket api
+
+You can get pull request datas or ticket datas from this decorator as described in [api documentation](https://developer.github.com/v3/issues/#get-a-single-issue).
+First, you need to use an extractor to define a "githubIssueId" key to extract github ticket id, let's consider our id is in commit message we would add as environment variable.
+
+Name | Value
+------------ | -------------
+CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY | message
+CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY | githubIssueId
+CHYLE_EXTRACTORS_GITHUBISSUEID_REG | "(\w+-\d+)"
+
+You need to define github credentials and endpoint.
+
+Name | Value
+------------ | -------------
+
+To extract data, you need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * with a name convenient to you, you can get as many value as you want.
+
+Name | Value
+------------ | ------------
+CHYLE_DECORATORS_GITHUB_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
+CHYLE_DECORATORS_GITHUB_KEYS_*_FIELD | The field to extract from github api response payload, use dot notation to extract a deep value (eg: "fields.summary")
 
 #### Environment variable
 

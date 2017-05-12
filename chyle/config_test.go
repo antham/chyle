@@ -267,6 +267,102 @@ func TestResolveConfigWithErrors(t *testing.T) {
 			},
 			`environment variable missing : "CHYLE_EXTRACTORS_JIRAISSUEID_REG"`,
 		},
+		// Decorator github
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+			},
+			`environments variables missing : "CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "test")
+			},
+			`environments variables missing : "CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME", "test")
+			},
+			`define at least one environment variable couple "CHYLE_DECORATORS_GITHUB_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_GITHUB_KEYS_*_FIELD", replace "*" with your own naming`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_DESTKEY", "test")
+			},
+			`environment variable missing : "CHYLE_DECORATORS_GITHUB_KEYS_TEST_FIELD"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_FIELD", "test")
+			},
+			`environment variable missing : "CHYLE_DECORATORS_GITHUB_KEYS_TEST_DESTKEY"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_FIELD", "test")
+			},
+			`environments variables missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_FIELD", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
+			},
+			`environments variables missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_FIELD", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "test")
+			},
+			`environment variable missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
+		},
 		// Sender github
 		{
 			func() {
@@ -545,6 +641,46 @@ func TestResolveConfig(t *testing.T) {
 				c.DECORATORS.JIRA.CREDENTIALS.USERNAME = "test"
 				c.DECORATORS.JIRA.CREDENTIALS.PASSWORD = "password"
 				c.DECORATORS.JIRA.KEYS = map[string]string{
+					"destkey": "field",
+				}
+
+				return c
+			},
+		},
+		// Decorator github
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_DECORATORS_GITHUB_CREDENTIALS_OWNER", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_REPOSITORY_NAME", "test")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_DESTKEY", "destkey")
+				setenv("CHYLE_DECORATORS_GITHUB_KEYS_TEST_FIELD", "field")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_REG", ".*")
+			},
+			func() CHYLE {
+				c := CHYLE{}
+				c.GIT.REPOSITORY.PATH = "test"
+				c.GIT.REFERENCE.FROM = "v1.0.0"
+				c.GIT.REFERENCE.TO = "v2.0.0"
+				c.FEATURES.HASEXTRACTORS = true
+				c.FEATURES.HASDECORATORS = true
+				c.FEATURES.HASGITHUBDECORATOR = true
+				c.EXTRACTORS = map[string]map[string]string{
+					"GITHUBISSUEID": {
+						"ORIGKEY": "test",
+						"DESTKEY": "test",
+						"REG":     ".*",
+					},
+				}
+				c.DECORATORS.GITHUB.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+				c.DECORATORS.GITHUB.CREDENTIALS.OWNER = "test"
+				c.DECORATORS.GITHUB.REPOSITORY.NAME = "test"
+				c.DECORATORS.GITHUB.KEYS = map[string]string{
 					"destkey": "field",
 				}
 
