@@ -59,6 +59,10 @@ func createDecorators() *map[string][]decorater {
 		results["datas"] = append(results["datas"], buildJiraIssueDecorator())
 	}
 
+	if chyleConfig.FEATURES.HASGITHUBDECORATOR {
+		results["datas"] = append(results["datas"], buildGithubIssueDecorator())
+	}
+
 	if chyleConfig.FEATURES.HASENVDECORATOR {
 		results["metadatas"] = append(results["metadatas"], buildEnvDecorators()...)
 	}
