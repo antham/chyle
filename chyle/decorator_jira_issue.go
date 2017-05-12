@@ -23,16 +23,16 @@ func (j jiraIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[st
 		return commitMap, nil
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf(URLpattern, chyleConfig.DECORATORS.JIRA.CREDENTIALS.URL, (*commitMap)["jiraIssueId"]), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(URLpattern, chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL, (*commitMap)["jiraIssueId"]), nil)
 
 	if err != nil {
 		return commitMap, err
 	}
 
-	req.SetBasicAuth(chyleConfig.DECORATORS.JIRA.CREDENTIALS.USERNAME, chyleConfig.DECORATORS.JIRA.CREDENTIALS.PASSWORD)
+	req.SetBasicAuth(chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME, chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD)
 	req.Header.Set("Content-Type", "application/json")
 
-	return jSONResponseDecorator{&j.client, req, chyleConfig.DECORATORS.JIRA.KEYS}.decorate(commitMap)
+	return jSONResponseDecorator{&j.client, req, chyleConfig.DECORATORS.JIRAISSUE.KEYS}.decorate(commitMap)
 }
 
 // buildJiraIssueDecorator create a new jira ticket decorator

@@ -42,11 +42,11 @@ func TestCreateSenders(t *testing.T) {
 		},
 		func() {
 			chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-			chyleConfig.SENDERS.GITHUB.CREDENTIALS.OAUTHTOKEN = "test"
-			chyleConfig.SENDERS.GITHUB.CREDENTIALS.OWNER = "test"
-			chyleConfig.SENDERS.GITHUB.RELEASE.TAGNAME = "test"
-			chyleConfig.SENDERS.GITHUB.RELEASE.TEMPLATE = "test"
-			chyleConfig.SENDERS.GITHUB.REPOSITORY.NAME = "test"
+			chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "test"
+			chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "test"
+			chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "test"
+			chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "test"
+			chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
 		},
 	}
 

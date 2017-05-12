@@ -19,19 +19,19 @@ func (g githubIssueDecorator) decorate(commitMap *map[string]interface{}) (*map[
 		return commitMap, nil
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.github.com/repos/%s/%s/issues/%d", chyleConfig.DECORATORS.GITHUB.CREDENTIALS.OWNER, chyleConfig.DECORATORS.GITHUB.REPOSITORY.NAME, ID), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.github.com/repos/%s/%s/issues/%d", chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OWNER, chyleConfig.DECORATORS.GITHUBISSUE.REPOSITORY.NAME, ID), nil)
 
 	if err != nil {
 		return commitMap, err
 	}
 
 	setHeaders(req, map[string]string{
-		"Authorization": "token " + chyleConfig.DECORATORS.GITHUB.CREDENTIALS.OAUTHTOKEN,
+		"Authorization": "token " + chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN,
 		"Content-Type":  "application/json",
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
-	return jSONResponseDecorator{&g.client, req, chyleConfig.DECORATORS.GITHUB.KEYS}.decorate(commitMap)
+	return jSONResponseDecorator{&g.client, req, chyleConfig.DECORATORS.GITHUBISSUE.KEYS}.decorate(commitMap)
 }
 
 // buildGithubIssueDecorator create a new github issue decorator
