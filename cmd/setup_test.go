@@ -10,6 +10,8 @@ import (
 	"github.com/antham/envh"
 )
 
+var gitRepositoryPath = "testing-repository"
+
 var envs map[string]string
 
 func TestMain(m *testing.M) {
@@ -51,7 +53,7 @@ func setenv(key string, value string) {
 
 func getCommitFromRef(ref string) string {
 	cmd := exec.Command("git", "rev-parse", ref)
-	cmd.Dir = "test"
+	cmd.Dir = gitRepositoryPath
 
 	ID, err := cmd.Output()
 	ID = ID[:len(ID)-1]

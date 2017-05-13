@@ -1,6 +1,8 @@
 package chyle
 
 import (
+	"github.com/antham/chyle/chyle/git"
+
 	"github.com/antham/envh"
 )
 
@@ -15,7 +17,7 @@ func BuildChangelog(envConfig *envh.EnvTree) error {
 
 	debugConfig()
 
-	commits, err := fetchCommits(chyleConfig.GIT.REPOSITORY.PATH, chyleConfig.GIT.REFERENCE.FROM, chyleConfig.GIT.REFERENCE.TO)
+	commits, err := git.FetchCommits(chyleConfig.GIT.REPOSITORY.PATH, chyleConfig.GIT.REFERENCE.FROM, chyleConfig.GIT.REFERENCE.TO)
 
 	if err != nil {
 		return err

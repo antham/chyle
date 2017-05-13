@@ -1,14 +1,63 @@
-package chyle
+package git
 
 import (
+	"fmt"
+	"os"
 	"os/exec"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/Sirupsen/logrus"
 	"srcd.works/go-git.v4"
+	"srcd.works/go-git.v4/plumbing"
 	"srcd.works/go-git.v4/plumbing/object"
 )
+
+var repo *git.Repository
+var gitRepositoryPath = "testing-repository"
+
+func setup() {
+	path, err := os.Getwd()
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	repo, err = git.PlainOpen(path + "/" + gitRepositoryPath)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func getCommitFromRef(ref string) *object.Commit {
+	cmd := exec.Command("git", "rev-parse", ref)
+	cmd.Dir = gitRepositoryPath
+
+	ID, err := cmd.Output()
+	ID = ID[:len(ID)-1]
+
+	if err != nil {
+		logrus.WithField("ID", string(ID)).Fatal(err)
+	}
+
+	c, err := repo.Commit(plumbing.NewHash(string(ID)))
+
+	if err != nil {
+		logrus.WithField("ID", ID).Fatal(err)
+	}
+
+	return c
+}
+
+func TestMain(m *testing.M) {
+	setup()
+	code := m.Run()
+	os.Exit(code)
+}
 
 func TestResolveRef(t *testing.T) {
 	type g struct {
@@ -85,7 +134,7 @@ func TestFetchCommits(t *testing.T) {
 
 	tests := []g{
 		{
-			"test",
+			gitRepositoryPath,
 			getCommitFromRef("HEAD").ID().String(),
 			getCommitFromRef("test").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -94,7 +143,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
-			"test",
+			gitRepositoryPath,
 			getCommitFromRef("HEAD~1").ID().String(),
 			getCommitFromRef("HEAD~3").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -103,7 +152,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
-			"test",
+			gitRepositoryPath,
 			getCommitFromRef("HEAD~3").ID().String(),
 			getCommitFromRef("test~2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -124,7 +173,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
-			"test",
+			gitRepositoryPath,
 			getCommitFromRef("HEAD~4").ID().String(),
 			getCommitFromRef("test~2^2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -153,7 +202,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
-			"test",
+			gitRepositoryPath,
 			"whatever",
 			getCommitFromRef("HEAD~1").ID().String(),
 			func(cs *[]object.Commit, err error) {
@@ -161,7 +210,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
-			"test",
+			gitRepositoryPath,
 			getCommitFromRef("HEAD~1").ID().String(),
 			"whatever",
 			func(cs *[]object.Commit, err error) {
@@ -169,7 +218,7 @@ func TestFetchCommits(t *testing.T) {
 			},
 		},
 		{
-			"test",
+			gitRepositoryPath,
 			"HEAD",
 			"HEAD",
 			func(cs *[]object.Commit, err error) {
@@ -179,7 +228,7 @@ func TestFetchCommits(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test.f(fetchCommits(test.path, test.toRef, test.fromRef))
+		test.f(FetchCommits(test.path, test.toRef, test.fromRef))
 	}
 }
 
@@ -211,7 +260,7 @@ func TestShallowCloneProducesNoErrors(t *testing.T) {
 
 	assert.NoError(t, err, "Must extract HEAD")
 
-	commits, err := fetchCommits("shallow-repository-test", string(fromRef), string(toRef))
+	commits, err := FetchCommits("shallow-repository-test", string(fromRef), string(toRef))
 
 	assert.NoError(t, err)
 	assert.Len(t, *commits, 1, "Must fetch commits in shallow clone")

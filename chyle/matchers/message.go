@@ -1,4 +1,4 @@
-package chyle
+package matchers
 
 import (
 	"regexp"
@@ -11,12 +11,12 @@ type messageMatcher struct {
 	regexp *regexp.Regexp
 }
 
-// match apply a regexp against commit message
-func (m messageMatcher) match(commit *object.Commit) bool {
+// Match apply a regexp against commit message
+func (m messageMatcher) Match(commit *object.Commit) bool {
 	return m.regexp.MatchString(commit.Message)
 }
 
-func buildMessageMatcher(value string) matcher {
+func buildMessageMatcher(value string) Matcher {
 	return messageMatcher{regexp.MustCompile(value)}
 }
 

@@ -13,14 +13,6 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-	for _, filename := range []string{"../features/init.sh", "../features/merge-commits.sh"} {
-		err := exec.Command(filename).Run()
-
-		if err != nil {
-			logrus.Fatal(err)
-		}
-	}
-
 	var code int
 	var w sync.WaitGroup
 
@@ -33,7 +25,7 @@ func TestCreate(t *testing.T) {
 	}
 
 	restoreEnvs()
-	setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+	setenv("CHYLE_GIT_REPOSITORY_PATH", gitRepositoryPath)
 	setenv("CHYLE_GIT_REFERENCE_FROM", getCommitFromRef("HEAD~3"))
 	setenv("CHYLE_GIT_REFERENCE_TO", getCommitFromRef("test~2^2"))
 
@@ -99,12 +91,12 @@ func TestCreateWithErrors(t *testing.T) {
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
 		},
 		`reference "ref1" can't be found in git repository`: func() {
-			setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+			setenv("CHYLE_GIT_REPOSITORY_PATH", gitRepositoryPath)
 			setenv("CHYLE_GIT_REFERENCE_FROM", "ref1")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
 		},
 		`reference "ref2" can't be found in git repository`: func() {
-			setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+			setenv("CHYLE_GIT_REPOSITORY_PATH", gitRepositoryPath)
 			setenv("CHYLE_GIT_REFERENCE_FROM", "HEAD")
 			setenv("CHYLE_GIT_REFERENCE_TO", "ref2")
 		},

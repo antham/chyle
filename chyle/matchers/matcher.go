@@ -1,22 +1,22 @@
-package chyle
+package matchers
 
 import (
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
-// matcher describe a way of applying a matcher against a commit
-type matcher interface {
-	match(*object.Commit) bool
+// Matcher describe a way of applying a matcher against a commit
+type Matcher interface {
+	Match(*object.Commit) bool
 }
 
-// filter commits that don't fit any matchers
-func filter(matchers *[]matcher, commits *[]object.Commit) *[]object.Commit {
+// Filter commits that don't fit any matchers
+func Filter(matchers *[]Matcher, commits *[]object.Commit) *[]map[string]interface{} {
 	results := []object.Commit{}
 
 	for _, commit := range *commits {
 		add := true
 		for _, matcher := range *matchers {
-			if !matcher.match(&commit) {
+			if !matcher.Match(&commit) {
 				add = false
 			}
 		}
@@ -26,7 +26,7 @@ func filter(matchers *[]matcher, commits *[]object.Commit) *[]object.Commit {
 		}
 	}
 
-	return &results
+	return transformCommitsToMap(&results)
 }
 
 // transformCommitsToMap extract useful commits data in hash map table
@@ -53,13 +53,13 @@ func transformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	return &commitMaps
 }
 
-// createMatchers build matchers from a config
-func createMatchers() *[]matcher {
-	results := []matcher{}
+// CreateMatchers build matchers from a config
+func CreateMatchers(matchers map[string]string) *[]Matcher {
+	results := []Matcher{}
 
-	for k, v := range chyleConfig.MATCHERS {
+	for k, v := range matchers {
 		results = append(results,
-			map[string]func(string) matcher{
+			map[string]func(string) Matcher{
 				"MESSAGE":   buildMessageMatcher,
 				"COMMITTER": buildCommitterMatcher,
 				"AUTHOR":    buildAuthorMatcher,
