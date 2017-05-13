@@ -11,9 +11,12 @@ import (
 // apiDecoratorConfig declares datas needed
 // to validate an api configuration
 type apiDecoratorConfig struct {
-	extractorKey    string
-	decoratorKey    string
-	keysRef         *map[string]string
+	extractorKey string
+	decoratorKey string
+	keysRef      *map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}
 	credentialsRefs []struct {
 		ref      *string
 		keyChain []string
@@ -29,7 +32,6 @@ type apiDecoratorConfig struct {
 type apiDecoratorConfigurator struct {
 	config *envh.EnvTree
 	apiDecoratorConfig
-	definedKeys []string
 }
 
 func (a *apiDecoratorConfigurator) process(config *CHYLE) (bool, error) {
@@ -108,8 +110,6 @@ func (a *apiDecoratorConfigurator) validateKeys() error {
 		if err := validateEnvironmentVariablesDefinition(a.config, [][]string{{"CHYLE", "DECORATORS", a.decoratorKey, "KEYS", key, "DESTKEY"}, {"CHYLE", "DECORATORS", a.decoratorKey, "KEYS", key, "FIELD"}}); err != nil {
 			return err
 		}
-
-		a.definedKeys = append(a.definedKeys, key)
 	}
 
 	return nil
@@ -125,15 +125,18 @@ func (a *apiDecoratorConfigurator) setCredentials(config *CHYLE) {
 // setKeys update keys needed for extraction
 func (a *apiDecoratorConfigurator) setKeys(config *CHYLE) {
 	ref := a.keysRef
-	*ref = map[string]string{}
+	*ref = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{}
 
-	for _, key := range a.definedKeys {
-		datas := map[string]string{}
-
-		for _, field := range []string{"DESTKEY", "FIELD"} {
-			datas[field] = a.config.FindStringUnsecured(append([]string{"CHYLE", "DECORATORS", a.decoratorKey, "KEYS"}, key, field)...)
+	for _, key := range a.config.FindChildrenKeysUnsecured("CHYLE", "DECORATORS", a.decoratorKey, "KEYS") {
+		(*ref)[key] = struct {
+			DESTKEY string
+			FIELD   string
+		}{
+			a.config.FindStringUnsecured("CHYLE", "DECORATORS", a.decoratorKey, "KEYS", key, "DESTKEY"),
+			a.config.FindStringUnsecured("CHYLE", "DECORATORS", a.decoratorKey, "KEYS", key, "FIELD"),
 		}
-
-		(*ref)[datas["DESTKEY"]] = datas["FIELD"]
 	}
 }

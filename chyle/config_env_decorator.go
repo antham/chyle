@@ -7,8 +7,7 @@ import (
 // envDecoratorConfigurator validates environment variables decorator config
 // defined through environment variables
 type envDecoratorConfigurator struct {
-	config      *envh.EnvTree
-	definedKeys []string
+	config *envh.EnvTree
 }
 
 func (e *envDecoratorConfigurator) process(config *CHYLE) (bool, error) {
@@ -43,8 +42,6 @@ func (e *envDecoratorConfigurator) validateEnvironmentVariables() error {
 		if err := validateEnvironmentVariablesDefinition(e.config, [][]string{{"CHYLE", "DECORATORS", "ENV", key, "DESTKEY"}, {"CHYLE", "DECORATORS", "ENV", key, "VARNAME"}}); err != nil {
 			return err
 		}
-
-		e.definedKeys = append(e.definedKeys, key)
 	}
 
 	return nil
@@ -52,13 +49,18 @@ func (e *envDecoratorConfigurator) validateEnvironmentVariables() error {
 
 // setEnvDecorator update decorator environment variables
 func (e *envDecoratorConfigurator) setEnvDecorator(config *CHYLE) {
-	config.DECORATORS.ENV = map[string]map[string]string{}
+	config.DECORATORS.ENV = map[string]struct {
+		DESTKEY string
+		VARNAME string
+	}{}
 
-	for _, key := range e.definedKeys {
-		config.DECORATORS.ENV[key] = map[string]string{}
-
-		for _, field := range []string{"DESTKEY", "VARNAME"} {
-			config.DECORATORS.ENV[key][field] = e.config.FindStringUnsecured("CHYLE", "DECORATORS", "ENV", key, field)
+	for _, key := range e.config.FindChildrenKeysUnsecured("CHYLE", "DECORATORS", "ENV") {
+		config.DECORATORS.ENV[key] = struct {
+			DESTKEY string
+			VARNAME string
+		}{
+			e.config.FindStringUnsecured("CHYLE", "DECORATORS", "ENV", key, "DESTKEY"),
+			e.config.FindStringUnsecured("CHYLE", "DECORATORS", "ENV", key, "VARNAME"),
 		}
 	}
 }

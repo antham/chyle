@@ -49,7 +49,10 @@ type CHYLE struct {
 			REPOSITORY struct {
 				NAME string
 			}
-			KEYS map[string]string
+			KEYS map[string]struct {
+				DESTKEY string
+				FIELD   string
+			}
 		}
 		JIRAISSUE struct {
 			CREDENTIALS struct {
@@ -57,9 +60,15 @@ type CHYLE struct {
 				USERNAME string
 				PASSWORD string
 			}
-			KEYS map[string]string
+			KEYS map[string]struct {
+				DESTKEY string
+				FIELD   string
+			}
 		}
-		ENV map[string]map[string]string
+		ENV map[string]struct {
+			DESTKEY string
+			VARNAME string
+		}
 	}
 	SENDERS struct {
 		STDOUT struct {

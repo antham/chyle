@@ -597,10 +597,13 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REFERENCE.TO = "v2.0.0"
 				c.FEATURES.HASDECORATORS = true
 				c.FEATURES.HASENVDECORATOR = true
-				c.DECORATORS.ENV = map[string]map[string]string{
+				c.DECORATORS.ENV = map[string]struct {
+					DESTKEY string
+					VARNAME string
+				}{
 					"TEST": {
-						"DESTKEY": "destkey",
-						"VARNAME": "var",
+						"destkey",
+						"var",
 					},
 				}
 
@@ -640,8 +643,14 @@ func TestResolveConfig(t *testing.T) {
 				c.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
 				c.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
 				c.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "password"
-				c.DECORATORS.JIRAISSUE.KEYS = map[string]string{
-					"destkey": "field",
+				c.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+					DESTKEY string
+					FIELD   string
+				}{
+					"TEST": {
+						"destkey",
+						"field",
+					},
 				}
 
 				return c
@@ -680,8 +689,14 @@ func TestResolveConfig(t *testing.T) {
 				c.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 				c.DECORATORS.GITHUBISSUE.CREDENTIALS.OWNER = "test"
 				c.DECORATORS.GITHUBISSUE.REPOSITORY.NAME = "test"
-				c.DECORATORS.GITHUBISSUE.KEYS = map[string]string{
-					"destkey": "field",
+				c.DECORATORS.GITHUBISSUE.KEYS = map[string]struct {
+					DESTKEY string
+					FIELD   string
+				}{
+					"TEST": {
+						"destkey",
+						"field",
+					},
 				}
 
 				return c

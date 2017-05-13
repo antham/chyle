@@ -75,7 +75,10 @@ func createDecorators() *map[string][]decorater {
 type jSONResponseDecorator struct {
 	client  *http.Client
 	request *http.Request
-	pairs   map[string]string
+	pairs   map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}
 }
 
 // decorate fetch JSON datas and add the result to original commitMap array
@@ -92,11 +95,11 @@ func (j jSONResponseDecorator) decorate(commitMap *map[string]interface{}) (*map
 
 	buf := bytes.NewBuffer(body)
 
-	for identifier, key := range j.pairs {
-		(*commitMap)[identifier] = nil
+	for _, pair := range j.pairs {
+		(*commitMap)[pair.DESTKEY] = nil
 
-		if gjson.Get(buf.String(), key).Exists() {
-			(*commitMap)[identifier] = gjson.Get(buf.String(), key).Value()
+		if gjson.Get(buf.String(), pair.FIELD).Exists() {
+			(*commitMap)[pair.DESTKEY] = gjson.Get(buf.String(), pair.FIELD).Value()
 		}
 	}
 

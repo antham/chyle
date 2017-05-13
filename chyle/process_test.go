@@ -30,7 +30,15 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 	chyleConfig.FEATURES.HASEXTRACTORS = true
 	chyleConfig.EXTRACTORS = map[string]map[string]string{"TEST": {"TEST": "test"}}
 	chyleConfig.FEATURES.HASDECORATORS = true
-	chyleConfig.DECORATORS.ENV = map[string]map[string]string{"TEST": {"TEST": "test"}}
+	chyleConfig.DECORATORS.ENV = map[string]struct {
+		DESTKEY string
+		VARNAME string
+	}{
+		"TEST": {
+			"test",
+			"TEST",
+		},
+	}
 	chyleConfig.FEATURES.HASSTDOUTSENDER = true
 	chyleConfig.SENDERS.STDOUT.FORMAT = "json"
 
