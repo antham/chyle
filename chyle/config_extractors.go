@@ -7,8 +7,7 @@ import (
 // extractorsConfigurator validates jira config
 // defined through environment variables
 type extractorsConfigurator struct {
-	config      *envh.EnvTree
-	definedKeys []string
+	config *envh.EnvTree
 }
 
 func (e *extractorsConfigurator) process(config *CHYLE) (bool, error) {
@@ -46,8 +45,6 @@ func (e *extractorsConfigurator) validateExtractors() error {
 		if err := validateRegexp(e.config, []string{"CHYLE", "EXTRACTORS", key, "REG"}); err != nil {
 			return err
 		}
-
-		e.definedKeys = append(e.definedKeys, key)
 	}
 
 	return nil
@@ -57,7 +54,7 @@ func (e *extractorsConfigurator) validateExtractors() error {
 func (e *extractorsConfigurator) setExtractors(config *CHYLE) {
 	config.EXTRACTORS = map[string]map[string]string{}
 
-	for _, key := range e.definedKeys {
+	for _, key := range e.config.FindChildrenKeysUnsecured("CHYLE", "EXTRACTORS") {
 		config.EXTRACTORS[key] = map[string]string{}
 
 		for _, field := range []string{"ORIGKEY", "DESTKEY", "REG"} {

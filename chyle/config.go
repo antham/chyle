@@ -109,13 +109,13 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 	}
 
 	if processor, ok := map[string]func() configurater{
-		"CHYLE_DECORATORS_ENV":         func() configurater { return &envDecoratorConfigurator{config: fullconfig} },
+		"CHYLE_DECORATORS_ENV":         func() configurater { return &envDecoratorConfigurator{fullconfig} },
 		"CHYLE_DECORATORS_JIRAISSUE":   func() configurater { return jiraIssueDecoratorConfigurator(fullconfig) },
 		"CHYLE_DECORATORS_GITHUBISSUE": func() configurater { return githubIssueDecoratorConfigurator(fullconfig) },
-		"CHYLE_EXTRACTORS":             func() configurater { return &extractorsConfigurator{config: fullconfig} },
-		"CHYLE_MATCHERS":               func() configurater { return &matchersConfigurator{config: fullconfig} },
-		"CHYLE_SENDERS_GITHUBRELEASE":  func() configurater { return &githubReleaseSenderConfigurator{config: fullconfig} },
-		"CHYLE_SENDERS_STDOUT":         func() configurater { return &stdoutSenderConfigurator{config: fullconfig} },
+		"CHYLE_EXTRACTORS":             func() configurater { return &extractorsConfigurator{fullconfig} },
+		"CHYLE_MATCHERS":               func() configurater { return &matchersConfigurator{fullconfig} },
+		"CHYLE_SENDERS_GITHUBRELEASE":  func() configurater { return &githubReleaseSenderConfigurator{fullconfig} },
+		"CHYLE_SENDERS_STDOUT":         func() configurater { return &stdoutSenderConfigurator{fullconfig} },
 	}[strings.Join(keyChain, "_")]; ok {
 		return processor().process(c)
 	}
