@@ -2,6 +2,7 @@ package chyle
 
 import (
 	"encoding/json"
+	"regexp"
 	"strings"
 
 	"github.com/antham/envh"
@@ -39,7 +40,11 @@ type CHYLE struct {
 		}
 	}
 	MATCHERS   map[string]string
-	EXTRACTORS map[string]map[string]string
+	EXTRACTORS map[string]struct {
+		ORIGKEY string
+		DESTKEY string
+		REG     *regexp.Regexp
+	}
 	DECORATORS struct {
 		GITHUBISSUE struct {
 			CREDENTIALS struct {

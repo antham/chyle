@@ -89,17 +89,22 @@ func TestExtract(t *testing.T) {
 func TestCreateExtractors(t *testing.T) {
 	chyleConfig = CHYLE{}
 	chyleConfig.FEATURES.HASEXTRACTORS = true
-	chyleConfig.EXTRACTORS = map[string]map[string]string{}
-
-	chyleConfig.EXTRACTORS["ID"] = map[string]string{}
-	chyleConfig.EXTRACTORS["ID"]["ORIGKEY"] = "id"
-	chyleConfig.EXTRACTORS["ID"]["DESTKEY"] = "test"
-	chyleConfig.EXTRACTORS["ID"]["REG"] = ".*"
-
-	chyleConfig.EXTRACTORS["AUTHORNAME"] = map[string]string{}
-	chyleConfig.EXTRACTORS["AUTHORNAME"]["ORIGKEY"] = "authorName"
-	chyleConfig.EXTRACTORS["AUTHORNAME"]["DESTKEY"] = "test2"
-	chyleConfig.EXTRACTORS["AUTHORNAME"]["REG"] = ".*"
+	chyleConfig.EXTRACTORS = map[string]struct {
+		ORIGKEY string
+		DESTKEY string
+		REG     *regexp.Regexp
+	}{
+		"ID": {
+			"id",
+			"test",
+			regexp.MustCompile(".*"),
+		},
+		"AUTHORNAME": {
+			"authorName",
+			"test2",
+			regexp.MustCompile(".*"),
+		},
+	}
 
 	e := createExtractors()
 
