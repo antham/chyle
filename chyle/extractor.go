@@ -1,9 +1,5 @@
 package chyle
 
-import (
-	"regexp"
-)
-
 // extracter describe a way to extract data from a commit hashmap summary
 type extracter interface {
 	extract(*map[string]interface{}) *map[string]interface{}
@@ -30,11 +26,11 @@ func extract(extractors *[]extracter, commitMaps *[]map[string]interface{}) *Cha
 func createExtractors() *[]extracter {
 	results := []extracter{}
 
-	for _, datas := range chyleConfig.EXTRACTORS {
+	for _, extractor := range chyleConfig.EXTRACTORS {
 		results = append(results, regexpExtractor{
-			datas["ORIGKEY"],
-			datas["DESTKEY"],
-			regexp.MustCompile(datas["REG"]),
+			extractor.ORIGKEY,
+			extractor.DESTKEY,
+			extractor.REG,
 		})
 	}
 

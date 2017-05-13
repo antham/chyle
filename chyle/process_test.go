@@ -28,7 +28,17 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 	chyleConfig.FEATURES.HASMATCHERS = true
 	chyleConfig.MATCHERS = map[string]string{"TYPE": "merge"}
 	chyleConfig.FEATURES.HASEXTRACTORS = true
-	chyleConfig.EXTRACTORS = map[string]map[string]string{"TEST": {"TEST": "test"}}
+	chyleConfig.EXTRACTORS = map[string]struct {
+		ORIGKEY string
+		DESTKEY string
+		REG     *regexp.Regexp
+	}{
+		"TEST": {
+			"TEST",
+			"test",
+			regexp.MustCompile(".*"),
+		},
+	}
 	chyleConfig.FEATURES.HASDECORATORS = true
 	chyleConfig.DECORATORS.ENV = map[string]struct {
 		DESTKEY string
@@ -50,7 +60,9 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 		},
 		&[]extracter{
 			regexpExtractor{
-				re: regexp.MustCompile(""),
+				index:      "TEST",
+				identifier: "test",
+				re:         regexp.MustCompile(".*"),
 			},
 		},
 		&map[string][]decorater{

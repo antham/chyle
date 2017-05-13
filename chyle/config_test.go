@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"regexp"
 	"testing"
 
 	"github.com/antham/envh"
@@ -570,11 +571,15 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
 				c.FEATURES.HASEXTRACTORS = true
-				c.EXTRACTORS = map[string]map[string]string{
+				c.EXTRACTORS = map[string]struct {
+					ORIGKEY string
+					DESTKEY string
+					REG     *regexp.Regexp
+				}{
 					"TEST": {
-						"ORIGKEY": "test",
-						"DESTKEY": "test",
-						"REG":     ".*",
+						"test",
+						"test",
+						regexp.MustCompile(".*"),
 					},
 				}
 
@@ -633,11 +638,15 @@ func TestResolveConfig(t *testing.T) {
 				c.FEATURES.HASEXTRACTORS = true
 				c.FEATURES.HASDECORATORS = true
 				c.FEATURES.HASJIRAISSUEDECORATOR = true
-				c.EXTRACTORS = map[string]map[string]string{
+				c.EXTRACTORS = map[string]struct {
+					ORIGKEY string
+					DESTKEY string
+					REG     *regexp.Regexp
+				}{
 					"JIRAISSUEID": {
-						"ORIGKEY": "test",
-						"DESTKEY": "test",
-						"REG":     ".*",
+						"test",
+						"test",
+						regexp.MustCompile(".*"),
 					},
 				}
 				c.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
@@ -679,11 +688,15 @@ func TestResolveConfig(t *testing.T) {
 				c.FEATURES.HASEXTRACTORS = true
 				c.FEATURES.HASDECORATORS = true
 				c.FEATURES.HASGITHUBISSUEDECORATOR = true
-				c.EXTRACTORS = map[string]map[string]string{
+				c.EXTRACTORS = map[string]struct {
+					ORIGKEY string
+					DESTKEY string
+					REG     *regexp.Regexp
+				}{
 					"GITHUBISSUEID": {
-						"ORIGKEY": "test",
-						"DESTKEY": "test",
-						"REG":     ".*",
+						"test",
+						"test",
+						regexp.MustCompile(".*"),
 					},
 				}
 				c.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"

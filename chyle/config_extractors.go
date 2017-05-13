@@ -1,6 +1,8 @@
 package chyle
 
 import (
+	"regexp"
+
 	"github.com/antham/envh"
 )
 
@@ -52,13 +54,22 @@ func (e *extractorsConfigurator) validateExtractors() error {
 
 // setExtractors update chyleConfig with extracted extractors
 func (e *extractorsConfigurator) setExtractors(config *CHYLE) {
-	config.EXTRACTORS = map[string]map[string]string{}
+	config.EXTRACTORS = map[string]struct {
+		ORIGKEY string
+		DESTKEY string
+		REG     *regexp.Regexp
+	}{}
 
 	for _, key := range e.config.FindChildrenKeysUnsecured("CHYLE", "EXTRACTORS") {
-		config.EXTRACTORS[key] = map[string]string{}
+		config.EXTRACTORS[key] = struct {
+			ORIGKEY string
+			DESTKEY string
+			REG     *regexp.Regexp
+		}{
 
-		for _, field := range []string{"ORIGKEY", "DESTKEY", "REG"} {
-			config.EXTRACTORS[key][field] = e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, field)
+			e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, "ORIGKEY"),
+			e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, "DESTKEY"),
+			regexp.MustCompile(e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, "REG")),
 		}
 	}
 }
