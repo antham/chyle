@@ -7,8 +7,7 @@ import (
 // matchersConfigurator validates jira config
 // defined through environment variables
 type matchersConfigurator struct {
-	config      *envh.EnvTree
-	definedKeys []string
+	config *envh.EnvTree
 }
 
 func (m *matchersConfigurator) process(config *CHYLE) (bool, error) {
@@ -49,8 +48,6 @@ func (m *matchersConfigurator) validateRegexpMatchers() error {
 		if err := validateRegexp(m.config, []string{"CHYLE", "MATCHERS", key}); err != nil {
 			return err
 		}
-
-		m.definedKeys = append(m.definedKeys, key)
 	}
 
 	return nil
@@ -64,20 +61,14 @@ func (m *matchersConfigurator) validateTypeMatcher() error {
 		return nil
 	}
 
-	if err := validateOneOf(m.config, []string{"CHYLE", "MATCHERS", "TYPE"}, []string{regularTypeMatcher, mergeTypeMatcher}); err != nil {
-		return err
-	}
-
-	m.definedKeys = append(m.definedKeys, "TYPE")
-
-	return nil
+	return validateOneOf(m.config, []string{"CHYLE", "MATCHERS", "TYPE"}, []string{regularTypeMatcher, mergeTypeMatcher})
 }
 
 // setMatchers update chyleConfig with extracted matchers
 func (m *matchersConfigurator) setMatchers(config *CHYLE) {
 	config.MATCHERS = map[string]string{}
 
-	for _, key := range m.definedKeys {
+	for _, key := range m.config.FindChildrenKeysUnsecured("CHYLE", "MATCHERS") {
 		config.MATCHERS[key] = m.config.FindStringUnsecured("CHYLE", "MATCHERS", key)
 	}
 }
