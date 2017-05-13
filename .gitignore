@@ -27,7 +27,9 @@ _testmain.go
 *.out
 
 # external packages folder
+chyle/git/shallow-repository-test/
+/chyle/git/testing-repository/
+/chyle/testing-repository/
+/cmd/testing-repository/
+/testing-repository/
 vendor/
-chyle/test/*
-/cmd/test/
-/chyle/shallow-repository-test/

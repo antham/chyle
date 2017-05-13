@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/antham/chyle/chyle/matchers"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,7 +15,7 @@ func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
 	p := buildProcess()
 
 	expected := process{
-		&[]matcher{},
+		&[]matchers.Matcher{},
 		&[]extracter{},
 		&map[string][]decorater{},
 		&[]sender{},
@@ -27,6 +29,7 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 
 	chyleConfig.FEATURES.HASMATCHERS = true
 	chyleConfig.MATCHERS = map[string]string{"TYPE": "merge"}
+
 	chyleConfig.FEATURES.HASEXTRACTORS = true
 	chyleConfig.EXTRACTORS = map[string]struct {
 		ORIGKEY string
@@ -39,7 +42,9 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 			regexp.MustCompile(".*"),
 		},
 	}
+
 	chyleConfig.FEATURES.HASDECORATORS = true
+	chyleConfig.FEATURES.HASENVDECORATOR = true
 	chyleConfig.DECORATORS.ENV = map[string]struct {
 		DESTKEY string
 		VARNAME string
@@ -49,28 +54,15 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 			"TEST",
 		},
 	}
+
+	chyleConfig.FEATURES.HASSENDERS = true
 	chyleConfig.FEATURES.HASSTDOUTSENDER = true
 	chyleConfig.SENDERS.STDOUT.FORMAT = "json"
 
 	p := buildProcess()
 
-	expected := process{
-		&[]matcher{
-			mergeCommitMatcher{},
-		},
-		&[]extracter{
-			regexpExtractor{
-				index:      "TEST",
-				identifier: "test",
-				re:         regexp.MustCompile(".*"),
-			},
-		},
-		&map[string][]decorater{
-			"datas":     {},
-			"metadatas": {},
-		},
-		&[]sender{},
-	}
-
-	assert.Equal(t, expected, *p)
+	assert.Len(t, *(p.matchers), 1)
+	assert.Len(t, *(p.extractors), 1)
+	assert.Len(t, *(p.decorators), 2)
+	assert.Len(t, *(p.senders), 1)
 }

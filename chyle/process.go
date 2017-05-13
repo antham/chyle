@@ -1,13 +1,15 @@
 package chyle
 
 import (
+	pkgMatchers "github.com/antham/chyle/chyle/matchers"
+
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
 // process represents all configuration operations defined
 // needed to create a changelog
 type process struct {
-	matchers   *[]matcher
+	matchers   *[]pkgMatchers.Matcher
 	extractors *[]extracter
 	decorators *map[string][]decorater
 	senders    *[]sender
@@ -15,13 +17,13 @@ type process struct {
 
 // buildProcess creates process entity from defined configuration
 func buildProcess() *process {
-	matchers := &[]matcher{}
+	matchers := &[]pkgMatchers.Matcher{}
 	extractors := &[]extracter{}
 	decorators := &map[string][]decorater{}
 	senders := &[]sender{}
 
 	if chyleConfig.FEATURES.HASMATCHERS {
-		matchers = createMatchers()
+		matchers = pkgMatchers.CreateMatchers(chyleConfig.MATCHERS)
 	}
 
 	if chyleConfig.FEATURES.HASEXTRACTORS {
@@ -46,7 +48,7 @@ func buildProcess() *process {
 
 // proceed extracts datas from a set of commits
 func proceed(process *process, commits *[]object.Commit) error {
-	changelog := extract(process.extractors, transformCommitsToMap(filter(process.matchers, commits)))
+	changelog := extract(process.extractors, pkgMatchers.Filter(process.matchers, commits))
 
 	changelog, err := decorate(process.decorators, changelog)
 

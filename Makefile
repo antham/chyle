@@ -1,3 +1,5 @@
+featurePath = $(PWD)
+
 compile:
 	git stash -u
 	gox -output "build/{{.Dir}}_{{.OS}}_{{.Arch}}"
@@ -11,10 +13,18 @@ gometalinter:
 doc-hunt:
 	doc-hunt check -e
 
-run-tests:
+setup-test-fixtures:
+	cd cmd && sh $(featurePath)/features/init.sh
+	cd cmd && sh $(featurePath)/features/merge-commits.sh
+	cd chyle && sh $(featurePath)/features/init.sh
+	cd chyle && sh $(featurePath)/features/merge-commits.sh
+	cd chyle/git &&	sh $(featurePath)/features/init.sh
+	cd chyle/git && sh $(featurePath)/features/merge-commits.sh
+
+run-tests: setup-test-fixtures
 	./test.sh
 
-run-quick-tests:
+run-quick-tests: setup-test-fixtures
 	go test -v $(shell glide nv)
 
 test-all: gometalinter run-tests doc-hunt

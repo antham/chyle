@@ -1,4 +1,4 @@
-package chyle
+package matchers
 
 import (
 	"regexp"
@@ -11,11 +11,11 @@ type authorMatcher struct {
 	regexp *regexp.Regexp
 }
 
-// match apply a regexp against commit author field
-func (a authorMatcher) match(commit *object.Commit) bool {
+// Match apply a regexp against commit author field
+func (a authorMatcher) Match(commit *object.Commit) bool {
 	return a.regexp.MatchString(commit.Author.String())
 }
 
-func buildAuthorMatcher(value string) matcher {
+func buildAuthorMatcher(value string) Matcher {
 	return authorMatcher{regexp.MustCompile(value)}
 }

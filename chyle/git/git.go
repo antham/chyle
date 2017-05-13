@@ -1,4 +1,4 @@
-package chyle
+package git
 
 import (
 	"fmt"
@@ -90,8 +90,8 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 	return &object.Commit{}, ErrReferenceNotFound{refCommit}
 }
 
-// fetchCommits retrieves commits in a reference range
-func fetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Commit, error) {
+// FetchCommits retrieves commits in a reference range
+func FetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Commit, error) {
 	rep, err := git.PlainOpen(repoPath)
 
 	if err != nil {

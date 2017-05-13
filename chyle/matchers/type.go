@@ -1,4 +1,4 @@
-package chyle
+package matchers
 
 import (
 	"srcd.works/go-git.v4/plumbing/object"
@@ -14,7 +14,7 @@ type mergeCommitMatcher struct {
 }
 
 // match is valid if commit is a merge commit
-func (m mergeCommitMatcher) match(commit *object.Commit) bool {
+func (m mergeCommitMatcher) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 2
 }
 
@@ -22,12 +22,12 @@ func (m mergeCommitMatcher) match(commit *object.Commit) bool {
 type regularCommitMatcher struct {
 }
 
-// match is valid if commit is not a merge commit
-func (r regularCommitMatcher) match(commit *object.Commit) bool {
+// Match is valid if commit is not a merge commit
+func (r regularCommitMatcher) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 1 || commit.NumParents() == 0
 }
 
-func buildTypeMatcher(key string) matcher {
+func buildTypeMatcher(key string) Matcher {
 	if key == regularTypeMatcher {
 		return regularCommitMatcher{}
 	}
@@ -41,4 +41,9 @@ func solveType(commit *object.Commit) string {
 	}
 
 	return regularTypeMatcher
+}
+
+// GetMatcherTypes returns all defined matchers types
+func GetMatcherTypes() []string {
+	return []string{regularTypeMatcher, mergeTypeMatcher}
 }

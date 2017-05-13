@@ -1,5 +1,7 @@
 #!/bin/bash
 
+gitRepositoryPath=testing-repository
+
 if [ ! -z "${TRAVIS+x}" ];
 then
     git config --global user.name "whatever";
@@ -9,10 +11,10 @@ fi
 # Configure name
 
 # Init
-rm -rf test > /dev/null;
-git init test;
+rm -rf $gitRepositoryPath > /dev/null;
+git init --quiet $gitRepositoryPath;
 
-cd test || exit 1;
+cd $gitRepositoryPath || exit 1;
 
 git config --local user.name "whatever";
 git config --local user.email "whatever@example.com";
