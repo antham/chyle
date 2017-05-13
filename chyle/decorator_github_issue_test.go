@@ -11,13 +11,23 @@ import (
 
 func TestGithubIssueDecorator(t *testing.T) {
 	chyleConfig = CHYLE{}
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]string{}
 	chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR = true
 	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OWNER = "user"
 	chyleConfig.DECORATORS.GITHUBISSUE.REPOSITORY.NAME = "repository"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS["milestoneCreator"] = "milestone.creator.id"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS["whatever"] = "whatever"
+	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"MILESTONE": {
+			"milestoneCreator",
+			"milestone.creator.id",
+		},
+		"WHATEVER": {
+			"whatever",
+			"whatever",
+		},
+	}
 
 	defer gock.Off()
 
@@ -80,13 +90,23 @@ func TestGithubDecoratorWithNoGithubIssueIdDefined(t *testing.T) {
 
 func TestGithubIssueDecoratorWithAnErrorStatusCode(t *testing.T) {
 	chyleConfig = CHYLE{}
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]string{}
 	chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR = true
 	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OWNER = "user"
 	chyleConfig.DECORATORS.GITHUBISSUE.REPOSITORY.NAME = "repository"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS["milestoneCreator"] = "milestone.creator.id"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS["whatever"] = "whatever"
+	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"MILESTONE": {
+			"milestoneCreator",
+			"milestone.creator.id",
+		},
+		"WHATEVER": {
+			"whatever",
+			"whatever",
+		},
+	}
 
 	defer gock.Off()
 
@@ -110,13 +130,23 @@ func TestGithubIssueDecoratorWithAnErrorStatusCode(t *testing.T) {
 
 func TestGithubIssueDecoratorWhenIssueIsNotFound(t *testing.T) {
 	chyleConfig = CHYLE{}
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]string{}
 	chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR = true
 	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OWNER = "user"
 	chyleConfig.DECORATORS.GITHUBISSUE.REPOSITORY.NAME = "repository"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS["milestoneCreator"] = "milestone.creator.id"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS["whatever"] = "whatever"
+	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"MILESTONE": {
+			"milestoneCreator",
+			"milestone.creator.id",
+		},
+		"WHATEVER": {
+			"whatever",
+			"whatever",
+		},
+	}
 
 	defer gock.Off()
 

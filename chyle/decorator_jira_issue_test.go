@@ -10,13 +10,23 @@ import (
 
 func TestJiraDecorator(t *testing.T) {
 	chyleConfig = CHYLE{}
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]string{}
 	chyleConfig.FEATURES.HASJIRAISSUEDECORATOR = true
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "test"
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS["jiraIssueKey"] = "key"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS["whatever"] = "whatever"
+	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"ISSUEKEY": {
+			"jiraIssueKey",
+			"key",
+		},
+		"WHATEVER": {
+			"whatever",
+			"whatever",
+		},
+	}
 
 	defer gock.Off()
 
@@ -86,13 +96,23 @@ func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 
 func TestJiraDecoratorWhenIssueIsNotFound(t *testing.T) {
 	chyleConfig = CHYLE{}
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]string{}
 	chyleConfig.FEATURES.HASJIRAISSUEDECORATOR = true
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "test"
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS["jiraIssueKey"] = "key"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS["whatever"] = "whatever"
+	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"ISSUEKEY": {
+			"jiraIssueKey",
+			"key",
+		},
+		"WHATEVER": {
+			"whatever",
+			"whatever",
+		},
+	}
 
 	defer gock.Off()
 

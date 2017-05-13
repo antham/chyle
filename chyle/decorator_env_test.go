@@ -11,7 +11,15 @@ func TestEnvDecorator(t *testing.T) {
 
 	chyleConfig = CHYLE{}
 	chyleConfig.FEATURES.HASENVDECORATOR = true
-	chyleConfig.DECORATORS.ENV = map[string]map[string]string{"WHATEVER": {"VARNAME": "TESTENVDECORATOR", "DESTKEY": "envDecoratorTesting"}}
+	chyleConfig.DECORATORS.ENV = map[string]struct {
+		DESTKEY string
+		VARNAME string
+	}{
+		"WHATEVER": {
+			"envDecoratorTesting",
+			"TESTENVDECORATOR",
+		},
+	}
 
 	metadatas := map[string]interface{}{}
 

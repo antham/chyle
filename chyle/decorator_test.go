@@ -10,12 +10,19 @@ import (
 
 func TestDecorator(t *testing.T) {
 	chyleConfig = CHYLE{}
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]string{}
 	chyleConfig.FEATURES.HASJIRAISSUEDECORATOR = true
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "test"
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS["jiraIssueKey"] = "key"
+	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"KEY": {
+			"jiraIssueKey",
+			"key",
+		},
+	}
 
 	defer gock.Off()
 
@@ -73,13 +80,19 @@ func TestDecorator(t *testing.T) {
 }
 
 func TestCreateDecorators(t *testing.T) {
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]string{}
-
 	chyleConfig.FEATURES.HASJIRAISSUEDECORATOR = true
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "test"
 	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS["jiraTicketDescription"] = "fields.summary"
+	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"DESCRIPTION": {
+			"jiraTicketDescription",
+			"fields.summary",
+		},
+	}
 
 	d := createDecorators()
 
