@@ -1,4 +1,4 @@
-package chyle
+package senders
 
 import (
 	"testing"

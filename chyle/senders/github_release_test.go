@@ -1,4 +1,4 @@
-package chyle
+package senders
 
 import (
 	"fmt"
@@ -13,18 +13,17 @@ import (
 )
 
 func TestGithubReleaseSenderCreateRelease(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v1.0.0"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME = "TEST"
-	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "user"
-	chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
-	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+	config := githubReleaseConfig{}
+	config.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
+	config.RELEASE.TAGNAME = "v1.0.0"
+	config.RELEASE.NAME = "TEST"
+	config.CREDENTIALS.OWNER = "user"
+	config.REPOSITORY.NAME = "test"
+	config.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 
 	defer gock.Off()
 
-	tagCreationResponse, err := ioutil.ReadFile("fixtures/1-github-tag-creation-response.json")
+	tagCreationResponse, err := ioutil.ReadFile("fixtures/github-tag-creation-response.json")
 
 	assert.NoError(t, err, "Must read json fixture file")
 
@@ -40,7 +39,7 @@ func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubReleaseSender().(githubReleaseSender)
+	s := buildGithubReleaseSender(config).(githubReleaseSender)
 	s.client = client
 
 	c := types.Changelog{
@@ -57,14 +56,13 @@ func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 }
 
 func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v1.0.0"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME = "TEST"
-	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "test"
-	chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
-	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d0b934ea223577f7e5cc6599e40b1822"
+	config := githubReleaseConfig{}
+	config.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
+	config.RELEASE.TAGNAME = "v1.0.0"
+	config.RELEASE.NAME = "TEST"
+	config.CREDENTIALS.OWNER = "test"
+	config.REPOSITORY.NAME = "test"
+	config.CREDENTIALS.OAUTHTOKEN = "d0b934ea223577f7e5cc6599e40b1822"
 
 	defer gock.Off()
 
@@ -79,7 +77,7 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubReleaseSender().(githubReleaseSender)
+	s := buildGithubReleaseSender(config).(githubReleaseSender)
 	s.client = client
 
 	c := types.Changelog{
@@ -96,19 +94,18 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 }
 
 func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v1.0.0"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME = "TEST"
-	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "test"
-	chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
-	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.UPDATE = true
+	config := githubReleaseConfig{}
+	config.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
+	config.RELEASE.TAGNAME = "v1.0.0"
+	config.RELEASE.NAME = "TEST"
+	config.CREDENTIALS.OWNER = "test"
+	config.REPOSITORY.NAME = "test"
+	config.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+	config.RELEASE.UPDATE = true
 
 	defer gock.Off()
 
-	fetchReleaseResponse, err := ioutil.ReadFile("fixtures/2-github-release-fetch-response.json")
+	fetchReleaseResponse, err := ioutil.ReadFile("fixtures/github-release-fetch-response.json")
 
 	assert.NoError(t, err, "Must read json fixture file")
 
@@ -131,7 +128,7 @@ func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubReleaseSender().(githubReleaseSender)
+	s := buildGithubReleaseSender(config).(githubReleaseSender)
 	s.client = client
 
 	c := types.Changelog{
@@ -148,15 +145,14 @@ func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 }
 
 func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v1.0.0"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME = "TEST"
-	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "test"
-	chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
-	chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d0b934ea223577f7e5cc6599e40b1822"
-	chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.UPDATE = true
+	config := githubReleaseConfig{}
+	config.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
+	config.RELEASE.TAGNAME = "v1.0.0"
+	config.RELEASE.NAME = "TEST"
+	config.CREDENTIALS.OWNER = "test"
+	config.REPOSITORY.NAME = "test"
+	config.CREDENTIALS.OAUTHTOKEN = "d0b934ea223577f7e5cc6599e40b1822"
+	config.RELEASE.UPDATE = true
 
 	defer gock.Off()
 
@@ -170,7 +166,7 @@ func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubReleaseSender().(githubReleaseSender)
+	s := buildGithubReleaseSender(config).(githubReleaseSender)
 	s.client = client
 
 	c := types.Changelog{

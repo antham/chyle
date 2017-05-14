@@ -1,4 +1,4 @@
-package chyle
+package senders
 
 import (
 	"encoding/json"
@@ -8,6 +8,11 @@ import (
 
 	"github.com/antham/chyle/chyle/types"
 )
+
+type stdoutConfig struct {
+	FORMAT   string
+	TEMPLATE string
+}
 
 // jSONStdoutSender output commit payload as JSON on stdout
 type jSONStdoutSender struct {
@@ -21,12 +26,13 @@ func (j jSONStdoutSender) Send(changelog *types.Changelog) error {
 
 // templateStdoutSender output commit payload using given template on stdout
 type templateStdoutSender struct {
-	stdout io.Writer
+	stdout   io.Writer
+	template string
 }
 
 // Send produces an output on stdout
 func (t templateStdoutSender) Send(changelog *types.Changelog) error {
-	datas, err := populateTemplate("stdout-template", chyleConfig.SENDERS.STDOUT.TEMPLATE, changelog)
+	datas, err := populateTemplate("stdout-template", t.template, changelog)
 
 	if err != nil {
 		return err
@@ -37,22 +43,23 @@ func (t templateStdoutSender) Send(changelog *types.Changelog) error {
 	return nil
 }
 
-func buildStdoutSender() sender {
-	if chyleConfig.SENDERS.STDOUT.FORMAT == "json" {
+func buildStdoutSender(config stdoutConfig) Sender {
+	if config.FORMAT == "json" {
 		return buildJSONStdoutSender()
 	}
 
-	return buildTemplateStdoutSender()
+	return buildTemplateStdoutSender(config.TEMPLATE)
 }
 
-func buildJSONStdoutSender() sender {
+func buildJSONStdoutSender() Sender {
 	return jSONStdoutSender{
 		os.Stdout,
 	}
 }
 
-func buildTemplateStdoutSender() sender {
+func buildTemplateStdoutSender(template string) Sender {
 	return templateStdoutSender{
 		os.Stdout,
+		template,
 	}
 }

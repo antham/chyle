@@ -1,4 +1,4 @@
-package chyle
+package errh
 
 import (
 	"fmt"
@@ -16,9 +16,9 @@ func (e ErrWapper) Error() string {
 	return fmt.Sprintf("%s : %s", e.msg, e.err)
 }
 
-// addCustomMessageToError append an string message to an error
+// AddCustomMessageToError append an string message to an error
 // by creating a brand new error
-func addCustomMessageToError(msg string, err error) error {
+func AddCustomMessageToError(msg string, err error) error {
 	if err == nil {
 		return nil
 	}
