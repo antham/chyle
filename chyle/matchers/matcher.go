@@ -53,8 +53,8 @@ func transformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 	return &commitMaps
 }
 
-// CreateMatchers build matchers from a config
-func CreateMatchers(matchers map[string]string) *[]Matcher {
+// Create builds matchers from a config
+func Create(matchers map[string]string) *[]Matcher {
 	results := []Matcher{}
 
 	for k, v := range matchers {

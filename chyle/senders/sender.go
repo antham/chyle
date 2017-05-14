@@ -22,8 +22,8 @@ func Send(senders *[]Sender, changelog *types.Changelog) error {
 	return nil
 }
 
-// CreateSenders build senders from a config
-func CreateSenders(features Features, senders Config) *[]Sender {
+// Create builds senders from a config
+func Create(features Features, senders Config) *[]Sender {
 	results := []Sender{}
 
 	if features.GITHUBRELEASE {

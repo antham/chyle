@@ -88,7 +88,7 @@ func TestExtract(t *testing.T) {
 	assert.Equal(t, expected, *results)
 }
 
-func TestCreateExtractors(t *testing.T) {
+func TestCreate(t *testing.T) {
 	extractors := map[string]struct {
 		ORIGKEY string
 		DESTKEY string
@@ -106,7 +106,7 @@ func TestCreateExtractors(t *testing.T) {
 		},
 	}
 
-	e := CreateExtractors(extractors)
+	e := Create(extractors)
 
 	assert.Len(t, *e, 2)
 

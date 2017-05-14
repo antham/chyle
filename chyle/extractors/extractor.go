@@ -32,8 +32,8 @@ func Extract(extractors *[]Extracter, commitMaps *[]map[string]interface{}) *typ
 	return &changelog
 }
 
-// CreateExtractors build extracters from a config
-func CreateExtractors(extractors map[string]struct {
+// Create builds extracters from a config
+func Create(extractors map[string]struct {
 	ORIGKEY string
 	DESTKEY string
 	REG     *regexp.Regexp

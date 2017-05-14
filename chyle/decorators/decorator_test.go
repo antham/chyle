@@ -121,7 +121,7 @@ func TestCreateDataDecorators(t *testing.T) {
 	for _, f := range tests {
 		features, config := f()
 
-		s := CreateDecorators(features, config)
+		s := Create(features, config)
 
 		assert.Len(t, (*s)["datas"], 1)
 		assert.Len(t, (*s)["metadatas"], 0)
@@ -145,7 +145,7 @@ func TestCreateMetadataDecorators(t *testing.T) {
 	for _, f := range tests {
 		features, config := f()
 
-		s := CreateDecorators(features, config)
+		s := Create(features, config)
 
 		assert.Len(t, (*s)["datas"], 0)
 		assert.Len(t, (*s)["metadatas"], 1)

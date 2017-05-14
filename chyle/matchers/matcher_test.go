@@ -207,14 +207,14 @@ func TestTransformCommitsToMap(t *testing.T) {
 	assert.Equal(t, expected, (*commitMaps)[0])
 }
 
-func TestCreateMatchers(t *testing.T) {
+func TestCreate(t *testing.T) {
 	matchers := map[string]string{}
 	matchers["TYPE"] = "regular"
 	matchers["MESSAGE"] = ".*"
 	matchers["AUTHOR"] = ".*"
 	matchers["COMMITTER"] = ".*"
 
-	m := CreateMatchers(matchers)
+	m := Create(matchers)
 
 	assert.Len(t, *m, 4, "Must contain 4 matchers")
 }
