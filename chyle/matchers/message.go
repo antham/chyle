@@ -16,8 +16,8 @@ func (m messageMatcher) Match(commit *object.Commit) bool {
 	return m.regexp.MatchString(commit.Message)
 }
 
-func buildMessageMatcher(value string) Matcher {
-	return messageMatcher{regexp.MustCompile(value)}
+func buildMessageMatcher(re *regexp.Regexp) Matcher {
+	return messageMatcher{re}
 }
 
 // removePGPKey fix library issue that don't trim PGP key from message

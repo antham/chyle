@@ -57,14 +57,20 @@ func transformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 func Create(features Features, matchers Config) *[]Matcher {
 	results := []Matcher{}
 
-	for k, v := range matchers {
-		results = append(results,
-			map[string]func(string) Matcher{
-				"MESSAGE":   buildMessageMatcher,
-				"COMMITTER": buildCommitterMatcher,
-				"AUTHOR":    buildAuthorMatcher,
-				"TYPE":      buildTypeMatcher,
-			}[k](v))
+	if features.AUTHOR {
+		results = append(results, buildAuthorMatcher(matchers.AUTHOR))
+	}
+
+	if features.COMMITTER {
+		results = append(results, buildCommitterMatcher(matchers.COMMITTER))
+	}
+
+	if features.MESSAGE {
+		results = append(results, buildMessageMatcher(matchers.MESSAGE))
+	}
+
+	if features.TYPE {
+		results = append(results, buildTypeMatcher(matchers.TYPE))
 	}
 
 	return &results

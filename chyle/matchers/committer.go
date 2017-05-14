@@ -16,6 +16,6 @@ func (c committerMatcher) Match(commit *object.Commit) bool {
 	return c.regexp.MatchString(commit.Committer.String())
 }
 
-func buildCommitterMatcher(value string) Matcher {
-	return committerMatcher{regexp.MustCompile(value)}
+func buildCommitterMatcher(re *regexp.Regexp) Matcher {
+	return committerMatcher{re}
 }

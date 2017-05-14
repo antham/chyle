@@ -208,13 +208,42 @@ func TestTransformCommitsToMap(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	matchers := Config{}
-	matchers["TYPE"] = "regular"
-	matchers["MESSAGE"] = ".*"
-	matchers["AUTHOR"] = ".*"
-	matchers["COMMITTER"] = ".*"
+	tests := []func() (Features, Config){
+		func() (Features, Config) {
+			config := Config{
+				MESSAGE: regexp.MustCompile(".*"),
+			}
 
-	m := Create(Features{true}, matchers)
+			return Features{MESSAGE: true}, config
+		},
+		func() (Features, Config) {
+			config := Config{
+				COMMITTER: regexp.MustCompile(".*"),
+			}
 
-	assert.Len(t, *m, 4, "Must contain 4 matchers")
+			return Features{COMMITTER: true}, config
+		},
+		func() (Features, Config) {
+			config := Config{
+				AUTHOR: regexp.MustCompile(".*"),
+			}
+
+			return Features{AUTHOR: true}, config
+		},
+		func() (Features, Config) {
+			config := Config{
+				TYPE: "regular",
+			}
+
+			return Features{TYPE: true}, config
+		},
+	}
+
+	for _, f := range tests {
+		features, config := f()
+
+		m := Create(features, config)
+
+		assert.Len(t, (*m), 1)
+	}
 }
