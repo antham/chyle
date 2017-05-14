@@ -11,27 +11,27 @@ import (
 
 func TestExtract(t *testing.T) {
 	extractors := []Extracter{
-		regexpExtractor{
+		regex{
 			"id",
 			"serviceId",
 			regexp.MustCompile(`(\#\d+)`),
 		},
-		regexpExtractor{
+		regex{
 			"id",
 			"booleanValue",
 			regexp.MustCompile(`(true|false)`),
 		},
-		regexpExtractor{
+		regex{
 			"id",
 			"intValue",
 			regexp.MustCompile(` (\d+)`),
 		},
-		regexpExtractor{
+		regex{
 			"id",
 			"floatValue",
 			regexp.MustCompile(`(\d+\.\d+)`),
 		},
-		regexpExtractor{
+		regex{
 			"secondIdentifier",
 			"secondServiceId",
 			regexp.MustCompile(`(#\d+)`),
@@ -120,7 +120,7 @@ func TestCreate(t *testing.T) {
 	}
 
 	for i := 0; i < 2; i++ {
-		index := (*e)[0].(regexpExtractor).index
+		index := (*e)[0].(regex).index
 
 		v, ok := expected[index]
 
@@ -128,8 +128,8 @@ func TestCreate(t *testing.T) {
 			assert.Fail(t, "Index must exists in expected")
 		}
 
-		assert.Equal(t, (*e)[0].(regexpExtractor).index, v["index"])
-		assert.Equal(t, (*e)[0].(regexpExtractor).identifier, v["identifier"])
-		assert.Equal(t, (*e)[0].(regexpExtractor).re, regexp.MustCompile(v["regexp"]))
+		assert.Equal(t, (*e)[0].(regex).index, v["index"])
+		assert.Equal(t, (*e)[0].(regex).identifier, v["identifier"])
+		assert.Equal(t, (*e)[0].(regex).re, regexp.MustCompile(v["regexp"]))
 	}
 }

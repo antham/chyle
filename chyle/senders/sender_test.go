@@ -13,7 +13,7 @@ import (
 func TestSend(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	s := jSONStdoutSender{buf}
+	s := jSONStdout{buf}
 
 	c := types.Changelog{
 		Datas:     []map[string]interface{}{},

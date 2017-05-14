@@ -12,7 +12,7 @@ import (
 	"github.com/antham/chyle/chyle/types"
 )
 
-func TestGithubReleaseSenderCreateRelease(t *testing.T) {
+func TestGithubReleaseCreateRelease(t *testing.T) {
 	config := githubReleaseConfig{}
 	config.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
 	config.RELEASE.TAGNAME = "v1.0.0"
@@ -32,14 +32,14 @@ func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 		MatchHeader("Authorization", "token d41d8cd98f00b204e9800998ecf8427e").
 		MatchHeader("Content-Type", "application/json").
 		HeaderPresent("Accept").
-		JSON(githubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
+		JSON(githubReleasePayload{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
 		Reply(201).
 		JSON(string(tagCreationResponse))
 
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubReleaseSender(config).(githubReleaseSender)
+	s := buildGithubRelease(config).(githubRelease)
 	s.client = client
 
 	c := types.Changelog{
@@ -55,7 +55,7 @@ func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
+func TestGithubReleaseCreateReleaseWithWrongCredentials(t *testing.T) {
 	config := githubReleaseConfig{}
 	config.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
 	config.RELEASE.TAGNAME = "v1.0.0"
@@ -71,13 +71,13 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 		MatchHeader("Authorization", "token d0b934ea223577f7e5cc6599e40b1822").
 		MatchHeader("Content-Type", "application/json").
 		HeaderPresent("Accept").
-		JSON(githubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
+		JSON(githubReleasePayload{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
 		ReplyError(fmt.Errorf("an error occurred"))
 
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubReleaseSender(config).(githubReleaseSender)
+	s := buildGithubRelease(config).(githubRelease)
 	s.client = client
 
 	c := types.Changelog{
@@ -93,7 +93,7 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
+func TestGithubReleaseUpdateRelease(t *testing.T) {
 	config := githubReleaseConfig{}
 	config.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
 	config.RELEASE.TAGNAME = "v1.0.0"
@@ -122,13 +122,13 @@ func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 		MatchHeader("Authorization", "token d41d8cd98f00b204e9800998ecf8427e").
 		MatchHeader("Content-Type", "application/json").
 		HeaderPresent("Accept").
-		JSON(githubRelease{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
+		JSON(githubReleasePayload{TagName: "v1.0.0", Name: "TEST", Body: "Hello world !"}).
 		Reply(200)
 
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubReleaseSender(config).(githubReleaseSender)
+	s := buildGithubRelease(config).(githubRelease)
 	s.client = client
 
 	c := types.Changelog{
@@ -144,7 +144,7 @@ func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
+func TestGithubReleaseUpdateReleaseWithWrongCredentials(t *testing.T) {
 	config := githubReleaseConfig{}
 	config.RELEASE.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.test}}{{ end }}"
 	config.RELEASE.TAGNAME = "v1.0.0"
@@ -166,7 +166,7 @@ func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubReleaseSender(config).(githubReleaseSender)
+	s := buildGithubRelease(config).(githubRelease)
 	s.client = client
 
 	c := types.Changelog{

@@ -35,7 +35,7 @@ func Create(features Features, extractors Config) *[]Extracter {
 	results := []Extracter{}
 
 	for _, extractor := range extractors {
-		results = append(results, regexpExtractor{
+		results = append(results, regex{
 			extractor.ORIGKEY,
 			extractor.DESTKEY,
 			extractor.REG,

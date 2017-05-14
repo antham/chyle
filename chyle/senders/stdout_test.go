@@ -10,18 +10,18 @@ import (
 	"github.com/antham/chyle/chyle/types"
 )
 
-func TestBuildStdoutSender(t *testing.T) {
+func TestBuildStdout(t *testing.T) {
 	config := stdoutConfig{FORMAT: "json"}
-	assert.IsType(t, jSONStdoutSender{}, buildStdoutSender(config))
+	assert.IsType(t, jSONStdout{}, buildStdout(config))
 
 	config = stdoutConfig{FORMAT: "template", TEMPLATE: "{{.}}"}
-	assert.IsType(t, templateStdoutSender{}, buildStdoutSender(config))
+	assert.IsType(t, templateStdout{}, buildStdout(config))
 }
 
-func TestJSONStdoutSender(t *testing.T) {
+func TestJSONStdout(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	s := jSONStdoutSender{buf}
+	s := jSONStdout{buf}
 
 	c := types.Changelog{
 		Datas:     []map[string]interface{}{},
@@ -45,10 +45,10 @@ func TestJSONStdoutSender(t *testing.T) {
 	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations as json")
 }
 
-func TestTemplateStdoutSender(t *testing.T) {
+func TestTemplateStdout(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	s := templateStdoutSender{buf, "{{ range $key, $value := .Datas }}{{$value.id}} : {{$value.test}} | {{ end }}"}
+	s := templateStdout{buf, "{{ range $key, $value := .Datas }}{{$value.id}} : {{$value.test}} | {{ end }}"}
 
 	c := types.Changelog{
 		Datas:     []map[string]interface{}{},

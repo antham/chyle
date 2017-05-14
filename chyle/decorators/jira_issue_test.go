@@ -8,7 +8,7 @@ import (
 	"gopkg.in/h2non/gock.v0"
 )
 
-func TestJiraDecorator(t *testing.T) {
+func TestJira(t *testing.T) {
 	config := jiraIssueConfig{}
 	config.CREDENTIALS.USERNAME = "test"
 	config.CREDENTIALS.PASSWORD = "test"
@@ -40,7 +40,7 @@ func TestJiraDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := jiraIssueDecorator{*client, config}
+	j := jiraIssue{*client, config}
 
 	// request with issue id
 	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
@@ -70,7 +70,7 @@ func TestJiraDecorator(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
+func TestJiraWithNoJiraIssueIdDefined(t *testing.T) {
 	defer gock.Off()
 
 	gock.New("http://test.com/rest/api/2/issue/10000").
@@ -80,7 +80,7 @@ func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := jiraIssueDecorator{*client, jiraIssueConfig{}}
+	j := jiraIssue{*client, jiraIssueConfig{}}
 
 	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
 
@@ -93,7 +93,7 @@ func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 	assert.False(t, gock.IsDone(), "Must have one pending request")
 }
 
-func TestJiraDecoratorWhenIssueIsNotFound(t *testing.T) {
+func TestJiraWhenIssueIsNotFound(t *testing.T) {
 	config := jiraIssueConfig{}
 	config.CREDENTIALS.USERNAME = "test"
 	config.CREDENTIALS.PASSWORD = "test"
@@ -121,7 +121,7 @@ func TestJiraDecoratorWhenIssueIsNotFound(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := jiraIssueDecorator{*client, config}
+	j := jiraIssue{*client, config}
 
 	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
 

@@ -32,8 +32,8 @@ type githubReleaseConfig struct {
 
 // codebeat:disable[TOO_MANY_IVARS]
 
-// githubRelease follows https://developer.github.com/v3/repos/releases/#create-a-release
-type githubRelease struct {
+// githubReleasePayload follows https://developer.github.com/v3/repos/releases/#create-a-release
+type githubReleasePayload struct {
 	TagName         string `json:"tag_name"`
 	TargetCommitish string `json:"target_commitish,omitempty"`
 	Name            string `json:"name,omitempty"`
@@ -44,26 +44,26 @@ type githubRelease struct {
 
 // codebeat:enable[TOO_MANY_IVARS]
 
-// buildGithubReleaseSender create a new githubReleaseSender
-func buildGithubReleaseSender(config githubReleaseConfig) Sender {
-	return githubReleaseSender{&http.Client{}, config}
+// buildGithubRelease create a new githubRelease
+func buildGithubRelease(config githubReleaseConfig) Sender {
+	return githubRelease{&http.Client{}, config}
 }
 
-// githubReleaseSender fetch data using jira issue api
-type githubReleaseSender struct {
+// githubRelease fetch data using jira issue api
+type githubRelease struct {
 	client *http.Client
 	config githubReleaseConfig
 }
 
 // buildBody create a request body from changelog
-func (g githubReleaseSender) buildBody(changelog *types.Changelog) ([]byte, error) {
+func (g githubRelease) buildBody(changelog *types.Changelog) ([]byte, error) {
 	body, err := populateTemplate("github-release-template", g.config.RELEASE.TEMPLATE, changelog)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
-	r := githubRelease{
+	r := githubReleasePayload{
 		g.config.RELEASE.TAGNAME,
 		g.config.RELEASE.TARGETCOMMITISH,
 		g.config.RELEASE.NAME,
@@ -76,7 +76,7 @@ func (g githubReleaseSender) buildBody(changelog *types.Changelog) ([]byte, erro
 }
 
 // createRelease creates a release on github
-func (g githubReleaseSender) createRelease(body []byte) error {
+func (g githubRelease) createRelease(body []byte) error {
 	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME)
 
 	req, err := http.NewRequest("POST", URL, bytes.NewBuffer(body))
@@ -97,7 +97,7 @@ func (g githubReleaseSender) createRelease(body []byte) error {
 }
 
 // getReleaseID retrieves github release ID from a given tag name
-func (g githubReleaseSender) getReleaseID() (int, error) {
+func (g githubRelease) getReleaseID() (int, error) {
 	type s struct {
 		ID int `json:"id"`
 	}
@@ -135,7 +135,7 @@ func (g githubReleaseSender) getReleaseID() (int, error) {
 }
 
 // updateRelease updates an existing release from a tag name
-func (g githubReleaseSender) updateRelease(body []byte) error {
+func (g githubRelease) updateRelease(body []byte) error {
 	ID, err := g.getReleaseID()
 
 	if err != nil {
@@ -162,7 +162,7 @@ func (g githubReleaseSender) updateRelease(body []byte) error {
 }
 
 // Send push changelog to github release
-func (g githubReleaseSender) Send(changelog *types.Changelog) error {
+func (g githubRelease) Send(changelog *types.Changelog) error {
 	body, err := g.buildBody(changelog)
 
 	if err != nil {

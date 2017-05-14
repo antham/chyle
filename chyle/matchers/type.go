@@ -5,45 +5,45 @@ import (
 )
 
 const (
-	regularTypeMatcher = "regular"
-	mergeTypeMatcher   = "merge"
+	regularType = "regular"
+	mergeType   = "merge"
 )
 
-// mergeCommitMatcher match merge commit message
-type mergeCommitMatcher struct {
+// mergeCommit match merge commit message
+type mergeCommit struct {
 }
 
 // match is valid if commit is a merge commit
-func (m mergeCommitMatcher) Match(commit *object.Commit) bool {
+func (m mergeCommit) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 2
 }
 
-// regularCommitMatcher match regular commit message
-type regularCommitMatcher struct {
+// regularCommit match regular commit message
+type regularCommit struct {
 }
 
 // Match is valid if commit is not a merge commit
-func (r regularCommitMatcher) Match(commit *object.Commit) bool {
+func (r regularCommit) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 1 || commit.NumParents() == 0
 }
 
-func buildTypeMatcher(key string) Matcher {
-	if key == regularTypeMatcher {
-		return regularCommitMatcher{}
+func buildType(key string) Matcher {
+	if key == regularType {
+		return regularCommit{}
 	}
 
-	return mergeCommitMatcher{}
+	return mergeCommit{}
 }
 
 func solveType(commit *object.Commit) string {
 	if commit.NumParents() == 2 {
-		return mergeTypeMatcher
+		return mergeType
 	}
 
-	return regularTypeMatcher
+	return regularType
 }
 
 // GetTypes returns all defined matchers types
 func GetTypes() []string {
-	return []string{regularTypeMatcher, mergeTypeMatcher}
+	return []string{regularType, mergeType}
 }

@@ -38,7 +38,7 @@ func TestDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := jiraIssueDecorator{*client, config}
+	j := jiraIssue{*client, config}
 
 	decorators := map[string][]Decorater{
 		"datas":     {j},

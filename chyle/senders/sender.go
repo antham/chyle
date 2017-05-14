@@ -27,11 +27,11 @@ func Create(features Features, senders Config) *[]Sender {
 	results := []Sender{}
 
 	if features.GITHUBRELEASE {
-		results = append(results, buildGithubReleaseSender(senders.GITHUBRELEASE))
+		results = append(results, buildGithubRelease(senders.GITHUBRELEASE))
 	}
 
 	if features.STDOUT {
-		results = append(results, buildStdoutSender(senders.STDOUT))
+		results = append(results, buildStdout(senders.STDOUT))
 	}
 
 	return &results

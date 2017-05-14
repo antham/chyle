@@ -56,7 +56,7 @@ func (e *encodedObject) Writer() (io.WriteCloser, error) {
 	return e.buf, nil
 }
 
-func TestMatchersMergeCommits(t *testing.T) {
+func TestMergeCommits(t *testing.T) {
 	buf1 := &buffer{}
 	buf1.WriteString("parent 10a34637ad661d98ba3344717656fcc76209c2f8\n")
 	buf1.WriteString("parent 3e6c06b1a28a035e21aa0a736ef80afadc43122c\n")
@@ -88,14 +88,14 @@ func TestMatchersMergeCommits(t *testing.T) {
 	commit4 := object.Commit{Hash: plumbing.NewHash("f75edc98db49e7c13f818f70c418087256354303")}
 	commits := []object.Commit{commit1, commit2, commit3, commit4}
 
-	cs := Filter(&[]Matcher{mergeCommitMatcher{}}, &commits)
+	cs := Filter(&[]Matcher{mergeCommit{}}, &commits)
 
 	assert.Len(t, *cs, 2)
 	assert.Equal(t, commit1.Hash.String(), (*cs)[0]["id"])
 	assert.Equal(t, commit3.Hash.String(), (*cs)[1]["id"])
 }
 
-func TestMatchersRegularCommits(t *testing.T) {
+func TestRegularCommits(t *testing.T) {
 	buf1 := &buffer{}
 	buf1.WriteString("parent da39a3ee5e6b4b0d3255bfef95601890afd80709\n")
 	buf1.WriteString("parent 10a34637ad661d98ba3344717656fcc76209c2f8\n")
@@ -127,14 +127,14 @@ func TestMatchersRegularCommits(t *testing.T) {
 	commit4 := object.Commit{Hash: plumbing.NewHash("ea8aa7337c39b717fcdff0c858027b9778ab391a")}
 	commits := []object.Commit{commit1, commit2, commit3, commit4}
 
-	cs := Filter(&[]Matcher{regularCommitMatcher{}}, &commits)
+	cs := Filter(&[]Matcher{regularCommit{}}, &commits)
 
 	assert.Len(t, *cs, 2)
 	assert.Equal(t, commit2.Hash.String(), (*cs)[0]["id"])
 	assert.Equal(t, commit4.Hash.String(), (*cs)[1]["id"])
 }
 
-func TestMatchersWithCommitMessage(t *testing.T) {
+func TestCommitMessage(t *testing.T) {
 	re, err := regexp.Compile(`whatever.*`)
 
 	assert.NoError(t, err)
@@ -145,14 +145,14 @@ func TestMatchersWithCommitMessage(t *testing.T) {
 	commit4 := object.Commit{Message: "whatever2"}
 	commits := []object.Commit{commit1, commit2, commit3, commit4}
 
-	cs := Filter(&[]Matcher{messageMatcher{re}}, &commits)
+	cs := Filter(&[]Matcher{message{re}}, &commits)
 
 	assert.Len(t, *cs, 2)
 	assert.Equal(t, commit2.Message, (*cs)[0]["message"])
 	assert.Equal(t, commit4.Message, (*cs)[1]["message"])
 }
 
-func TestMatchersWithAuthor(t *testing.T) {
+func TestAuthor(t *testing.T) {
 	re, err := regexp.Compile(".*whatever.*")
 
 	assert.NoError(t, err)
@@ -163,13 +163,13 @@ func TestMatchersWithAuthor(t *testing.T) {
 	commit4 := object.Commit{Author: object.Signature{Email: "whatever2@test.com"}}
 	commits := []object.Commit{commit1, commit2, commit3, commit4}
 
-	cs := Filter(&[]Matcher{authorMatcher{re}}, &commits)
+	cs := Filter(&[]Matcher{author{re}}, &commits)
 	assert.Len(t, *cs, 2)
 	assert.Equal(t, commit2.Author.Email, (*cs)[0]["authorEmail"])
 	assert.Equal(t, commit4.Author.Email, (*cs)[1]["authorEmail"])
 }
 
-func TestMatchersWithCommitter(t *testing.T) {
+func TestCommitter(t *testing.T) {
 	re, err := regexp.Compile(".*whatever.*")
 
 	assert.NoError(t, err)
@@ -180,7 +180,7 @@ func TestMatchersWithCommitter(t *testing.T) {
 	commit4 := object.Commit{Committer: object.Signature{Email: "whatever2@test.com"}}
 	commits := []object.Commit{commit1, commit2, commit3, commit4}
 
-	cs := Filter(&[]Matcher{committerMatcher{re}}, &commits)
+	cs := Filter(&[]Matcher{committer{re}}, &commits)
 	assert.Len(t, *cs, 2)
 	assert.Equal(t, commit2.Committer.Email, (*cs)[0]["committerEmail"])
 	assert.Equal(t, commit4.Committer.Email, (*cs)[1]["committerEmail"])

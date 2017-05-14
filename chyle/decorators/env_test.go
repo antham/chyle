@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEnvDecorator(t *testing.T) {
+func TestEnvs(t *testing.T) {
 	err := os.Setenv("TESTENVDECORATOR", "this is a test")
 
 	assert.NoError(t, err)
@@ -17,16 +17,16 @@ func TestEnvDecorator(t *testing.T) {
 		VARNAME string
 	}{
 		"WHATEVER": {
-			"envDecoratorTesting",
+			"envTesting",
 			"TESTENVDECORATOR",
 		},
 	}
 
 	metadatas := map[string]interface{}{}
 
-	e := buildEnvDecorators(envs)
+	e := buildEnvs(envs)
 	m, err := e[0].Decorate(&metadatas)
 
 	assert.NoError(t, err)
-	assert.Equal(t, map[string]interface{}{"envDecoratorTesting": "this is a test"}, *m, "Must dump environment variable in given destination key")
+	assert.Equal(t, map[string]interface{}{"envTesting": "this is a test"}, *m, "Must dump environment variable in given destination key")
 }
