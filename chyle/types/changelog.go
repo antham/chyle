@@ -1,4 +1,4 @@
-package chyle
+package types
 
 // Changelog represents a changelog entry with datas extracted and metadatas
 type Changelog struct {

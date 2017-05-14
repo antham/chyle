@@ -1,12 +1,16 @@
 package chyle
 
+import (
+	"github.com/antham/chyle/chyle/types"
+)
+
 // sender define where the date must be sent
 type sender interface {
-	Send(changelog *Changelog) error
+	Send(changelog *types.Changelog) error
 }
 
 // Send forward changelog to senders
-func Send(senders *[]sender, changelog *Changelog) error {
+func Send(senders *[]sender, changelog *types.Changelog) error {
 	for _, sender := range *senders {
 		err := sender.Send(changelog)
 

@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/antham/chyle/chyle/types"
 )
 
 func TestSend(t *testing.T) {
@@ -13,7 +15,7 @@ func TestSend(t *testing.T) {
 
 	s := jSONStdoutSender{buf}
 
-	c := Changelog{
+	c := types.Changelog{
 		Datas:     []map[string]interface{}{},
 		Metadatas: map[string]interface{}{},
 	}

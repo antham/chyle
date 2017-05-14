@@ -8,6 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v0"
+
+	"github.com/antham/chyle/chyle/types"
 )
 
 func TestGithubReleaseSenderCreateRelease(t *testing.T) {
@@ -41,7 +43,7 @@ func TestGithubReleaseSenderCreateRelease(t *testing.T) {
 	s := buildGithubReleaseSender().(githubReleaseSender)
 	s.client = client
 
-	c := Changelog{
+	c := types.Changelog{
 		Datas:     []map[string]interface{}{},
 		Metadatas: map[string]interface{}{},
 	}
@@ -80,7 +82,7 @@ func TestGithubReleaseSenderCreateReleaseWithWrongCredentials(t *testing.T) {
 	s := buildGithubReleaseSender().(githubReleaseSender)
 	s.client = client
 
-	c := Changelog{
+	c := types.Changelog{
 		Datas:     []map[string]interface{}{},
 		Metadatas: map[string]interface{}{},
 	}
@@ -132,7 +134,7 @@ func TestGithubReleaseUpdateReleaseSender(t *testing.T) {
 	s := buildGithubReleaseSender().(githubReleaseSender)
 	s.client = client
 
-	c := Changelog{
+	c := types.Changelog{
 		Datas:     []map[string]interface{}{},
 		Metadatas: map[string]interface{}{},
 	}
@@ -171,7 +173,7 @@ func TestGithubReleaseSenderUpdateReleaseWithWrongCredentials(t *testing.T) {
 	s := buildGithubReleaseSender().(githubReleaseSender)
 	s.client = client
 
-	c := Changelog{
+	c := types.Changelog{
 		Datas:     []map[string]interface{}{},
 		Metadatas: map[string]interface{}{},
 	}

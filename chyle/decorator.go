@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/tidwall/gjson"
+
+	"github.com/antham/chyle/chyle/types"
 )
 
 // decorater extends data from commit hashmap with data picked from third part service
@@ -13,7 +15,7 @@ type decorater interface {
 }
 
 // decorate process all defined decorator and apply them
-func decorate(decorators *map[string][]decorater, changelog *Changelog) (*Changelog, error) {
+func decorate(decorators *map[string][]decorater, changelog *types.Changelog) (*types.Changelog, error) {
 	var err error
 
 	datas := []map[string]interface{}{}

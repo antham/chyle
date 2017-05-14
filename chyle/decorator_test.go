@@ -6,6 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/h2non/gock.v0"
+
+	"github.com/antham/chyle/chyle/types"
 )
 
 func TestDecorator(t *testing.T) {
@@ -44,7 +46,7 @@ func TestDecorator(t *testing.T) {
 		"metadatas": {},
 	}
 
-	changelog := Changelog{
+	changelog := types.Changelog{
 		Datas: []map[string]interface{}{
 			{
 				"test":        "test1",
@@ -59,7 +61,7 @@ func TestDecorator(t *testing.T) {
 
 	result, err := decorate(&decorators, &changelog)
 
-	expected := Changelog{
+	expected := types.Changelog{
 		Datas: []map[string]interface{}{
 			{
 				"test":         "test1",

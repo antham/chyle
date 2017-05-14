@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/antham/chyle/chyle/types"
 )
 
 // jSONStdoutSender output commit payload as JSON on stdout
@@ -13,7 +15,7 @@ type jSONStdoutSender struct {
 }
 
 // Send produces an output on stdout
-func (j jSONStdoutSender) Send(changelog *Changelog) error {
+func (j jSONStdoutSender) Send(changelog *types.Changelog) error {
 	return json.NewEncoder(j.stdout).Encode(changelog)
 }
 
@@ -23,7 +25,7 @@ type templateStdoutSender struct {
 }
 
 // Send produces an output on stdout
-func (t templateStdoutSender) Send(changelog *Changelog) error {
+func (t templateStdoutSender) Send(changelog *types.Changelog) error {
 	datas, err := populateTemplate("stdout-template", chyleConfig.SENDERS.STDOUT.TEMPLATE, changelog)
 
 	if err != nil {

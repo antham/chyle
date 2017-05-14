@@ -1,4 +1,4 @@
-package chyle
+package extractors
 
 import (
 	"regexp"
@@ -12,8 +12,8 @@ type regexpExtractor struct {
 	re         *regexp.Regexp
 }
 
-// extract data from a commitMap
-func (r regexpExtractor) extract(commitMap *map[string]interface{}) *map[string]interface{} {
+// Extract data from a commitMap
+func (r regexpExtractor) Extract(commitMap *map[string]interface{}) *map[string]interface{} {
 	var mapValue interface{}
 	var ok bool
 

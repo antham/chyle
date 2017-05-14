@@ -1,14 +1,16 @@
-package chyle
+package extractors
 
 import (
 	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/antham/chyle/chyle/types"
 )
 
 func TestExtract(t *testing.T) {
-	extractors := []extracter{
+	extractors := []Extracter{
 		regexpExtractor{
 			"id",
 			"serviceId",
@@ -50,9 +52,9 @@ func TestExtract(t *testing.T) {
 		},
 	}
 
-	results := extract(&extractors, &commitMaps)
+	results := Extract(&extractors, &commitMaps)
 
-	expected := Changelog{
+	expected := types.Changelog{
 		Datas: []map[string]interface{}{
 			{
 				"id":               "Whatever #30 whatever true 12345 whatever 12345.12",
@@ -83,13 +85,11 @@ func TestExtract(t *testing.T) {
 		Metadatas: map[string]interface{}{},
 	}
 
-	assert.Equal(t, expected, *results, "Must return extracted datas with old one")
+	assert.Equal(t, expected, *results)
 }
 
 func TestCreateExtractors(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASEXTRACTORS = true
-	chyleConfig.EXTRACTORS = map[string]struct {
+	extractors := map[string]struct {
 		ORIGKEY string
 		DESTKEY string
 		REG     *regexp.Regexp
@@ -106,9 +106,9 @@ func TestCreateExtractors(t *testing.T) {
 		},
 	}
 
-	e := createExtractors()
+	e := CreateExtractors(extractors)
 
-	assert.Len(t, *e, 2, "Must return 2 extractors")
+	assert.Len(t, *e, 2)
 
 	expected := map[string]map[string]string{
 		"id": {
@@ -129,11 +129,11 @@ func TestCreateExtractors(t *testing.T) {
 		v, ok := expected[index]
 
 		if !ok {
-			assert.Fail(t, "Index must exists in expected", "Key must exists")
+			assert.Fail(t, "Index must exists in expected")
 		}
 
-		assert.Equal(t, (*e)[0].(regexpExtractor).index, v["index"], "Must return first component after extractor variable")
-		assert.Equal(t, (*e)[0].(regexpExtractor).identifier, v["identifier"], "Must return second component after extractor variable")
-		assert.Equal(t, (*e)[0].(regexpExtractor).re, regexp.MustCompile(v["regexp"]), "Must return value as regexp")
+		assert.Equal(t, (*e)[0].(regexpExtractor).index, v["index"])
+		assert.Equal(t, (*e)[0].(regexpExtractor).identifier, v["identifier"])
+		assert.Equal(t, (*e)[0].(regexpExtractor).re, regexp.MustCompile(v["regexp"]))
 	}
 }

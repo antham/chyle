@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/antham/chyle/chyle/extractors"
 	"github.com/antham/chyle/chyle/matchers"
 
 	"github.com/stretchr/testify/assert"
@@ -16,7 +17,7 @@ func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
 
 	expected := process{
 		&[]matchers.Matcher{},
-		&[]extracter{},
+		&[]extractors.Extracter{},
 		&map[string][]decorater{},
 		&[]sender{},
 	}
