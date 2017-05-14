@@ -3,12 +3,12 @@ package config
 import (
 	"encoding/json"
 	"log"
-	"regexp"
 	"strings"
 
 	"github.com/antham/envh"
 
 	"github.com/antham/chyle/chyle/decorators"
+	"github.com/antham/chyle/chyle/extractors"
 	"github.com/antham/chyle/chyle/senders"
 )
 
@@ -27,9 +27,7 @@ type CHYLE struct {
 		MATCHERS struct {
 			ENABLED bool
 		}
-		EXTRACTORS struct {
-			ENABLED bool
-		}
+		EXTRACTORS extractors.Features
 		DECORATORS decorators.Features
 		SENDERS    senders.Features
 	} `json:"-"`
@@ -43,11 +41,7 @@ type CHYLE struct {
 		}
 	}
 	MATCHERS   map[string]string
-	EXTRACTORS map[string]struct {
-		ORIGKEY string
-		DESTKEY string
-		REG     *regexp.Regexp
-	}
+	EXTRACTORS extractors.Config
 	DECORATORS decorators.Config
 	SENDERS    senders.Config
 }

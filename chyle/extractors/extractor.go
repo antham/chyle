@@ -1,8 +1,6 @@
 package extractors
 
 import (
-	"regexp"
-
 	"github.com/antham/chyle/chyle/types"
 )
 
@@ -33,11 +31,7 @@ func Extract(extractors *[]Extracter, commitMaps *[]map[string]interface{}) *typ
 }
 
 // Create builds extracters from a config
-func Create(extractors map[string]struct {
-	ORIGKEY string
-	DESTKEY string
-	REG     *regexp.Regexp
-}) *[]Extracter {
+func Create(features Features, extractors Config) *[]Extracter {
 	results := []Extracter{}
 
 	for _, extractor := range extractors {
