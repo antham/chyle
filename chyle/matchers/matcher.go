@@ -54,7 +54,7 @@ func transformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 }
 
 // Create builds matchers from a config
-func Create(matchers map[string]string) *[]Matcher {
+func Create(features Features, matchers Config) *[]Matcher {
 	results := []Matcher{}
 
 	for k, v := range matchers {
