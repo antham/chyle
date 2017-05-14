@@ -30,8 +30,8 @@ func jiraIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
 				},
 			},
 			[]*bool{
-				&chyleConfig.FEATURES.HASDECORATORS,
-				&chyleConfig.FEATURES.HASJIRAISSUEDECORATOR,
+				&chyleConfig.FEATURES.DECORATORS.ENABLED,
+				&chyleConfig.FEATURES.DECORATORS.JIRAISSUE,
 			},
 		},
 	}

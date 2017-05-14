@@ -37,14 +37,14 @@ func TestSend(t *testing.T) {
 	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations  as json")
 }
 func TestCreateSenders(t *testing.T) {
-	tests := []func() (map[string]bool, Config){
-		func() (map[string]bool, Config) {
+	tests := []func() (Features, Config){
+		func() (Features, Config) {
 			config := stdoutConfig{}
 			config.FORMAT = "json"
 
-			return map[string]bool{"stdoutSender": true}, Config{STDOUT: config}
+			return Features{STDOUT: true}, Config{STDOUT: config}
 		},
-		func() (map[string]bool, Config) {
+		func() (Features, Config) {
 			config := githubReleaseConfig{}
 			config.CREDENTIALS.OAUTHTOKEN = "test"
 			config.CREDENTIALS.OWNER = "test"
@@ -52,7 +52,7 @@ func TestCreateSenders(t *testing.T) {
 			config.RELEASE.TEMPLATE = "test"
 			config.REPOSITORY.NAME = "test"
 
-			return map[string]bool{"githubReleaseSender": true}, Config{GITHUBRELEASE: config}
+			return Features{GITHUBRELEASE: true}, Config{GITHUBRELEASE: config}
 		},
 	}
 

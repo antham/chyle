@@ -544,7 +544,7 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REPOSITORY.PATH = "test"
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
-				c.FEATURES.HASMATCHERS = true
+				c.FEATURES.MATCHERS.ENABLED = true
 				c.MATCHERS = map[string]string{
 					"TYPE":      "regular",
 					"AUTHOR":    ".*",
@@ -570,7 +570,7 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REPOSITORY.PATH = "test"
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
-				c.FEATURES.HASEXTRACTORS = true
+				c.FEATURES.EXTRACTORS.ENABLED = true
 				c.EXTRACTORS = map[string]struct {
 					ORIGKEY string
 					DESTKEY string
@@ -600,8 +600,8 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REPOSITORY.PATH = "test"
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
-				c.FEATURES.HASDECORATORS = true
-				c.FEATURES.HASENVDECORATOR = true
+				c.FEATURES.DECORATORS.ENABLED = true
+				c.FEATURES.DECORATORS.ENV = true
 				c.DECORATORS.ENV = map[string]struct {
 					DESTKEY string
 					VARNAME string
@@ -635,9 +635,9 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REPOSITORY.PATH = "test"
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
-				c.FEATURES.HASEXTRACTORS = true
-				c.FEATURES.HASDECORATORS = true
-				c.FEATURES.HASJIRAISSUEDECORATOR = true
+				c.FEATURES.EXTRACTORS.ENABLED = true
+				c.FEATURES.DECORATORS.ENABLED = true
+				c.FEATURES.DECORATORS.JIRAISSUE = true
 				c.EXTRACTORS = map[string]struct {
 					ORIGKEY string
 					DESTKEY string
@@ -685,9 +685,9 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REPOSITORY.PATH = "test"
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
-				c.FEATURES.HASEXTRACTORS = true
-				c.FEATURES.HASDECORATORS = true
-				c.FEATURES.HASGITHUBISSUEDECORATOR = true
+				c.FEATURES.EXTRACTORS.ENABLED = true
+				c.FEATURES.DECORATORS.ENABLED = true
+				c.FEATURES.DECORATORS.GITHUBISSUE = true
 				c.EXTRACTORS = map[string]struct {
 					ORIGKEY string
 					DESTKEY string
@@ -732,8 +732,8 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REPOSITORY.PATH = "test"
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
-				c.FEATURES.HASSENDERS = true
-				c.FEATURES.HASGITHUBRELEASESENDER = true
+				c.FEATURES.SENDERS.ENABLED = true
+				c.FEATURES.SENDERS.GITHUBRELEASE = true
 				c.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 				c.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "user"
 				c.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v2.0.0"
@@ -757,8 +757,8 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REPOSITORY.PATH = "test"
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
-				c.FEATURES.HASSTDOUTSENDER = true
-				c.FEATURES.HASSENDERS = true
+				c.FEATURES.SENDERS.STDOUT = true
+				c.FEATURES.SENDERS.ENABLED = true
 				c.SENDERS.STDOUT.FORMAT = "template"
 				c.SENDERS.STDOUT.TEMPLATE = "{{.}}"
 
@@ -777,8 +777,8 @@ func TestResolveConfig(t *testing.T) {
 				c.GIT.REPOSITORY.PATH = "test"
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
-				c.FEATURES.HASSTDOUTSENDER = true
-				c.FEATURES.HASSENDERS = true
+				c.FEATURES.SENDERS.STDOUT = true
+				c.FEATURES.SENDERS.ENABLED = true
 				c.SENDERS.STDOUT.FORMAT = "json"
 
 				return c

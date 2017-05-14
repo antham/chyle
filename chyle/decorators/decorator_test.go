@@ -95,7 +95,7 @@ func TestCreateDecorators(t *testing.T) {
 		},
 	}
 
-	d := CreateDecorators(map[string]bool{"jiraIssueDecorator": true}, Config{JIRAISSUE: jiraConfig})
+	d := CreateDecorators(Features{JIRAISSUE: true}, Config{JIRAISSUE: jiraConfig})
 
 	assert.Len(t, (*d)["datas"], 1, "Must return 1 decorator")
 }

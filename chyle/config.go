@@ -23,15 +23,14 @@ var chyleConfig CHYLE
 // CHYLE hold config extracted from environment variables
 type CHYLE struct {
 	FEATURES struct {
-		HASMATCHERS             bool
-		HASEXTRACTORS           bool
-		HASDECORATORS           bool
-		HASSENDERS              bool
-		HASJIRAISSUEDECORATOR   bool
-		HASGITHUBISSUEDECORATOR bool
-		HASENVDECORATOR         bool
-		HASGITHUBRELEASESENDER  bool
-		HASSTDOUTSENDER         bool
+		MATCHERS struct {
+			ENABLED bool
+		}
+		EXTRACTORS struct {
+			ENABLED bool
+		}
+		DECORATORS decorators.Features
+		SENDERS    senders.Features
 	} `json:"-"`
 	GIT struct {
 		REPOSITORY struct {

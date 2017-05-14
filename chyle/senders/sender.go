@@ -23,14 +23,14 @@ func Send(senders *[]Sender, changelog *types.Changelog) error {
 }
 
 // CreateSenders build senders from a config
-func CreateSenders(features map[string]bool, senders Config) *[]Sender {
+func CreateSenders(features Features, senders Config) *[]Sender {
 	results := []Sender{}
 
-	if enabled, ok := features["githubReleaseSender"]; ok && enabled {
+	if features.GITHUBRELEASE {
 		results = append(results, buildGithubReleaseSender(senders.GITHUBRELEASE))
 	}
 
-	if enabled, ok := features["stdoutSender"]; ok && enabled {
+	if features.STDOUT {
 		results = append(results, buildStdoutSender(senders.STDOUT))
 	}
 

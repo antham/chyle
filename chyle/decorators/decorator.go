@@ -55,18 +55,18 @@ func Decorate(decorators *map[string][]Decorater, changelog *types.Changelog) (*
 }
 
 // CreateDecorators build decorators from a config
-func CreateDecorators(features map[string]bool, decorators Config) *map[string][]Decorater {
+func CreateDecorators(features Features, decorators Config) *map[string][]Decorater {
 	results := map[string][]Decorater{"metadatas": {}, "datas": {}}
 
-	if enabled, ok := features["jiraIssueDecorator"]; ok && enabled {
+	if features.JIRAISSUE {
 		results["datas"] = append(results["datas"], buildJiraIssueDecorator(decorators.JIRAISSUE))
 	}
 
-	if enabled, ok := features["githubIssueDecorator"]; ok && enabled {
+	if features.GITHUBISSUE {
 		results["datas"] = append(results["datas"], buildGithubIssueDecorator(decorators.GITHUBISSUE))
 	}
 
-	if enabled, ok := features["envDecorator"]; ok && enabled {
+	if features.ENV {
 		results["metadatas"] = append(results["metadatas"], buildEnvDecorators(decorators.ENV)...)
 	}
 

@@ -17,7 +17,7 @@ func (m *matchersConfigurator) process(config *CHYLE) (bool, error) {
 		return true, nil
 	}
 
-	config.FEATURES.HASMATCHERS = true
+	config.FEATURES.MATCHERS.ENABLED = true
 
 	for _, f := range []func() error{
 		m.validateRegexpMatchers,

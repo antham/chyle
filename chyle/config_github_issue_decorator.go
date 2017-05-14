@@ -30,8 +30,8 @@ func githubIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
 				},
 			},
 			[]*bool{
-				&chyleConfig.FEATURES.HASDECORATORS,
-				&chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR,
+				&chyleConfig.FEATURES.DECORATORS.ENABLED,
+				&chyleConfig.FEATURES.DECORATORS.GITHUBISSUE,
 			},
 		},
 	}

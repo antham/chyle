@@ -27,20 +27,20 @@ func buildProcess() *process {
 		&[]senders.Sender{},
 	}
 
-	if chyleConfig.FEATURES.HASMATCHERS {
+	if chyleConfig.FEATURES.MATCHERS.ENABLED {
 		p.matchers = matchers.CreateMatchers(chyleConfig.MATCHERS)
 	}
 
-	if chyleConfig.FEATURES.HASEXTRACTORS {
+	if chyleConfig.FEATURES.EXTRACTORS.ENABLED {
 		p.extractors = extractors.CreateExtractors(chyleConfig.EXTRACTORS)
 	}
 
-	if chyleConfig.FEATURES.HASDECORATORS {
-		p.decorators = decorators.CreateDecorators(map[string]bool{"jiraIssueDecorator": chyleConfig.FEATURES.HASJIRAISSUEDECORATOR, "githubIssueDecorator": chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR, "envDecorator": chyleConfig.FEATURES.HASENVDECORATOR}, chyleConfig.DECORATORS)
+	if chyleConfig.FEATURES.DECORATORS.ENABLED {
+		p.decorators = decorators.CreateDecorators(chyleConfig.FEATURES.DECORATORS, chyleConfig.DECORATORS)
 	}
 
-	if chyleConfig.FEATURES.HASSENDERS {
-		p.senders = senders.CreateSenders(map[string]bool{"githubReleaseSender": chyleConfig.FEATURES.HASGITHUBRELEASESENDER, "stdoutSender": chyleConfig.FEATURES.HASSTDOUTSENDER}, chyleConfig.SENDERS)
+	if chyleConfig.FEATURES.SENDERS.ENABLED {
+		p.senders = senders.CreateSenders(chyleConfig.FEATURES.SENDERS, chyleConfig.SENDERS)
 	}
 
 	return p
