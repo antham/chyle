@@ -33,7 +33,7 @@ func buildProcess(conf *config.CHYLE) *process {
 	}
 
 	if conf.FEATURES.EXTRACTORS.ENABLED {
-		p.extractors = extractors.Create(conf.EXTRACTORS)
+		p.extractors = extractors.Create(conf.FEATURES.EXTRACTORS, conf.EXTRACTORS)
 	}
 
 	if conf.FEATURES.DECORATORS.ENABLED {

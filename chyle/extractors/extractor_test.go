@@ -89,11 +89,7 @@ func TestExtract(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	extractors := map[string]struct {
-		ORIGKEY string
-		DESTKEY string
-		REG     *regexp.Regexp
-	}{
+	extractors := Config{
 		"ID": {
 			"id",
 			"test",
@@ -106,7 +102,7 @@ func TestCreate(t *testing.T) {
 		},
 	}
 
-	e := Create(extractors)
+	e := Create(Features{ENABLED: true}, extractors)
 
 	assert.Len(t, *e, 2)
 
