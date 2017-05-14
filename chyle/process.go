@@ -1,6 +1,7 @@
 package chyle
 
 import (
+	"github.com/antham/chyle/chyle/config"
 	"github.com/antham/chyle/chyle/decorators"
 	"github.com/antham/chyle/chyle/extractors"
 	"github.com/antham/chyle/chyle/matchers"
@@ -19,7 +20,7 @@ type process struct {
 }
 
 // buildProcess creates process entity from defined configuration
-func buildProcess() *process {
+func buildProcess(conf *config.CHYLE) *process {
 	p := &process{
 		&[]matchers.Matcher{},
 		&[]extractors.Extracter{},
@@ -27,20 +28,20 @@ func buildProcess() *process {
 		&[]senders.Sender{},
 	}
 
-	if chyleConfig.FEATURES.MATCHERS.ENABLED {
-		p.matchers = matchers.CreateMatchers(chyleConfig.MATCHERS)
+	if conf.FEATURES.MATCHERS.ENABLED {
+		p.matchers = matchers.CreateMatchers(conf.MATCHERS)
 	}
 
-	if chyleConfig.FEATURES.EXTRACTORS.ENABLED {
-		p.extractors = extractors.CreateExtractors(chyleConfig.EXTRACTORS)
+	if conf.FEATURES.EXTRACTORS.ENABLED {
+		p.extractors = extractors.CreateExtractors(conf.EXTRACTORS)
 	}
 
-	if chyleConfig.FEATURES.DECORATORS.ENABLED {
-		p.decorators = decorators.CreateDecorators(chyleConfig.FEATURES.DECORATORS, chyleConfig.DECORATORS)
+	if conf.FEATURES.DECORATORS.ENABLED {
+		p.decorators = decorators.CreateDecorators(conf.FEATURES.DECORATORS, conf.DECORATORS)
 	}
 
-	if chyleConfig.FEATURES.SENDERS.ENABLED {
-		p.senders = senders.CreateSenders(chyleConfig.FEATURES.SENDERS, chyleConfig.SENDERS)
+	if conf.FEATURES.SENDERS.ENABLED {
+		p.senders = senders.CreateSenders(conf.FEATURES.SENDERS, conf.SENDERS)
 	}
 
 	return p

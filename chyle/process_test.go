@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/antham/chyle/chyle/config"
 	"github.com/antham/chyle/chyle/decorators"
 	"github.com/antham/chyle/chyle/extractors"
 	"github.com/antham/chyle/chyle/matchers"
@@ -13,9 +14,9 @@ import (
 )
 
 func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
-	chyleConfig = CHYLE{}
+	conf := config.CHYLE{}
 
-	p := buildProcess()
+	p := buildProcess(&conf)
 
 	expected := process{
 		&[]matchers.Matcher{},
@@ -28,13 +29,13 @@ func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
 }
 
 func TestBuildProcessWithAFullConfig(t *testing.T) {
-	chyleConfig = CHYLE{}
+	conf := config.CHYLE{}
 
-	chyleConfig.FEATURES.MATCHERS.ENABLED = true
-	chyleConfig.MATCHERS = map[string]string{"TYPE": "merge"}
+	conf.FEATURES.MATCHERS.ENABLED = true
+	conf.MATCHERS = map[string]string{"TYPE": "merge"}
 
-	chyleConfig.FEATURES.EXTRACTORS.ENABLED = true
-	chyleConfig.EXTRACTORS = map[string]struct {
+	conf.FEATURES.EXTRACTORS.ENABLED = true
+	conf.EXTRACTORS = map[string]struct {
 		ORIGKEY string
 		DESTKEY string
 		REG     *regexp.Regexp
@@ -46,9 +47,9 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 		},
 	}
 
-	chyleConfig.FEATURES.DECORATORS.ENABLED = true
-	chyleConfig.FEATURES.DECORATORS.ENABLED = true
-	chyleConfig.DECORATORS.ENV = map[string]struct {
+	conf.FEATURES.DECORATORS.ENABLED = true
+	conf.FEATURES.DECORATORS.ENABLED = true
+	conf.DECORATORS.ENV = map[string]struct {
 		DESTKEY string
 		VARNAME string
 	}{
@@ -58,11 +59,11 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 		},
 	}
 
-	chyleConfig.FEATURES.SENDERS.ENABLED = true
-	chyleConfig.FEATURES.SENDERS.STDOUT = true
-	chyleConfig.SENDERS.STDOUT.FORMAT = "json"
+	conf.FEATURES.SENDERS.ENABLED = true
+	conf.FEATURES.SENDERS.STDOUT = true
+	conf.SENDERS.STDOUT.FORMAT = "json"
 
-	p := buildProcess()
+	p := buildProcess(&conf)
 
 	assert.Len(t, *(p.matchers), 1)
 	assert.Len(t, *(p.extractors), 1)

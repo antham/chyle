@@ -1,4 +1,4 @@
-package chyle
+package config
 
 import (
 	"regexp"
@@ -52,7 +52,7 @@ func (e *extractorsConfigurator) validateExtractors() error {
 	return nil
 }
 
-// setExtractors update chyleConfig with extracted extractors
+// setExtractors update config with extracted extractors
 func (e *extractorsConfigurator) setExtractors(config *CHYLE) {
 	config.EXTRACTORS = map[string]struct {
 		ORIGKEY string
