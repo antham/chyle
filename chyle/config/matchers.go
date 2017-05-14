@@ -63,7 +63,7 @@ func (m *matchersConfigurator) validateTypeMatcher() error {
 		return nil
 	}
 
-	return validateOneOf(m.config, []string{"CHYLE", "MATCHERS", "TYPE"}, matchers.GetMatcherTypes())
+	return validateOneOf(m.config, []string{"CHYLE", "MATCHERS", "TYPE"}, matchers.GetTypes())
 }
 
 // setMatchers update config with extracted matchers
