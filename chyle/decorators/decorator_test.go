@@ -80,22 +80,74 @@ func TestDecorator(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestCreateDecorators(t *testing.T) {
-	jiraConfig := jiraIssueConfig{}
-	jiraConfig.CREDENTIALS.USERNAME = "test"
-	jiraConfig.CREDENTIALS.PASSWORD = "test"
-	jiraConfig.CREDENTIALS.URL = "http://test.com"
-	jiraConfig.KEYS = map[string]struct {
-		DESTKEY string
-		FIELD   string
-	}{
-		"DESCRIPTION": {
-			"jiraTicketDescription",
-			"fields.summary",
+func TestCreateDataDecorators(t *testing.T) {
+	tests := []func() (Features, Config){
+		func() (Features, Config) {
+			config := jiraIssueConfig{}
+			config.CREDENTIALS.USERNAME = "test"
+			config.CREDENTIALS.PASSWORD = "test"
+			config.CREDENTIALS.URL = "http://test.com"
+			config.KEYS = map[string]struct {
+				DESTKEY string
+				FIELD   string
+			}{
+				"DESCRIPTION": {
+					"jiraTicketDescription",
+					"fields.summary",
+				},
+			}
+
+			return Features{JIRAISSUE: true}, Config{JIRAISSUE: config}
+		},
+		func() (Features, Config) {
+			config := githubIssueConfig{}
+			config.CREDENTIALS.OWNER = "test"
+			config.CREDENTIALS.OAUTHTOKEN = "test"
+			config.REPOSITORY.NAME = "test"
+			config.KEYS = map[string]struct {
+				DESTKEY string
+				FIELD   string
+			}{
+				"DESCRIPTION": {
+					"jiraTicketDescription",
+					"fields.summary",
+				},
+			}
+
+			return Features{GITHUBISSUE: true}, Config{GITHUBISSUE: config}
 		},
 	}
 
-	d := CreateDecorators(Features{JIRAISSUE: true}, Config{JIRAISSUE: jiraConfig})
+	for _, f := range tests {
+		features, config := f()
 
-	assert.Len(t, (*d)["datas"], 1, "Must return 1 decorator")
+		s := CreateDecorators(features, config)
+
+		assert.Len(t, (*s)["datas"], 1)
+		assert.Len(t, (*s)["metadatas"], 0)
+	}
+}
+
+func TestCreateMetadataDecorators(t *testing.T) {
+	tests := []func() (Features, Config){
+		func() (Features, Config) {
+			config := envConfig{
+				"TEST": {
+					"TEST",
+					"test",
+				},
+			}
+
+			return Features{ENV: true}, Config{ENV: config}
+		},
+	}
+
+	for _, f := range tests {
+		features, config := f()
+
+		s := CreateDecorators(features, config)
+
+		assert.Len(t, (*s)["datas"], 0)
+		assert.Len(t, (*s)["metadatas"], 1)
+	}
 }
