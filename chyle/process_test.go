@@ -30,10 +30,10 @@ func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
 func TestBuildProcessWithAFullConfig(t *testing.T) {
 	chyleConfig = CHYLE{}
 
-	chyleConfig.FEATURES.HASMATCHERS = true
+	chyleConfig.FEATURES.MATCHERS.ENABLED = true
 	chyleConfig.MATCHERS = map[string]string{"TYPE": "merge"}
 
-	chyleConfig.FEATURES.HASEXTRACTORS = true
+	chyleConfig.FEATURES.EXTRACTORS.ENABLED = true
 	chyleConfig.EXTRACTORS = map[string]struct {
 		ORIGKEY string
 		DESTKEY string
@@ -46,8 +46,8 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 		},
 	}
 
-	chyleConfig.FEATURES.HASDECORATORS = true
-	chyleConfig.FEATURES.HASENVDECORATOR = true
+	chyleConfig.FEATURES.DECORATORS.ENABLED = true
+	chyleConfig.FEATURES.DECORATORS.ENABLED = true
 	chyleConfig.DECORATORS.ENV = map[string]struct {
 		DESTKEY string
 		VARNAME string
@@ -58,8 +58,8 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 		},
 	}
 
-	chyleConfig.FEATURES.HASSENDERS = true
-	chyleConfig.FEATURES.HASSTDOUTSENDER = true
+	chyleConfig.FEATURES.SENDERS.ENABLED = true
+	chyleConfig.FEATURES.SENDERS.STDOUT = true
 	chyleConfig.SENDERS.STDOUT.FORMAT = "json"
 
 	p := buildProcess()

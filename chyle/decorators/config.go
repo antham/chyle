@@ -7,3 +7,12 @@ type Config struct {
 	JIRAISSUE   jiraIssueConfig
 	ENV         envConfig
 }
+
+// Features gives the informations if a decorator or several are defined
+// and if so, which ones
+type Features struct {
+	ENABLED     bool
+	JIRAISSUE   bool
+	GITHUBISSUE bool
+	ENV         bool
+}

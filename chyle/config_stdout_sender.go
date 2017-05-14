@@ -17,8 +17,8 @@ func (s *stdoutSenderConfigurator) process(config *CHYLE) (bool, error) {
 		return false, nil
 	}
 
-	config.FEATURES.HASSENDERS = true
-	config.FEATURES.HASSTDOUTSENDER = true
+	config.FEATURES.SENDERS.ENABLED = true
+	config.FEATURES.SENDERS.STDOUT = true
 
 	return false, s.validateFormat()
 }
