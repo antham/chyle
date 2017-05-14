@@ -29,19 +29,19 @@ func buildProcess(conf *config.CHYLE) *process {
 	}
 
 	if conf.FEATURES.MATCHERS.ENABLED {
-		p.matchers = matchers.CreateMatchers(conf.MATCHERS)
+		p.matchers = matchers.Create(conf.MATCHERS)
 	}
 
 	if conf.FEATURES.EXTRACTORS.ENABLED {
-		p.extractors = extractors.CreateExtractors(conf.EXTRACTORS)
+		p.extractors = extractors.Create(conf.EXTRACTORS)
 	}
 
 	if conf.FEATURES.DECORATORS.ENABLED {
-		p.decorators = decorators.CreateDecorators(conf.FEATURES.DECORATORS, conf.DECORATORS)
+		p.decorators = decorators.Create(conf.FEATURES.DECORATORS, conf.DECORATORS)
 	}
 
 	if conf.FEATURES.SENDERS.ENABLED {
-		p.senders = senders.CreateSenders(conf.FEATURES.SENDERS, conf.SENDERS)
+		p.senders = senders.Create(conf.FEATURES.SENDERS, conf.SENDERS)
 	}
 
 	return p

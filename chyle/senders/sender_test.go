@@ -36,7 +36,7 @@ func TestSend(t *testing.T) {
 	assert.NoError(t, err, "Must return no errors")
 	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations  as json")
 }
-func TestCreateSenders(t *testing.T) {
+func TestCreate(t *testing.T) {
 	tests := []func() (Features, Config){
 		func() (Features, Config) {
 			config := stdoutConfig{}
@@ -59,8 +59,8 @@ func TestCreateSenders(t *testing.T) {
 	for _, f := range tests {
 		features, config := f()
 
-		s := CreateSenders(features, config)
+		s := Create(features, config)
 
-		assert.Len(t, *s, 1, "Must return 1 sender")
+		assert.Len(t, *s, 1)
 	}
 }

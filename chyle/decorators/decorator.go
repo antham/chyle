@@ -54,8 +54,8 @@ func Decorate(decorators *map[string][]Decorater, changelog *types.Changelog) (*
 	return changelog, nil
 }
 
-// CreateDecorators build decorators from a config
-func CreateDecorators(features Features, decorators Config) *map[string][]Decorater {
+// Create builds decorators from a config
+func Create(features Features, decorators Config) *map[string][]Decorater {
 	results := map[string][]Decorater{"metadatas": {}, "datas": {}}
 
 	if features.JIRAISSUE {
