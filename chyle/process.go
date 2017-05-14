@@ -31,9 +31,9 @@ func buildProcess(conf *config.CHYLE) *process {
 
 // proceed extracts datas from a set of commits
 func proceed(process *process, commits *[]object.Commit) error {
-	changelog := extractors.Extract(process.extractors, matchers.Filter(process.matchers, commits))
-
-	changelog, err := decorators.Decorate(process.decorators, changelog)
+	changelog, err := decorators.Decorate(process.decorators,
+		extractors.Extract(process.extractors,
+			matchers.Filter(process.matchers, commits)))
 
 	if err != nil {
 		return err
