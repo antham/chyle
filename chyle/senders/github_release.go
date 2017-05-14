@@ -1,4 +1,4 @@
-package chyle
+package senders
 
 import (
 	"bytes"
@@ -7,8 +7,28 @@ import (
 	"net/http"
 
 	"github.com/antham/chyle/chyle/apih"
+	"github.com/antham/chyle/chyle/errh"
 	"github.com/antham/chyle/chyle/types"
 )
+
+type githubReleaseConfig struct {
+	CREDENTIALS struct {
+		OAUTHTOKEN string
+		OWNER      string
+	}
+	RELEASE struct {
+		DRAFT           bool
+		NAME            string
+		PRERELEASE      bool
+		TAGNAME         string
+		TARGETCOMMITISH string
+		TEMPLATE        string
+		UPDATE          bool
+	}
+	REPOSITORY struct {
+		NAME string
+	}
+}
 
 // codebeat:disable[TOO_MANY_IVARS]
 
@@ -23,36 +43,33 @@ type githubRelease struct {
 }
 
 // codebeat:enable[TOO_MANY_IVARS]
-// buildGithubReleaseSender create a new GithubReleaseSender object from viper config
-func buildGithubReleaseSender() sender {
-	return newGithubReleaseSender(&http.Client{})
+
+// buildGithubReleaseSender create a new githubReleaseSender
+func buildGithubReleaseSender(config githubReleaseConfig) Sender {
+	return githubReleaseSender{&http.Client{}, config}
 }
 
 // githubReleaseSender fetch data using jira issue api
 type githubReleaseSender struct {
 	client *http.Client
-}
-
-// newGithubReleaseSender creates a new githubReleaseSender object
-func newGithubReleaseSender(client *http.Client) githubReleaseSender {
-	return githubReleaseSender{client}
+	config githubReleaseConfig
 }
 
 // buildBody create a request body from changelog
 func (g githubReleaseSender) buildBody(changelog *types.Changelog) ([]byte, error) {
-	body, err := populateTemplate("github-release-template", chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE, changelog)
+	body, err := populateTemplate("github-release-template", g.config.RELEASE.TEMPLATE, changelog)
 
 	if err != nil {
 		return []byte{}, err
 	}
 
 	r := githubRelease{
-		chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME,
-		chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TARGETCOMMITISH,
-		chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.NAME,
+		g.config.RELEASE.TAGNAME,
+		g.config.RELEASE.TARGETCOMMITISH,
+		g.config.RELEASE.NAME,
 		body,
-		chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.DRAFT,
-		chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.PRERELEASE,
+		g.config.RELEASE.DRAFT,
+		g.config.RELEASE.PRERELEASE,
 	}
 
 	return json.Marshal(r)
@@ -60,7 +77,7 @@ func (g githubReleaseSender) buildBody(changelog *types.Changelog) ([]byte, erro
 
 // createRelease creates a release on github
 func (g githubReleaseSender) createRelease(body []byte) error {
-	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER, chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME)
+	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME)
 
 	req, err := http.NewRequest("POST", URL, bytes.NewBuffer(body))
 
@@ -69,14 +86,14 @@ func (g githubReleaseSender) createRelease(body []byte) error {
 	}
 
 	apih.SetHeaders(req, map[string]string{
-		"Authorization": "token " + chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN,
+		"Authorization": "token " + g.config.CREDENTIALS.OAUTHTOKEN,
 		"Content-Type":  "application/json",
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
 	_, _, err = apih.SendRequest(g.client, req)
 
-	return addCustomMessageToError("can't create github release", err)
+	return errh.AddCustomMessageToError("can't create github release", err)
 }
 
 // getReleaseID retrieves github release ID from a given tag name
@@ -87,8 +104,8 @@ func (g githubReleaseSender) getReleaseID() (int, error) {
 
 	release := s{}
 
-	errMsg := fmt.Sprintf("can't retrieve github release %s", chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME)
-	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/tags/%s", chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER, chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME, chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME)
+	errMsg := fmt.Sprintf("can't retrieve github release %s", g.config.RELEASE.TAGNAME)
+	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/tags/%s", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME, g.config.RELEASE.TAGNAME)
 
 	req, err := http.NewRequest("GET", URL, nil)
 
@@ -97,7 +114,7 @@ func (g githubReleaseSender) getReleaseID() (int, error) {
 	}
 
 	apih.SetHeaders(req, map[string]string{
-		"Authorization": "token " + chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN,
+		"Authorization": "token " + g.config.CREDENTIALS.OAUTHTOKEN,
 		"Content-Type":  "application/json",
 		"Accept":        "application/vnd.github.v3+json",
 	})
@@ -105,13 +122,13 @@ func (g githubReleaseSender) getReleaseID() (int, error) {
 	_, body, err := apih.SendRequest(g.client, req)
 
 	if err != nil {
-		return 0, addCustomMessageToError(errMsg, err)
+		return 0, errh.AddCustomMessageToError(errMsg, err)
 	}
 
 	err = json.Unmarshal(body, &release)
 
 	if err != nil {
-		return 0, addCustomMessageToError(errMsg, err)
+		return 0, errh.AddCustomMessageToError(errMsg, err)
 	}
 
 	return release.ID, nil
@@ -125,7 +142,7 @@ func (g githubReleaseSender) updateRelease(body []byte) error {
 		return err
 	}
 
-	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/%d", chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER, chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME, ID)
+	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/%d", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME, ID)
 
 	req, err := http.NewRequest("PATCH", URL, bytes.NewBuffer(body))
 
@@ -134,14 +151,14 @@ func (g githubReleaseSender) updateRelease(body []byte) error {
 	}
 
 	apih.SetHeaders(req, map[string]string{
-		"Authorization": "token " + chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN,
+		"Authorization": "token " + g.config.CREDENTIALS.OAUTHTOKEN,
 		"Content-Type":  "application/json",
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
 	_, _, err = apih.SendRequest(g.client, req)
 
-	return addCustomMessageToError(fmt.Sprintf("can't update github release %s", chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME), err)
+	return errh.AddCustomMessageToError(fmt.Sprintf("can't update github release %s", g.config.RELEASE.TAGNAME), err)
 }
 
 // Send push changelog to github release
@@ -152,7 +169,7 @@ func (g githubReleaseSender) Send(changelog *types.Changelog) error {
 		return err
 	}
 
-	if chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.UPDATE {
+	if g.config.RELEASE.UPDATE {
 		return g.updateRelease(body)
 	}
 

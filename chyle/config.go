@@ -8,6 +8,7 @@ import (
 	"github.com/antham/envh"
 
 	"github.com/antham/chyle/chyle/decorators"
+	"github.com/antham/chyle/chyle/senders"
 )
 
 // configurater must be implemented to process custom config
@@ -48,30 +49,7 @@ type CHYLE struct {
 		REG     *regexp.Regexp
 	}
 	DECORATORS decorators.Config
-	SENDERS    struct {
-		STDOUT struct {
-			FORMAT   string
-			TEMPLATE string
-		}
-		GITHUBRELEASE struct {
-			CREDENTIALS struct {
-				OAUTHTOKEN string
-				OWNER      string
-			}
-			RELEASE struct {
-				DRAFT           bool
-				NAME            string
-				PRERELEASE      bool
-				TAGNAME         string
-				TARGETCOMMITISH string
-				TEMPLATE        string
-				UPDATE          bool
-			}
-			REPOSITORY struct {
-				NAME string
-			}
-		}
-	}
+	SENDERS    senders.Config
 }
 
 // codebeat:enable[TOO_MANY_IVARS]

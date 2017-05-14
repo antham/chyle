@@ -4,6 +4,7 @@ import (
 	pkgDecorators "github.com/antham/chyle/chyle/decorators"
 	pkgExtractors "github.com/antham/chyle/chyle/extractors"
 	pkgMatchers "github.com/antham/chyle/chyle/matchers"
+	pkgSenders "github.com/antham/chyle/chyle/senders"
 
 	"srcd.works/go-git.v4/plumbing/object"
 )
@@ -14,7 +15,7 @@ type process struct {
 	matchers   *[]pkgMatchers.Matcher
 	extractors *[]pkgExtractors.Extracter
 	decorators *map[string][]pkgDecorators.Decorater
-	senders    *[]sender
+	senders    *[]pkgSenders.Sender
 }
 
 // buildProcess creates process entity from defined configuration
@@ -22,7 +23,7 @@ func buildProcess() *process {
 	matchers := &[]pkgMatchers.Matcher{}
 	extractors := &[]pkgExtractors.Extracter{}
 	decorators := &map[string][]pkgDecorators.Decorater{}
-	senders := &[]sender{}
+	senders := &[]pkgSenders.Sender{}
 
 	if chyleConfig.FEATURES.HASMATCHERS {
 		matchers = pkgMatchers.CreateMatchers(chyleConfig.MATCHERS)
@@ -37,7 +38,7 @@ func buildProcess() *process {
 	}
 
 	if chyleConfig.FEATURES.HASSENDERS {
-		senders = createSenders()
+		senders = pkgSenders.CreateSenders(map[string]bool{"githubReleaseSender": chyleConfig.FEATURES.HASGITHUBRELEASESENDER, "stdoutSender": chyleConfig.FEATURES.HASSTDOUTSENDER}, chyleConfig.SENDERS)
 	}
 
 	return &process{
@@ -58,5 +59,5 @@ func proceed(process *process, commits *[]object.Commit) error {
 		return err
 	}
 
-	return Send(process.senders, changelog)
+	return pkgSenders.Send(process.senders, changelog)
 }

@@ -1,4 +1,4 @@
-package chyle
+package senders
 
 import (
 	"bytes"
@@ -31,33 +31,35 @@ func TestSend(t *testing.T) {
 		},
 	}
 
-	err := Send(&[]sender{s}, &c)
+	err := Send(&[]Sender{s}, &c)
 
 	assert.NoError(t, err, "Must return no errors")
 	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations  as json")
 }
 func TestCreateSenders(t *testing.T) {
-	tests := []func(){
-		func() {
-			chyleConfig.FEATURES.HASSTDOUTSENDER = true
-			chyleConfig.SENDERS.STDOUT.FORMAT = "json"
+	tests := []func() (map[string]bool, Config){
+		func() (map[string]bool, Config) {
+			config := stdoutConfig{}
+			config.FORMAT = "json"
+
+			return map[string]bool{"stdoutSender": true}, Config{STDOUT: config}
 		},
-		func() {
-			chyleConfig.FEATURES.HASGITHUBRELEASESENDER = true
-			chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN = "test"
-			chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OWNER = "test"
-			chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "test"
-			chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "test"
-			chyleConfig.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
+		func() (map[string]bool, Config) {
+			config := githubReleaseConfig{}
+			config.CREDENTIALS.OAUTHTOKEN = "test"
+			config.CREDENTIALS.OWNER = "test"
+			config.RELEASE.TAGNAME = "test"
+			config.RELEASE.TEMPLATE = "test"
+			config.REPOSITORY.NAME = "test"
+
+			return map[string]bool{"githubReleaseSender": true}, Config{GITHUBRELEASE: config}
 		},
 	}
 
 	for _, f := range tests {
-		chyleConfig = CHYLE{}
+		features, config := f()
 
-		f()
-
-		s := createSenders()
+		s := CreateSenders(features, config)
 
 		assert.Len(t, *s, 1, "Must return 1 sender")
 	}

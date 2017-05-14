@@ -1,4 +1,4 @@
-package chyle
+package senders
 
 import (
 	"bytes"
@@ -11,12 +11,11 @@ import (
 )
 
 func TestBuildStdoutSender(t *testing.T) {
-	chyleConfig.SENDERS.STDOUT.FORMAT = "json"
-	assert.IsType(t, jSONStdoutSender{}, buildStdoutSender())
+	config := stdoutConfig{FORMAT: "json"}
+	assert.IsType(t, jSONStdoutSender{}, buildStdoutSender(config))
 
-	chyleConfig.SENDERS.STDOUT.FORMAT = "template"
-	chyleConfig.SENDERS.STDOUT.TEMPLATE = "{{.}}"
-	assert.IsType(t, templateStdoutSender{}, buildStdoutSender())
+	config = stdoutConfig{FORMAT: "template", TEMPLATE: "{{.}}"}
+	assert.IsType(t, templateStdoutSender{}, buildStdoutSender(config))
 }
 
 func TestJSONStdoutSender(t *testing.T) {
@@ -49,9 +48,7 @@ func TestJSONStdoutSender(t *testing.T) {
 func TestTemplateStdoutSender(t *testing.T) {
 	buf := &bytes.Buffer{}
 
-	chyleConfig.SENDERS.STDOUT.TEMPLATE = "{{ range $key, $value := .Datas }}{{$value.id}} : {{$value.test}} | {{ end }}"
-
-	s := templateStdoutSender{buf}
+	s := templateStdoutSender{buf, "{{ range $key, $value := .Datas }}{{$value.id}} : {{$value.test}} | {{ end }}"}
 
 	c := types.Changelog{
 		Datas:     []map[string]interface{}{},

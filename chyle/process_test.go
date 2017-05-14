@@ -7,6 +7,7 @@ import (
 	"github.com/antham/chyle/chyle/decorators"
 	"github.com/antham/chyle/chyle/extractors"
 	"github.com/antham/chyle/chyle/matchers"
+	"github.com/antham/chyle/chyle/senders"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +21,7 @@ func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
 		&[]matchers.Matcher{},
 		&[]extractors.Extracter{},
 		&map[string][]decorators.Decorater{},
-		&[]sender{},
+		&[]senders.Sender{},
 	}
 
 	assert.EqualValues(t, expected, *p)
