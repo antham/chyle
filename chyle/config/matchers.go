@@ -1,4 +1,4 @@
-package chyle
+package config
 
 import (
 	"github.com/antham/chyle/chyle/matchers"
@@ -66,7 +66,7 @@ func (m *matchersConfigurator) validateTypeMatcher() error {
 	return validateOneOf(m.config, []string{"CHYLE", "MATCHERS", "TYPE"}, matchers.GetMatcherTypes())
 }
 
-// setMatchers update chyleConfig with extracted matchers
+// setMatchers update config with extracted matchers
 func (m *matchersConfigurator) setMatchers(config *CHYLE) {
 	config.MATCHERS = map[string]string{}
 

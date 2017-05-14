@@ -1,4 +1,4 @@
-package chyle
+package config
 
 import (
 	"fmt"

@@ -1,9 +1,10 @@
-package chyle
+package config
 
 import (
 	"bytes"
 	"fmt"
 	"log"
+	"os"
 	"regexp"
 	"testing"
 
@@ -11,7 +12,46 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestResolveConfigWithErrors(t *testing.T) {
+var envs map[string]string
+
+func TestMain(m *testing.M) {
+	saveExistingEnvs()
+	code := m.Run()
+	os.Exit(code)
+}
+
+func saveExistingEnvs() {
+	var err error
+	env := envh.NewEnv()
+
+	envs, err = env.FindEntries(".*")
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func restoreEnvs() {
+	os.Clearenv()
+
+	if len(envs) != 0 {
+		for key, value := range envs {
+			setenv(key, value)
+		}
+	}
+}
+
+func setenv(key string, value string) {
+	err := os.Setenv(key, value)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func TestCreateWithErrors(t *testing.T) {
 	type g struct {
 		f func()
 		e string
@@ -496,7 +536,7 @@ func TestResolveConfigWithErrors(t *testing.T) {
 
 		assert.NoError(t, err)
 
-		err = resolveConfig(&config)
+		_, err = Create(&config)
 
 		errDetail := fmt.Sprintf("Test %d failed", i+1)
 
@@ -505,7 +545,7 @@ func TestResolveConfigWithErrors(t *testing.T) {
 	}
 }
 
-func TestResolveConfig(t *testing.T) {
+func TestCreate(t *testing.T) {
 	type g struct {
 		f func()
 		c func() CHYLE
@@ -795,25 +835,23 @@ func TestResolveConfig(t *testing.T) {
 
 		assert.NoError(t, err)
 
-		err = resolveConfig(&config)
+		actual, err := Create(&config)
 
 		assert.NoError(t, err)
 
-		assert.Equal(t, test.c(), chyleConfig)
+		assert.Equal(t, test.c(), *actual)
 	}
 }
 
-func TestDebugConfig(t *testing.T) {
+func TestDebug(t *testing.T) {
 	chyleConfig = CHYLE{}
 	b := []byte{}
 
 	buffer := bytes.NewBuffer(b)
 
-	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
+	logger := log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
 
-	EnableDebugging = true
-
-	debugConfig()
+	Debug(&chyleConfig, logger)
 
 	for {
 		p := buffer.Next(100)
@@ -828,21 +866,4 @@ func TestDebugConfig(t *testing.T) {
 	actual := string(b)
 
 	assert.Regexp(t, `CHYLE - \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} {\n\s+"GIT": {\n\s+"REPOSITORY": {\n`, actual, "Must output given format with argument when debug is enabled")
-}
-
-func TestDebugConfigWithDebugDisabled(t *testing.T) {
-	chyleConfig = CHYLE{}
-	b := []byte{}
-
-	buffer := bytes.NewBuffer(b)
-
-	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
-
-	EnableDebugging = false
-
-	debugConfig()
-
-	_, err := buffer.ReadString('\n')
-
-	assert.EqualError(t, err, "EOF", "Must return EOF error")
 }

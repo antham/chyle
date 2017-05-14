@@ -1,7 +1,8 @@
-package chyle
+package config
 
 import (
 	"encoding/json"
+	"log"
 	"regexp"
 	"strings"
 
@@ -11,12 +12,12 @@ import (
 	"github.com/antham/chyle/chyle/senders"
 )
 
+var chyleConfig CHYLE
+
 // configurater must be implemented to process custom config
 type configurater interface {
 	process(config *CHYLE) (bool, error)
 }
-
-var chyleConfig CHYLE
 
 // codebeat:disable[TOO_MANY_IVARS]
 
@@ -86,16 +87,15 @@ func (c *CHYLE) validateChyleGitReference(fullconfig *envh.EnvTree, keyChain []s
 	return false, validateEnvironmentVariablesDefinition(fullconfig, [][]string{{"CHYLE", "GIT", "REFERENCE", "FROM"}, {"CHYLE", "GIT", "REFERENCE", "TO"}})
 }
 
-func resolveConfig(envConfig *envh.EnvTree) error {
-	return envConfig.PopulateStruct(&chyleConfig)
+// Create returns app config from an EnvTree object
+func Create(envConfig *envh.EnvTree) (*CHYLE, error) {
+	chyleConfig = CHYLE{}
+	return &chyleConfig, envConfig.PopulateStruct(&chyleConfig)
 }
 
-func debugConfig() {
-	if !EnableDebugging {
-		return
-	}
-
-	if d, err := json.MarshalIndent(chyleConfig, "", "    "); err == nil {
+// Debug dumps given CHYLE config as JSON structure
+func Debug(config *CHYLE, logger *log.Logger) {
+	if d, err := json.MarshalIndent(config, "", "    "); err == nil {
 		logger.Println(string(d))
 	}
 }
