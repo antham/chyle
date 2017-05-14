@@ -9,7 +9,7 @@ import (
 	"gopkg.in/h2non/gock.v0"
 )
 
-func TestGithubIssueDecorator(t *testing.T) {
+func TestGithubIssue(t *testing.T) {
 	config := githubIssueConfig{}
 	config.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 	config.CREDENTIALS.OWNER = "user"
@@ -44,7 +44,7 @@ func TestGithubIssueDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := githubIssueDecorator{*client, config}
+	j := githubIssue{*client, config}
 
 	result, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
 
@@ -60,7 +60,7 @@ func TestGithubIssueDecorator(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestGithubDecoratorWithNoGithubIssueIdDefined(t *testing.T) {
+func TestGithubWithNoGithubIssueIdDefined(t *testing.T) {
 	defer gock.Off()
 
 	issueResponse, err := ioutil.ReadFile("fixtures/github-issue-fetch-response.json")
@@ -74,7 +74,7 @@ func TestGithubDecoratorWithNoGithubIssueIdDefined(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := githubIssueDecorator{*client, githubIssueConfig{}}
+	j := githubIssue{*client, githubIssueConfig{}}
 
 	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
 
@@ -87,7 +87,7 @@ func TestGithubDecoratorWithNoGithubIssueIdDefined(t *testing.T) {
 	assert.False(t, gock.IsDone(), "Must have one pending request")
 }
 
-func TestGithubIssueDecoratorWithAnErrorStatusCode(t *testing.T) {
+func TestGithubIssueWithAnErrorStatusCode(t *testing.T) {
 	config := githubIssueConfig{}
 	config.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 	config.CREDENTIALS.OWNER = "user"
@@ -118,7 +118,7 @@ func TestGithubIssueDecoratorWithAnErrorStatusCode(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := githubIssueDecorator{*client, config}
+	j := githubIssue{*client, config}
 
 	_, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
 
@@ -126,7 +126,7 @@ func TestGithubIssueDecoratorWithAnErrorStatusCode(t *testing.T) {
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
-func TestGithubIssueDecoratorWhenIssueIsNotFound(t *testing.T) {
+func TestGithubIssueWhenIssueIsNotFound(t *testing.T) {
 	config := githubIssueConfig{}
 	config.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
 	config.CREDENTIALS.OWNER = "user"
@@ -157,7 +157,7 @@ func TestGithubIssueDecoratorWhenIssueIsNotFound(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := githubIssueDecorator{*client, config}
+	j := githubIssue{*client, config}
 
 	result, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
 

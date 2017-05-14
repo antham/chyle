@@ -14,24 +14,24 @@ type stdoutConfig struct {
 	TEMPLATE string
 }
 
-// jSONStdoutSender output commit payload as JSON on stdout
-type jSONStdoutSender struct {
+// jSONStdout output commit payload as JSON on stdout
+type jSONStdout struct {
 	stdout io.Writer
 }
 
 // Send produces an output on stdout
-func (j jSONStdoutSender) Send(changelog *types.Changelog) error {
+func (j jSONStdout) Send(changelog *types.Changelog) error {
 	return json.NewEncoder(j.stdout).Encode(changelog)
 }
 
-// templateStdoutSender output commit payload using given template on stdout
-type templateStdoutSender struct {
+// templateStdout output commit payload using given template on stdout
+type templateStdout struct {
 	stdout   io.Writer
 	template string
 }
 
 // Send produces an output on stdout
-func (t templateStdoutSender) Send(changelog *types.Changelog) error {
+func (t templateStdout) Send(changelog *types.Changelog) error {
 	datas, err := populateTemplate("stdout-template", t.template, changelog)
 
 	if err != nil {
@@ -43,22 +43,22 @@ func (t templateStdoutSender) Send(changelog *types.Changelog) error {
 	return nil
 }
 
-func buildStdoutSender(config stdoutConfig) Sender {
+func buildStdout(config stdoutConfig) Sender {
 	if config.FORMAT == "json" {
-		return buildJSONStdoutSender()
+		return buildJSONStdout()
 	}
 
-	return buildTemplateStdoutSender(config.TEMPLATE)
+	return buildTemplateStdout(config.TEMPLATE)
 }
 
-func buildJSONStdoutSender() Sender {
-	return jSONStdoutSender{
+func buildJSONStdout() Sender {
+	return jSONStdout{
 		os.Stdout,
 	}
 }
 
-func buildTemplateStdoutSender(template string) Sender {
-	return templateStdoutSender{
+func buildTemplateStdout(template string) Sender {
+	return templateStdout{
 		os.Stdout,
 		template,
 	}

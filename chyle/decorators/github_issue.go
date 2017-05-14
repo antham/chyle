@@ -21,14 +21,14 @@ type githubIssueConfig struct {
 	}
 }
 
-// githubIssueDecorator fetch data using github issue api
-type githubIssueDecorator struct {
+// githubIssue fetch data using github issue api
+type githubIssue struct {
 	client http.Client
 	config githubIssueConfig
 }
 
 // decorate fetch remote github service if a github tikcet id is defined to fetch issue datas
-func (g githubIssueDecorator) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+func (g githubIssue) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID int64
 	var ok bool
 
@@ -48,10 +48,10 @@ func (g githubIssueDecorator) Decorate(commitMap *map[string]interface{}) (*map[
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
-	return jSONResponseDecorator{&g.client, req, g.config.KEYS}.Decorate(commitMap)
+	return jSONResponse{&g.client, req, g.config.KEYS}.Decorate(commitMap)
 }
 
-// buildGithubIssueDecorator create a new github issue decorator
-func buildGithubIssueDecorator(config githubIssueConfig) Decorater {
-	return githubIssueDecorator{http.Client{}, config}
+// buildGithubIssue create a new github issue decorator
+func buildGithubIssue(config githubIssueConfig) Decorater {
+	return githubIssue{http.Client{}, config}
 }

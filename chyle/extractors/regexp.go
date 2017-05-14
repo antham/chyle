@@ -5,15 +5,15 @@ import (
 	"strconv"
 )
 
-// regexpExtractor use a regexp to extract data
-type regexpExtractor struct {
+// regex use a regexp to extract data
+type regex struct {
 	index      string
 	identifier string
 	re         *regexp.Regexp
 }
 
 // Extract data from a commitMap
-func (r regexpExtractor) Extract(commitMap *map[string]interface{}) *map[string]interface{} {
+func (r regex) Extract(commitMap *map[string]interface{}) *map[string]interface{} {
 	var mapValue interface{}
 	var ok bool
 

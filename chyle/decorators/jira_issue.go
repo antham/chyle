@@ -17,14 +17,14 @@ type jiraIssueConfig struct {
 	}
 }
 
-// jiraIssueDecorator fetch data using jira issue api
-type jiraIssueDecorator struct {
+// jiraIssue fetch data using jira issue api
+type jiraIssue struct {
 	client http.Client
 	config jiraIssueConfig
 }
 
 // Decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
-func (j jiraIssueDecorator) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+func (j jiraIssue) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var URLpattern string
 
 	switch (*commitMap)["jiraIssueId"].(type) {
@@ -45,10 +45,10 @@ func (j jiraIssueDecorator) Decorate(commitMap *map[string]interface{}) (*map[st
 	req.SetBasicAuth(j.config.CREDENTIALS.USERNAME, j.config.CREDENTIALS.PASSWORD)
 	req.Header.Set("Content-Type", "application/json")
 
-	return jSONResponseDecorator{&j.client, req, j.config.KEYS}.Decorate(commitMap)
+	return jSONResponse{&j.client, req, j.config.KEYS}.Decorate(commitMap)
 }
 
-// buildJiraIssueDecorator create a new jira ticket decorator
-func buildJiraIssueDecorator(config jiraIssueConfig) Decorater {
-	return jiraIssueDecorator{http.Client{}, config}
+// buildJiraIssue create a new jira ticket decorator
+func buildJiraIssue(config jiraIssueConfig) Decorater {
+	return jiraIssue{http.Client{}, config}
 }

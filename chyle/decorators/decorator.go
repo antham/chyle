@@ -59,23 +59,23 @@ func Create(features Features, decorators Config) *map[string][]Decorater {
 	results := map[string][]Decorater{"metadatas": {}, "datas": {}}
 
 	if features.JIRAISSUE {
-		results["datas"] = append(results["datas"], buildJiraIssueDecorator(decorators.JIRAISSUE))
+		results["datas"] = append(results["datas"], buildJiraIssue(decorators.JIRAISSUE))
 	}
 
 	if features.GITHUBISSUE {
-		results["datas"] = append(results["datas"], buildGithubIssueDecorator(decorators.GITHUBISSUE))
+		results["datas"] = append(results["datas"], buildGithubIssue(decorators.GITHUBISSUE))
 	}
 
 	if features.ENV {
-		results["metadatas"] = append(results["metadatas"], buildEnvDecorators(decorators.ENV)...)
+		results["metadatas"] = append(results["metadatas"], buildEnvs(decorators.ENV)...)
 	}
 
 	return &results
 }
 
-// jSONResponseDecorator extracts datas from a JSON api using defined keys
+// jSONResponse extracts datas from a JSON api using defined keys
 // and add it to final commitMap data structure
-type jSONResponseDecorator struct {
+type jSONResponse struct {
 	client  *http.Client
 	request *http.Request
 	pairs   map[string]struct {
@@ -85,7 +85,7 @@ type jSONResponseDecorator struct {
 }
 
 // decorate fetch JSON datas and add the result to original commitMap array
-func (j jSONResponseDecorator) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+func (j jSONResponse) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	statusCode, body, err := apih.SendRequest(j.client, j.request)
 
 	if statusCode == 404 {

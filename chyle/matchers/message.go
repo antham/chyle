@@ -6,18 +6,18 @@ import (
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
-// messageMatcher is commit message matcher
-type messageMatcher struct {
+// message is commit message matcher
+type message struct {
 	regexp *regexp.Regexp
 }
 
 // Match apply a regexp against commit message
-func (m messageMatcher) Match(commit *object.Commit) bool {
+func (m message) Match(commit *object.Commit) bool {
 	return m.regexp.MatchString(commit.Message)
 }
 
-func buildMessageMatcher(re *regexp.Regexp) Matcher {
-	return messageMatcher{re}
+func buildMessage(re *regexp.Regexp) Matcher {
+	return message{re}
 }
 
 // removePGPKey fix library issue that don't trim PGP key from message
