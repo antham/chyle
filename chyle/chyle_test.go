@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 	"testing"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/antham/envh"
@@ -18,7 +18,7 @@ func TestBuildChangelog(t *testing.T) {
 	p, err := os.Getwd()
 
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	}
 
 	setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/testing-repository")
@@ -33,13 +33,19 @@ func TestBuildChangelog(t *testing.T) {
 	f, err := ioutil.TempFile(p+"/testing-repository", "test")
 
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	}
+
+	defer func() {
+		if err = f.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	config, err := envh.NewEnvTree("CHYLE", "_")
 
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err)
 	}
 
 	oldStdout := os.Stdout
@@ -49,11 +55,11 @@ func TestBuildChangelog(t *testing.T) {
 
 	os.Stdout = oldStdout
 
-	assert.NoError(t, err, "Must build changelog without errors")
+	assert.NoError(t, err)
 
 	b, err := ioutil.ReadFile(f.Name())
 
-	assert.NoError(t, err, "Can't read filename")
+	assert.NoError(t, err)
 
 	type Data struct {
 		ID             string `json:"id"`
@@ -75,9 +81,9 @@ func TestBuildChangelog(t *testing.T) {
 	j := json.NewDecoder(bytes.NewBuffer(b))
 	err = j.Decode(&results)
 
-	assert.NoError(t, err, "Must decode json without errors")
-	assert.Len(t, results.Datas, 2, "Must contains 2 entries")
-	assert.Len(t, results.Metadatas, 0, "Must contains no entries")
+	assert.NoError(t, err)
+	assert.Len(t, results.Datas, 2)
+	assert.Len(t, results.Metadatas, 0)
 
 	expected := []map[string]string{
 		{
@@ -109,4 +115,101 @@ func TestBuildChangelog(t *testing.T) {
 		assert.Equal(t, expected[i]["message"], r.Message)
 		assert.Equal(t, expected[i]["subject"], r.Subject)
 	}
+}
+
+func TestBuildChangelogWithAnErrorFromGitPackage(t *testing.T) {
+	restoreEnvs()
+	p, err := os.Getwd()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/whatever")
+	setenv("CHYLE_GIT_REFERENCE_FROM", "test2")
+	setenv("CHYLE_GIT_REFERENCE_TO", "head")
+	setenv("CHYLE_MATCHERS_TYPE", "regular")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_ORIGKEY", "message")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_DESTKEY", "subject")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_REG", "(.{1,50})")
+	setenv("CHYLE_SENDERS_STDOUT_FORMAT", "json")
+
+	config, err := envh.NewEnvTree("CHYLE", "_")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = BuildChangelog(&config)
+
+	assert.Error(t, err)
+	assert.Regexp(t, `check ".*?" is an existing git repository path`, err.Error())
+}
+
+func TestBuildChangelogWithAnErrorFromConfigPackage(t *testing.T) {
+	restoreEnvs()
+	p, err := os.Getwd()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/testing-repository")
+	setenv("CHYLE_GIT_REFERENCE_FROM", "test2")
+	setenv("CHYLE_GIT_REFERENCE_TO", "head")
+	setenv("CHYLE_SENDERS_STDOUT_FORMAT", "whatever")
+
+	config, err := envh.NewEnvTree("CHYLE", "_")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = BuildChangelog(&config)
+
+	assert.Error(t, err)
+	assert.EqualError(t, err, `"CHYLE_SENDERS_STDOUT_FORMAT" "whatever" doesn't exist`)
+}
+
+func TestBuildChangelogWithDebuggingEnabled(t *testing.T) {
+	restoreEnvs()
+	p, err := os.Getwd()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	EnableDebugging = true
+
+	setenv("CHYLE_GIT_REPOSITORY_PATH", p+"/testing-repository")
+	setenv("CHYLE_GIT_REFERENCE_FROM", "test2")
+	setenv("CHYLE_GIT_REFERENCE_TO", "head")
+	setenv("CHYLE_MATCHERS_TYPE", "regular")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_ORIGKEY", "message")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_DESTKEY", "subject")
+	setenv("CHYLE_EXTRACTORS_MESSAGE_REG", "(.{1,50})")
+
+	config, err := envh.NewEnvTree("CHYLE", "_")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	assert.NoError(t, err)
+
+	tmpLogger := logger
+
+	b := []byte{}
+	buffer := bytes.NewBuffer(b)
+
+	logger = log.New(buffer, "CHYLE - ", log.Ldate|log.Ltime)
+
+	err = BuildChangelog(&config)
+	assert.NoError(t, err)
+
+	logger = tmpLogger
+
+	EnableDebugging = false
+
+	assert.Regexp(t, `CHYLE - \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} {\n\s+"GIT": {\n\s+"REPOSITORY": {\n`, string(buffer.String()))
 }
