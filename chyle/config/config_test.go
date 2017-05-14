@@ -10,6 +10,8 @@ import (
 
 	"github.com/antham/envh"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/antham/chyle/chyle/matchers"
 )
 
 var envs map[string]string
@@ -585,11 +587,15 @@ func TestCreate(t *testing.T) {
 				c.GIT.REFERENCE.FROM = "v1.0.0"
 				c.GIT.REFERENCE.TO = "v2.0.0"
 				c.FEATURES.MATCHERS.ENABLED = true
-				c.MATCHERS = map[string]string{
-					"TYPE":      "regular",
-					"AUTHOR":    ".*",
-					"COMMITTER": ".*",
-					"MESSAGE":   ".*",
+				c.FEATURES.MATCHERS.AUTHOR = true
+				c.FEATURES.MATCHERS.COMMITTER = true
+				c.FEATURES.MATCHERS.TYPE = true
+				c.FEATURES.MATCHERS.MESSAGE = true
+				c.MATCHERS = matchers.Config{
+					MESSAGE:   regexp.MustCompile(".*"),
+					AUTHOR:    regexp.MustCompile(".*"),
+					COMMITTER: regexp.MustCompile(".*"),
+					TYPE:      "regular",
 				}
 
 				return c

@@ -32,7 +32,8 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 	conf := config.CHYLE{}
 
 	conf.FEATURES.MATCHERS.ENABLED = true
-	conf.MATCHERS = map[string]string{"TYPE": "merge"}
+	conf.FEATURES.MATCHERS.TYPE = true
+	conf.MATCHERS = matchers.Config{TYPE: "merge"}
 
 	conf.FEATURES.EXTRACTORS.ENABLED = true
 	conf.EXTRACTORS = map[string]struct {
