@@ -1,4 +1,4 @@
-package chyle
+package decorators
 
 import (
 	"io/ioutil"
@@ -10,12 +10,11 @@ import (
 )
 
 func TestGithubIssueDecorator(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR = true
-	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
-	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OWNER = "user"
-	chyleConfig.DECORATORS.GITHUBISSUE.REPOSITORY.NAME = "repository"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]struct {
+	config := githubIssueConfig{}
+	config.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+	config.CREDENTIALS.OWNER = "user"
+	config.REPOSITORY.NAME = "repository"
+	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
 	}{
@@ -31,7 +30,7 @@ func TestGithubIssueDecorator(t *testing.T) {
 
 	defer gock.Off()
 
-	issueResponse, err := ioutil.ReadFile("fixtures/3-github-issue-fetch-response.json")
+	issueResponse, err := ioutil.ReadFile("fixtures/github-issue-fetch-response.json")
 
 	assert.NoError(t, err, "Must read json fixture file")
 
@@ -45,9 +44,9 @@ func TestGithubIssueDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := githubIssueDecorator{*client}
+	j := githubIssueDecorator{*client, config}
 
-	result, err := j.decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
+	result, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
 
 	expected := map[string]interface{}{
 		"test":             "test",
@@ -64,7 +63,7 @@ func TestGithubIssueDecorator(t *testing.T) {
 func TestGithubDecoratorWithNoGithubIssueIdDefined(t *testing.T) {
 	defer gock.Off()
 
-	issueResponse, err := ioutil.ReadFile("fixtures/3-github-issue-fetch-response.json")
+	issueResponse, err := ioutil.ReadFile("fixtures/github-issue-fetch-response.json")
 
 	assert.NoError(t, err, "Must read json fixture file")
 
@@ -75,9 +74,9 @@ func TestGithubDecoratorWithNoGithubIssueIdDefined(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := githubIssueDecorator{*client}
+	j := githubIssueDecorator{*client, githubIssueConfig{}}
 
-	result, err := j.decorate(&map[string]interface{}{"test": "test"})
+	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
 
 	expected := map[string]interface{}{
 		"test": "test",
@@ -89,12 +88,11 @@ func TestGithubDecoratorWithNoGithubIssueIdDefined(t *testing.T) {
 }
 
 func TestGithubIssueDecoratorWithAnErrorStatusCode(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR = true
-	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
-	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OWNER = "user"
-	chyleConfig.DECORATORS.GITHUBISSUE.REPOSITORY.NAME = "repository"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]struct {
+	config := githubIssueConfig{}
+	config.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+	config.CREDENTIALS.OWNER = "user"
+	config.REPOSITORY.NAME = "repository"
+	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
 	}{
@@ -120,21 +118,20 @@ func TestGithubIssueDecoratorWithAnErrorStatusCode(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := githubIssueDecorator{*client}
+	j := githubIssueDecorator{*client, config}
 
-	_, err := j.decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
+	_, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
 
 	assert.EqualError(t, err, `an error occurred when contacting remote api through https://api.github.com/repos/user/repository/issues/10000, status code 401, body {"message": "Bad credentials","documentation_url": "https://developer.github.com/v3"}`)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
 func TestGithubIssueDecoratorWhenIssueIsNotFound(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASGITHUBISSUEDECORATOR = true
-	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
-	chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OWNER = "user"
-	chyleConfig.DECORATORS.GITHUBISSUE.REPOSITORY.NAME = "repository"
-	chyleConfig.DECORATORS.GITHUBISSUE.KEYS = map[string]struct {
+	config := githubIssueConfig{}
+	config.CREDENTIALS.OAUTHTOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+	config.CREDENTIALS.OWNER = "user"
+	config.REPOSITORY.NAME = "repository"
+	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
 	}{
@@ -160,9 +157,9 @@ func TestGithubIssueDecoratorWhenIssueIsNotFound(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := githubIssueDecorator{*client}
+	j := githubIssueDecorator{*client, config}
 
-	result, err := j.decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
+	result, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
 
 	expected := map[string]interface{}{
 		"test":          "test",

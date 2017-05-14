@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/antham/chyle/chyle/apih"
 	"github.com/antham/chyle/chyle/types"
 )
 
@@ -67,13 +68,13 @@ func (g githubReleaseSender) createRelease(body []byte) error {
 		return err
 	}
 
-	setHeaders(req, map[string]string{
+	apih.SetHeaders(req, map[string]string{
 		"Authorization": "token " + chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN,
 		"Content-Type":  "application/json",
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
-	_, _, err = sendRequest(g.client, req)
+	_, _, err = apih.SendRequest(g.client, req)
 
 	return addCustomMessageToError("can't create github release", err)
 }
@@ -95,13 +96,13 @@ func (g githubReleaseSender) getReleaseID() (int, error) {
 		return 0, err
 	}
 
-	setHeaders(req, map[string]string{
+	apih.SetHeaders(req, map[string]string{
 		"Authorization": "token " + chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN,
 		"Content-Type":  "application/json",
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
-	_, body, err := sendRequest(g.client, req)
+	_, body, err := apih.SendRequest(g.client, req)
 
 	if err != nil {
 		return 0, addCustomMessageToError(errMsg, err)
@@ -132,13 +133,13 @@ func (g githubReleaseSender) updateRelease(body []byte) error {
 		return err
 	}
 
-	setHeaders(req, map[string]string{
+	apih.SetHeaders(req, map[string]string{
 		"Authorization": "token " + chyleConfig.SENDERS.GITHUBRELEASE.CREDENTIALS.OAUTHTOKEN,
 		"Content-Type":  "application/json",
 		"Accept":        "application/vnd.github.v3+json",
 	})
 
-	_, _, err = sendRequest(g.client, req)
+	_, _, err = apih.SendRequest(g.client, req)
 
 	return addCustomMessageToError(fmt.Sprintf("can't update github release %s", chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME), err)
 }

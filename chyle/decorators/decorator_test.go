@@ -1,4 +1,4 @@
-package chyle
+package decorators
 
 import (
 	"net/http"
@@ -11,12 +11,11 @@ import (
 )
 
 func TestDecorator(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASJIRAISSUEDECORATOR = true
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "test"
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+	config := jiraIssueConfig{}
+	config.CREDENTIALS.USERNAME = "test"
+	config.CREDENTIALS.PASSWORD = "test"
+	config.CREDENTIALS.URL = "http://test.com"
+	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
 	}{
@@ -39,9 +38,9 @@ func TestDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := jiraIssueDecorator{*client}
+	j := jiraIssueDecorator{*client, config}
 
-	decorators := map[string][]decorater{
+	decorators := map[string][]Decorater{
 		"datas":     {j},
 		"metadatas": {},
 	}
@@ -59,7 +58,7 @@ func TestDecorator(t *testing.T) {
 		Metadatas: map[string]interface{}{},
 	}
 
-	result, err := decorate(&decorators, &changelog)
+	result, err := Decorate(&decorators, &changelog)
 
 	expected := types.Changelog{
 		Datas: []map[string]interface{}{
@@ -82,11 +81,11 @@ func TestDecorator(t *testing.T) {
 }
 
 func TestCreateDecorators(t *testing.T) {
-	chyleConfig.FEATURES.HASJIRAISSUEDECORATOR = true
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "test"
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+	jiraConfig := jiraIssueConfig{}
+	jiraConfig.CREDENTIALS.USERNAME = "test"
+	jiraConfig.CREDENTIALS.PASSWORD = "test"
+	jiraConfig.CREDENTIALS.URL = "http://test.com"
+	jiraConfig.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
 	}{
@@ -96,7 +95,7 @@ func TestCreateDecorators(t *testing.T) {
 		},
 	}
 
-	d := createDecorators()
+	d := CreateDecorators(map[string]bool{"jiraIssueDecorator": true}, Config{JIRAISSUE: jiraConfig})
 
 	assert.Len(t, (*d)["datas"], 1, "Must return 1 decorator")
 }

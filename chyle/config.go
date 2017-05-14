@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/antham/envh"
+
+	"github.com/antham/chyle/chyle/decorators"
 )
 
 // configurater must be implemented to process custom config
@@ -45,37 +47,8 @@ type CHYLE struct {
 		DESTKEY string
 		REG     *regexp.Regexp
 	}
-	DECORATORS struct {
-		GITHUBISSUE struct {
-			CREDENTIALS struct {
-				OAUTHTOKEN string
-				OWNER      string
-			}
-			REPOSITORY struct {
-				NAME string
-			}
-			KEYS map[string]struct {
-				DESTKEY string
-				FIELD   string
-			}
-		}
-		JIRAISSUE struct {
-			CREDENTIALS struct {
-				URL      string
-				USERNAME string
-				PASSWORD string
-			}
-			KEYS map[string]struct {
-				DESTKEY string
-				FIELD   string
-			}
-		}
-		ENV map[string]struct {
-			DESTKEY string
-			VARNAME string
-		}
-	}
-	SENDERS struct {
+	DECORATORS decorators.Config
+	SENDERS    struct {
 		STDOUT struct {
 			FORMAT   string
 			TEMPLATE string
