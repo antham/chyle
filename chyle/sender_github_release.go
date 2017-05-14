@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/antham/chyle/chyle/types"
 )
 
 // codebeat:disable[TOO_MANY_IVARS]
@@ -36,7 +38,7 @@ func newGithubReleaseSender(client *http.Client) githubReleaseSender {
 }
 
 // buildBody create a request body from changelog
-func (g githubReleaseSender) buildBody(changelog *Changelog) ([]byte, error) {
+func (g githubReleaseSender) buildBody(changelog *types.Changelog) ([]byte, error) {
 	body, err := populateTemplate("github-release-template", chyleConfig.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE, changelog)
 
 	if err != nil {
@@ -142,7 +144,7 @@ func (g githubReleaseSender) updateRelease(body []byte) error {
 }
 
 // Send push changelog to github release
-func (g githubReleaseSender) Send(changelog *Changelog) error {
+func (g githubReleaseSender) Send(changelog *types.Changelog) error {
 	body, err := g.buildBody(changelog)
 
 	if err != nil {
