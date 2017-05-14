@@ -1,4 +1,4 @@
-package chyle
+package apih
 
 import (
 	"fmt"
@@ -19,15 +19,15 @@ func (e ErrResponse) Error() string {
 	return fmt.Sprintf("an error occurred when contacting remote api through %s, status code %d, body %s", e.request.URL, e.response.StatusCode, e.body)
 }
 
-// setHeaders setup headers on request from a map header key -> header value
-func setHeaders(request *http.Request, headers map[string]string) {
+// SetHeaders setup headers on request from a map header key -> header value
+func SetHeaders(request *http.Request, headers map[string]string) {
 	for k, v := range headers {
 		request.Header.Set(k, v)
 	}
 }
 
-// sendRequest picks a request and send it with given client
-func sendRequest(client *http.Client, request *http.Request) (int, []byte, error) {
+// SendRequest picks a request and send it with given client
+func SendRequest(client *http.Client, request *http.Request) (int, []byte, error) {
 	response, err := client.Do(request)
 
 	if err != nil {

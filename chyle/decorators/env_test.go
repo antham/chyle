@@ -1,17 +1,18 @@
-package chyle
+package decorators
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEnvDecorator(t *testing.T) {
-	setenv("TESTENVDECORATOR", "this is a test")
+	err := os.Setenv("TESTENVDECORATOR", "this is a test")
 
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASENVDECORATOR = true
-	chyleConfig.DECORATORS.ENV = map[string]struct {
+	assert.NoError(t, err)
+
+	envs := map[string]struct {
 		DESTKEY string
 		VARNAME string
 	}{
@@ -23,9 +24,9 @@ func TestEnvDecorator(t *testing.T) {
 
 	metadatas := map[string]interface{}{}
 
-	e := buildEnvDecorators()
-	m, err := e[0].decorate(&metadatas)
+	e := buildEnvDecorators(envs)
+	m, err := e[0].Decorate(&metadatas)
 
-	assert.NoError(t, err, "Must returns no errors")
+	assert.NoError(t, err)
 	assert.Equal(t, map[string]interface{}{"envDecoratorTesting": "this is a test"}, *m, "Must dump environment variable in given destination key")
 }

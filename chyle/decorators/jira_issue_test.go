@@ -1,4 +1,4 @@
-package chyle
+package decorators
 
 import (
 	"net/http"
@@ -9,12 +9,11 @@ import (
 )
 
 func TestJiraDecorator(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASJIRAISSUEDECORATOR = true
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "test"
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+	config := jiraIssueConfig{}
+	config.CREDENTIALS.USERNAME = "test"
+	config.CREDENTIALS.PASSWORD = "test"
+	config.CREDENTIALS.URL = "http://test.com"
+	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
 	}{
@@ -41,10 +40,10 @@ func TestJiraDecorator(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := jiraIssueDecorator{*client}
+	j := jiraIssueDecorator{*client, config}
 
 	// request with issue id
-	result, err := j.decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
+	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
 
 	expected := map[string]interface{}{
 		"test":         "test",
@@ -57,7 +56,7 @@ func TestJiraDecorator(t *testing.T) {
 	assert.Equal(t, expected, *result)
 
 	// request with issue key
-	result, err = j.decorate(&map[string]interface{}{"test": "test", "jiraIssueId": "EX-1"})
+	result, err = j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": "EX-1"})
 
 	expected = map[string]interface{}{
 		"test":         "test",
@@ -81,9 +80,9 @@ func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := jiraIssueDecorator{*client}
+	j := jiraIssueDecorator{*client, jiraIssueConfig{}}
 
-	result, err := j.decorate(&map[string]interface{}{"test": "test"})
+	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
 
 	expected := map[string]interface{}{
 		"test": "test",
@@ -95,12 +94,11 @@ func TestJiraDecoratorWithNoJiraIssueIdDefined(t *testing.T) {
 }
 
 func TestJiraDecoratorWhenIssueIsNotFound(t *testing.T) {
-	chyleConfig = CHYLE{}
-	chyleConfig.FEATURES.HASJIRAISSUEDECORATOR = true
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "test"
-	chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
-	chyleConfig.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
+	config := jiraIssueConfig{}
+	config.CREDENTIALS.USERNAME = "test"
+	config.CREDENTIALS.PASSWORD = "test"
+	config.CREDENTIALS.URL = "http://test.com"
+	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
 	}{
@@ -123,9 +121,9 @@ func TestJiraDecoratorWhenIssueIsNotFound(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	j := jiraIssueDecorator{*client}
+	j := jiraIssueDecorator{*client, config}
 
-	result, err := j.decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
+	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
 
 	expected := map[string]interface{}{
 		"test":        "test",
