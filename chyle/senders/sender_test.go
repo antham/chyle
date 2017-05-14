@@ -42,7 +42,7 @@ func TestCreate(t *testing.T) {
 			config := stdoutConfig{}
 			config.FORMAT = "json"
 
-			return Features{STDOUT: true}, Config{STDOUT: config}
+			return Features{ENABLED: true, STDOUT: true}, Config{STDOUT: config}
 		},
 		func() (Features, Config) {
 			config := githubReleaseConfig{}
@@ -52,7 +52,7 @@ func TestCreate(t *testing.T) {
 			config.RELEASE.TEMPLATE = "test"
 			config.REPOSITORY.NAME = "test"
 
-			return Features{GITHUBRELEASE: true}, Config{GITHUBRELEASE: config}
+			return Features{ENABLED: true, GITHUBRELEASE: true}, Config{GITHUBRELEASE: config}
 		},
 	}
 
@@ -63,4 +63,10 @@ func TestCreate(t *testing.T) {
 
 		assert.Len(t, *s, 1)
 	}
+}
+
+func TestCreateWithFeatureDisabled(t *testing.T) {
+	s := Create(Features{STDOUT: true}, Config{STDOUT: stdoutConfig{FORMAT: "json"}})
+
+	assert.Len(t, *s, 0)
 }

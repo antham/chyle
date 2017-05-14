@@ -214,28 +214,28 @@ func TestCreate(t *testing.T) {
 				MESSAGE: regexp.MustCompile(".*"),
 			}
 
-			return Features{MESSAGE: true}, config
+			return Features{ENABLED: true, MESSAGE: true}, config
 		},
 		func() (Features, Config) {
 			config := Config{
 				COMMITTER: regexp.MustCompile(".*"),
 			}
 
-			return Features{COMMITTER: true}, config
+			return Features{ENABLED: true, COMMITTER: true}, config
 		},
 		func() (Features, Config) {
 			config := Config{
 				AUTHOR: regexp.MustCompile(".*"),
 			}
 
-			return Features{AUTHOR: true}, config
+			return Features{ENABLED: true, AUTHOR: true}, config
 		},
 		func() (Features, Config) {
 			config := Config{
 				TYPE: "regular",
 			}
 
-			return Features{TYPE: true}, config
+			return Features{ENABLED: true, TYPE: true}, config
 		},
 	}
 
@@ -246,4 +246,12 @@ func TestCreate(t *testing.T) {
 
 		assert.Len(t, (*m), 1)
 	}
+}
+
+func TestCreateWithFeatureDisabled(t *testing.T) {
+	m := Create(Features{TYPE: true}, Config{
+		TYPE: "regular",
+	})
+
+	assert.Len(t, *m, 0)
 }

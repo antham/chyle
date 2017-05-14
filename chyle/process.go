@@ -21,30 +21,12 @@ type process struct {
 
 // buildProcess creates process entity from defined configuration
 func buildProcess(conf *config.CHYLE) *process {
-	p := &process{
-		&[]matchers.Matcher{},
-		&[]extractors.Extracter{},
-		&map[string][]decorators.Decorater{},
-		&[]senders.Sender{},
+	return &process{
+		matchers.Create(conf.FEATURES.MATCHERS, conf.MATCHERS),
+		extractors.Create(conf.FEATURES.EXTRACTORS, conf.EXTRACTORS),
+		decorators.Create(conf.FEATURES.DECORATORS, conf.DECORATORS),
+		senders.Create(conf.FEATURES.SENDERS, conf.SENDERS),
 	}
-
-	if conf.FEATURES.MATCHERS.ENABLED {
-		p.matchers = matchers.Create(conf.FEATURES.MATCHERS, conf.MATCHERS)
-	}
-
-	if conf.FEATURES.EXTRACTORS.ENABLED {
-		p.extractors = extractors.Create(conf.FEATURES.EXTRACTORS, conf.EXTRACTORS)
-	}
-
-	if conf.FEATURES.DECORATORS.ENABLED {
-		p.decorators = decorators.Create(conf.FEATURES.DECORATORS, conf.DECORATORS)
-	}
-
-	if conf.FEATURES.SENDERS.ENABLED {
-		p.senders = senders.Create(conf.FEATURES.SENDERS, conf.SENDERS)
-	}
-
-	return p
 }
 
 // proceed extracts datas from a set of commits

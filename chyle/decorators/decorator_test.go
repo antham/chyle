@@ -97,7 +97,7 @@ func TestCreateDataDecorators(t *testing.T) {
 				},
 			}
 
-			return Features{JIRAISSUE: true}, Config{JIRAISSUE: config}
+			return Features{ENABLED: true, JIRAISSUE: true}, Config{JIRAISSUE: config}
 		},
 		func() (Features, Config) {
 			config := githubIssueConfig{}
@@ -114,17 +114,17 @@ func TestCreateDataDecorators(t *testing.T) {
 				},
 			}
 
-			return Features{GITHUBISSUE: true}, Config{GITHUBISSUE: config}
+			return Features{ENABLED: true, GITHUBISSUE: true}, Config{GITHUBISSUE: config}
 		},
 	}
 
 	for _, f := range tests {
 		features, config := f()
 
-		s := Create(features, config)
+		d := Create(features, config)
 
-		assert.Len(t, (*s)["datas"], 1)
-		assert.Len(t, (*s)["metadatas"], 0)
+		assert.Len(t, (*d)["datas"], 1)
+		assert.Len(t, (*d)["metadatas"], 0)
 	}
 }
 
@@ -138,16 +138,37 @@ func TestCreateMetadataDecorators(t *testing.T) {
 				},
 			}
 
-			return Features{ENV: true}, Config{ENV: config}
+			return Features{ENABLED: true, ENV: true}, Config{ENV: config}
 		},
 	}
 
 	for _, f := range tests {
 		features, config := f()
 
-		s := Create(features, config)
+		d := Create(features, config)
 
-		assert.Len(t, (*s)["datas"], 0)
-		assert.Len(t, (*s)["metadatas"], 1)
+		assert.Len(t, (*d)["datas"], 0)
+		assert.Len(t, (*d)["metadatas"], 1)
 	}
+}
+
+func TestCreateWithFeatureDisabled(t *testing.T) {
+	config := jiraIssueConfig{}
+	config.CREDENTIALS.USERNAME = "test"
+	config.CREDENTIALS.PASSWORD = "test"
+	config.CREDENTIALS.URL = "http://test.com"
+	config.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"DESCRIPTION": {
+			"jiraTicketDescription",
+			"fields.summary",
+		},
+	}
+
+	d := Create(Features{JIRAISSUE: true}, Config{JIRAISSUE: config})
+
+	assert.Len(t, (*d)["datas"], 0)
+	assert.Len(t, (*d)["metadatas"], 0)
 }

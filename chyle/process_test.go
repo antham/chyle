@@ -21,7 +21,7 @@ func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
 	expected := process{
 		&[]matchers.Matcher{},
 		&[]extractors.Extracter{},
-		&map[string][]decorators.Decorater{},
+		&map[string][]decorators.Decorater{"metadatas": {}, "datas": {}},
 		&[]senders.Sender{},
 	}
 

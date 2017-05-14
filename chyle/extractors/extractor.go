@@ -34,6 +34,10 @@ func Extract(extractors *[]Extracter, commitMaps *[]map[string]interface{}) *typ
 func Create(features Features, extractors Config) *[]Extracter {
 	results := []Extracter{}
 
+	if !features.ENABLED {
+		return &results
+	}
+
 	for _, extractor := range extractors {
 		results = append(results, regex{
 			extractor.ORIGKEY,
