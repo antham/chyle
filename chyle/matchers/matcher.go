@@ -57,6 +57,10 @@ func transformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
 func Create(features Features, matchers Config) *[]Matcher {
 	results := []Matcher{}
 
+	if !features.ENABLED {
+		return &results
+	}
+
 	if features.AUTHOR {
 		results = append(results, buildAuthor(matchers.AUTHOR))
 	}

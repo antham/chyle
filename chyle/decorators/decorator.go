@@ -58,6 +58,10 @@ func Decorate(decorators *map[string][]Decorater, changelog *types.Changelog) (*
 func Create(features Features, decorators Config) *map[string][]Decorater {
 	results := map[string][]Decorater{"metadatas": {}, "datas": {}}
 
+	if !features.ENABLED {
+		return &results
+	}
+
 	if features.JIRAISSUE {
 		results["datas"] = append(results["datas"], buildJiraIssue(decorators.JIRAISSUE))
 	}

@@ -133,3 +133,15 @@ func TestCreate(t *testing.T) {
 		assert.Equal(t, (*e)[0].(regex).re, regexp.MustCompile(v["regexp"]))
 	}
 }
+
+func TestCreateWithFeatureDisabled(t *testing.T) {
+	e := Create(Features{}, Config{
+		"ID": {
+			"id",
+			"test",
+			regexp.MustCompile(".*"),
+		},
+	})
+
+	assert.Len(t, *e, 0)
+}

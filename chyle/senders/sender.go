@@ -26,6 +26,10 @@ func Send(senders *[]Sender, changelog *types.Changelog) error {
 func Create(features Features, senders Config) *[]Sender {
 	results := []Sender{}
 
+	if !features.ENABLED {
+		return &results
+	}
+
 	if features.GITHUBRELEASE {
 		results = append(results, buildGithubRelease(senders.GITHUBRELEASE))
 	}
