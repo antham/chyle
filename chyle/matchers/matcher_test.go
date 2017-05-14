@@ -208,13 +208,13 @@ func TestTransformCommitsToMap(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	matchers := map[string]string{}
+	matchers := Config{}
 	matchers["TYPE"] = "regular"
 	matchers["MESSAGE"] = ".*"
 	matchers["AUTHOR"] = ".*"
 	matchers["COMMITTER"] = ".*"
 
-	m := Create(matchers)
+	m := Create(Features{true}, matchers)
 
 	assert.Len(t, *m, 4, "Must contain 4 matchers")
 }

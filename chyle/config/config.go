@@ -9,6 +9,7 @@ import (
 
 	"github.com/antham/chyle/chyle/decorators"
 	"github.com/antham/chyle/chyle/extractors"
+	"github.com/antham/chyle/chyle/matchers"
 	"github.com/antham/chyle/chyle/senders"
 )
 
@@ -24,9 +25,7 @@ type configurater interface {
 // CHYLE hold config extracted from environment variables
 type CHYLE struct {
 	FEATURES struct {
-		MATCHERS struct {
-			ENABLED bool
-		}
+		MATCHERS   matchers.Features
 		EXTRACTORS extractors.Features
 		DECORATORS decorators.Features
 		SENDERS    senders.Features
@@ -40,7 +39,7 @@ type CHYLE struct {
 			TO   string
 		}
 	}
-	MATCHERS   map[string]string
+	MATCHERS   matchers.Config
 	EXTRACTORS extractors.Config
 	DECORATORS decorators.Config
 	SENDERS    senders.Config

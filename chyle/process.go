@@ -29,7 +29,7 @@ func buildProcess(conf *config.CHYLE) *process {
 	}
 
 	if conf.FEATURES.MATCHERS.ENABLED {
-		p.matchers = matchers.Create(conf.MATCHERS)
+		p.matchers = matchers.Create(conf.FEATURES.MATCHERS, conf.MATCHERS)
 	}
 
 	if conf.FEATURES.EXTRACTORS.ENABLED {
