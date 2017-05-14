@@ -1,11 +1,20 @@
 package chyle
 
 import (
+	"log"
+	"os"
+
 	"github.com/antham/chyle/chyle/config"
 	"github.com/antham/chyle/chyle/git"
 
 	"github.com/antham/envh"
 )
+
+var logger *log.Logger
+
+func init() {
+	logger = log.New(os.Stdout, "CHYLE - ", log.Ldate|log.Ltime)
+}
 
 // EnableDebugging activates step logging
 var EnableDebugging = false
