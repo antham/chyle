@@ -43,7 +43,7 @@ func solveType(commit *object.Commit) string {
 	return regularTypeMatcher
 }
 
-// GetMatcherTypes returns all defined matchers types
-func GetMatcherTypes() []string {
+// GetTypes returns all defined matchers types
+func GetTypes() []string {
 	return []string{regularTypeMatcher, mergeTypeMatcher}
 }
