@@ -2,7 +2,8 @@ package extractors
 
 import (
 	"regexp"
-	"strconv"
+
+	"github.com/antham/chyle/chyle/convh"
 )
 
 // regex use a regexp to extract data
@@ -37,31 +38,7 @@ func (r regex) Extract(commitMap *map[string]interface{}) *map[string]interface{
 		result = results[1]
 	}
 
-	b, err := parseBool(result)
-
-	if err == nil {
-		(*commitMap)[r.identifier] = b
-
-		return commitMap
-	}
-
-	i, err := strconv.ParseInt(result, 10, 64)
-
-	if err == nil {
-		(*commitMap)[r.identifier] = i
-
-		return commitMap
-	}
-
-	f, err := strconv.ParseFloat(result, 64)
-
-	if err == nil {
-		(*commitMap)[r.identifier] = f
-
-		return commitMap
-	}
-
-	(*commitMap)[r.identifier] = result
+	(*commitMap)[r.identifier] = convh.GuessPrimitiveType(result)
 
 	return commitMap
 }
