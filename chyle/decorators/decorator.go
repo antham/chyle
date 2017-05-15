@@ -88,7 +88,7 @@ type jSONResponse struct {
 	}
 }
 
-// decorate fetch JSON datas and add the result to original commitMap array
+// Decorate fetch JSON datas and add the result to original commitMap array
 func (j jSONResponse) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	statusCode, body, err := apih.SendRequest(j.client, j.request)
 

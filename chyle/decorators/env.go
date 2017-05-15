@@ -9,13 +9,13 @@ type envConfig map[string]struct {
 	VARNAME string
 }
 
-// env dump an environment variable into metadatas
+// env dumps an environment variable into metadatas
 type env struct {
 	varName string
 	destKey string
 }
 
-// Decorate add environment variable to changelog metadatas
+// Decorate adds an environment variable to changelog metadatas
 func (e env) Decorate(metadatas *map[string]interface{}) (*map[string]interface{}, error) {
 	(*metadatas)[e.destKey] = os.Getenv(e.varName)
 

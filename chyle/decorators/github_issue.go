@@ -27,7 +27,7 @@ type githubIssue struct {
 	config githubIssueConfig
 }
 
-// decorate fetch remote github service if a github tikcet id is defined to fetch issue datas
+// Decorate fetchs remote github service from a github ticket id
 func (g githubIssue) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID int64
 	var ok bool
