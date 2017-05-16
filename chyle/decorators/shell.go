@@ -26,7 +26,6 @@ type shell struct {
 func (s shell) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var tmp interface{}
 	var value string
-	var result []byte
 	var ok bool
 	var err error
 
@@ -40,16 +39,25 @@ func (s shell) Decorate(commitMap *map[string]interface{}) (*map[string]interfac
 		return commitMap, nil
 	}
 
+	if (*commitMap)[s.DESTKEY], err = s.execute(value); err != nil {
+		return commitMap, err
+	}
+
+	return commitMap, nil
+}
+
+func (s shell) execute(value string) (string, error) {
+	var result []byte
+	var err error
+
 	command := fmt.Sprintf(`echo "%s"|%s`, strings.Replace(value, `"`, `\"`, -1), s.COMMAND)
 
 	/* #nosec */
 	if result, err = exec.Command("sh", "-c", command).Output(); err != nil {
-		return commitMap, fmt.Errorf("%s : command failed", command)
+		return "", fmt.Errorf("%s : command failed", command)
 	}
 
-	(*commitMap)[s.DESTKEY] = string(result[:len(result)-1])
-
-	return commitMap, nil
+	return string(result[:len(result)-1]), nil
 }
 
 // buildShell create a new shell decorator

@@ -77,7 +77,7 @@ func TestShell(t *testing.T) {
 			},
 			map[string]interface{}{
 				"FROM": "",
-				"TO":   nil,
+				"TO":   "",
 			},
 			`echo ""|whatever : command failed`,
 		},
