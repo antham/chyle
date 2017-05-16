@@ -57,7 +57,7 @@ func buildShell(configs shellConfig) []Decorater {
 	results := []Decorater{}
 
 	for _, config := range configs {
-		results = append(results, shell{config.COMMAND, config.ORIGKEY, config.DESTKEY})
+		results = append(results, shell(config))
 	}
 
 	return results
