@@ -41,6 +41,7 @@ You need afterwards to configure each module through environments variables : th
 * [Decorators](#decorators)
   * [Jira issue api](#jira-issue-api)
   * [Github issue api](#github-issue-api)
+  * [Shell](#shell)
   * [Environment variable](#environment-variable)
 * [Senders](#senders)
   * [Stdout](#stdout)
@@ -132,6 +133,19 @@ Name | Value
 ------------ | ------------
 CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
 CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_FIELD | The field to extract from github issue api response payload, use dot notation to extract a deep value (eg: "fields.summary")
+
+#### Shell
+
+You can pipe any shell commands on every commit datas through this decorator.
+
+To extract data, you need to define a threesome, a "COMMAND" key, an "ORIGKEY" key and a "DESTKEY" key, replace * with a name convenient to you, you can get as many value as you want.
+
+Name | Value
+------------ | ------------
+CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_COMMAND | Command to execute
+CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_ORIGKEY | A field from which you want to use the content to pipe a command on
+CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
+
 
 #### Environment variable
 
