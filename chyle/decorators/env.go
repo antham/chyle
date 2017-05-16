@@ -23,13 +23,13 @@ func (e env) Decorate(metadatas *map[string]interface{}) (*map[string]interface{
 }
 
 // buildEnvs creates a list of env decorators
-func buildEnvs(envs envConfig) []Decorater {
+func buildEnvs(configs envConfig) []Decorater {
 	results := []Decorater{}
 
-	for _, e := range envs {
+	for _, config := range configs {
 		results = append(results, env{
-			e.VARNAME,
-			e.DESTKEY,
+			config.VARNAME,
+			config.DESTKEY,
 		})
 	}
 
