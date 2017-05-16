@@ -42,7 +42,8 @@ func (s shell) Decorate(commitMap *map[string]interface{}) (*map[string]interfac
 
 	command := fmt.Sprintf(`echo "%s"|%s`, strings.Replace(value, `"`, `\"`, -1), s.COMMAND)
 
-	if result, err = exec.Command("sh", "-c", command).Output(); err != nil { // #nosec
+	/* #nosec */
+	if result, err = exec.Command("sh", "-c", command).Output(); err != nil {
 		return commitMap, fmt.Errorf("%s : command failed", command)
 	}
 
