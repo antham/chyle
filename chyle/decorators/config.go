@@ -6,6 +6,7 @@ type Config struct {
 	GITHUBISSUE githubIssueConfig
 	JIRAISSUE   jiraIssueConfig
 	ENV         envConfig
+	SHELL       shellConfig
 }
 
 // Features gives the informations if a decorator or several are defined
@@ -15,4 +16,5 @@ type Features struct {
 	JIRAISSUE   bool
 	GITHUBISSUE bool
 	ENV         bool
+	SHELL       bool
 }

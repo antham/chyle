@@ -406,6 +406,64 @@ func TestCreateWithErrors(t *testing.T) {
 			},
 			`environment variable missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
 		},
+		// Decorator shell
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_COMMAND", "test")
+			},
+			`environments variables missing : "CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "CHYLE_DECORATORS_SHELL_TEST_ORIGKEY"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "test")
+			},
+			`environments variables missing : "CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "CHYLE_DECORATORS_SHELL_TEST_COMMAND"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "test")
+			},
+			`environments variables missing : "CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "CHYLE_DECORATORS_SHELL_TEST_COMMAND"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_COMMAND", "test")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "test")
+			},
+			`environment variable missing : "CHYLE_DECORATORS_SHELL_TEST_DESTKEY"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_COMMAND", "test")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "test")
+			},
+			`environment variable missing : "CHYLE_DECORATORS_SHELL_TEST_ORIGKEY"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "test")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "test")
+			},
+			`environment variable missing : "CHYLE_DECORATORS_SHELL_TEST_COMMAND"`,
+		},
 		// Sender github
 		{
 			func() {
@@ -755,6 +813,38 @@ func TestCreate(t *testing.T) {
 					"TEST": {
 						"destkey",
 						"field",
+					},
+				}
+
+				return c
+			},
+		},
+		// Decorator shell
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_COMMAND", "test")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "test")
+				setenv("CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "test")
+			},
+			func() CHYLE {
+				c := CHYLE{}
+				c.GIT.REPOSITORY.PATH = "test"
+				c.GIT.REFERENCE.FROM = "v1.0.0"
+				c.GIT.REFERENCE.TO = "v2.0.0"
+				c.FEATURES.DECORATORS.ENABLED = true
+				c.FEATURES.DECORATORS.SHELL = true
+				c.DECORATORS.SHELL = map[string]struct {
+					COMMAND string
+					ORIGKEY string
+					DESTKEY string
+				}{
+					"TEST": {
+						"test",
+						"test",
+						"test",
 					},
 				}
 

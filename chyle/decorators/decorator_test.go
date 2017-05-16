@@ -109,12 +109,23 @@ func TestCreateDataDecorators(t *testing.T) {
 				FIELD   string
 			}{
 				"DESCRIPTION": {
-					"jiraTicketDescription",
+					"githubTicketDescription",
 					"fields.summary",
 				},
 			}
 
 			return Features{ENABLED: true, GITHUBISSUE: true}, Config{GITHUBISSUE: config}
+		},
+		func() (Features, Config) {
+			config := shellConfig{
+				"TEST": {
+					`tr -s "a" "b"`,
+					"message",
+					"messageTransformed",
+				},
+			}
+
+			return Features{ENABLED: true, SHELL: true}, Config{SHELL: config}
 		},
 	}
 
