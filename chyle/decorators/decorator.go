@@ -70,6 +70,10 @@ func Create(features Features, decorators Config) *map[string][]Decorater {
 		results["datas"] = append(results["datas"], buildGithubIssue(decorators.GITHUBISSUE))
 	}
 
+	if features.SHELL {
+		results["datas"] = append(results["datas"], buildShell(decorators.SHELL)...)
+	}
+
 	if features.ENV {
 		results["metadatas"] = append(results["metadatas"], buildEnvs(decorators.ENV)...)
 	}
