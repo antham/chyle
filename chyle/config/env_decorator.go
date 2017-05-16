@@ -26,7 +26,7 @@ func (e *envDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 		}
 	}
 
-	e.setEnvDecorator(config)
+	e.setEnvConfigs(config)
 
 	return true, nil
 }
@@ -47,8 +47,8 @@ func (e *envDecoratorConfigurator) validateEnvironmentVariables() error {
 	return nil
 }
 
-// setEnvDecorator update decorator environment variables
-func (e *envDecoratorConfigurator) setEnvDecorator(config *CHYLE) {
+// setEnvDecorator update decorator environment config
+func (e *envDecoratorConfigurator) setEnvConfigs(config *CHYLE) {
 	config.DECORATORS.ENV = map[string]struct {
 		DESTKEY string
 		VARNAME string
