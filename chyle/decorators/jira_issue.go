@@ -25,18 +25,18 @@ type jiraIssue struct {
 
 // Decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
 func (j jiraIssue) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
-	var URLpattern string
+	var ID string
 
-	switch (*commitMap)["jiraIssueId"].(type) {
+	switch v := (*commitMap)["jiraIssueId"].(type) {
 	case string:
-		URLpattern = "%s/rest/api/2/issue/%s"
+		ID = v
 	case int64:
-		URLpattern = "%s/rest/api/2/issue/%d"
+		ID = fmt.Sprintf("%d", v)
 	default:
 		return commitMap, nil
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf(URLpattern, j.config.CREDENTIALS.URL, (*commitMap)["jiraIssueId"]), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/rest/api/2/issue/%s", j.config.CREDENTIALS.URL, ID), nil)
 
 	if err != nil {
 		return commitMap, err
