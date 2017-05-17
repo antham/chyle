@@ -3,6 +3,7 @@ package decorators
 // Config centralizes config needed for each decorator to being
 // used by any third part package to make decorators work
 type Config struct {
+	CUSTOMAPI   customAPIConfig
 	GITHUBISSUE githubIssueConfig
 	JIRAISSUE   jiraIssueConfig
 	ENV         envConfig
@@ -13,6 +14,7 @@ type Config struct {
 // and if so, which ones
 type Features struct {
 	ENABLED     bool
+	CUSTOMAPI   bool
 	JIRAISSUE   bool
 	GITHUBISSUE bool
 	ENV         bool

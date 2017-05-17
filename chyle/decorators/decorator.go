@@ -56,6 +56,10 @@ func Create(features Features, decorators Config) *map[string][]Decorater {
 		return &results
 	}
 
+	if features.CUSTOMAPI {
+		results["datas"] = append(results["datas"], buildCustomAPI(decorators.CUSTOMAPI))
+	}
+
 	if features.JIRAISSUE {
 		results["datas"] = append(results["datas"], buildJiraIssue(decorators.JIRAISSUE))
 	}
