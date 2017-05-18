@@ -41,6 +41,7 @@ You need afterwards to configure each module through environments variables : th
 * [Matchers](#matchers)
 * [Extractors](#extractors)
 * [Decorators](#decorators)
+  * [Custom api](#custom-api)
   * [Jira issue api](#jira-issue-api)
   * [Github issue api](#github-issue-api)
   * [Shell](#shell)
