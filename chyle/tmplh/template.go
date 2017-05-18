@@ -51,9 +51,8 @@ func Build(ID string, template string, data interface{}) (string, error) {
 	}
 
 	b := bytes.Buffer{}
-	err = t.Execute(&b, data)
 
-	if err != nil {
+	if err = t.Execute(&b, data); err != nil {
 		return "", err
 	}
 
