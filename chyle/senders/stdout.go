@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/antham/chyle/chyle/tmplh"
 	"github.com/antham/chyle/chyle/types"
 )
 
@@ -32,7 +33,7 @@ type templateStdout struct {
 
 // Send produces an output on stdout
 func (t templateStdout) Send(changelog *types.Changelog) error {
-	datas, err := populateTemplate("stdout-template", t.template, changelog)
+	datas, err := tmplh.Build("stdout-template", t.template, changelog)
 
 	if err != nil {
 		return err

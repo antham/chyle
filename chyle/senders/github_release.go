@@ -8,6 +8,7 @@ import (
 
 	"github.com/antham/chyle/chyle/apih"
 	"github.com/antham/chyle/chyle/errh"
+	"github.com/antham/chyle/chyle/tmplh"
 	"github.com/antham/chyle/chyle/types"
 )
 
@@ -57,7 +58,7 @@ type githubRelease struct {
 
 // buildBody create a request body from changelog
 func (g githubRelease) buildBody(changelog *types.Changelog) ([]byte, error) {
-	body, err := populateTemplate("github-release-template", g.config.RELEASE.TEMPLATE, changelog)
+	body, err := tmplh.Build("github-release-template", g.config.RELEASE.TEMPLATE, changelog)
 
 	if err != nil {
 		return []byte{}, err
