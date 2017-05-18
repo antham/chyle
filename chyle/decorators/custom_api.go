@@ -20,11 +20,13 @@ type customAPIConfig struct {
 	}
 }
 
+// customAPI fetch data using a provided custom HTTP api
 type customAPI struct {
 	client http.Client
 	config customAPIConfig
 }
 
+// Decorate fetchs remote custom HTTP api to fetch datas
 func (c customAPI) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
 
