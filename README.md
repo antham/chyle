@@ -33,6 +33,8 @@ Download from release page according to your architecture chyle binary : https:/
 
 You need afterwards to configure each module through environments variables : there are activated when you configure at least one environment variable they need to work.
 
+## Features
+
 ### Summary
 
 * [General config](#general-config)
@@ -46,6 +48,8 @@ You need afterwards to configure each module through environments variables : th
 * [Senders](#senders)
   * [Stdout](#stdout)
   * [Github release api](#github-release-api)
+* [Help](#help)
+  * [Template](#template)
 
 ### General config
 
@@ -168,8 +172,8 @@ Dump result to stdout
 
 Name | Value
 ------------ | -------------
-CHYLE_SENDERS_STDOUT_FORMAT | "json" : output payload as JSON , "template" : output payload using golang template syntax
-CHYLE_SENDERS_STDOUT_TEMPLATE | Linked to "template" stdout format, it must be set to defined a template following golang template syntax
+CHYLE_SENDERS_STDOUT_FORMAT | "json" : output payload as JSON , "template" : output payload using golang template syntax look at the [help](#template) to get more informations
+CHYLE_SENDERS_STDOUT_TEMPLATE | Linked to "template" stdout format, it must be set to defined a template following golang template syntax, look
 
 #### Github release api
 
@@ -184,6 +188,76 @@ CHYLE_SENDERS_GITHUBRELEASE_RELEASE_NAME | Release title
 CHYLE_SENDERS_GITHUBRELEASE_RELEASE_PRERELEASE | Create a prerelease release, boolean value, default is false
 CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME | Release tag to create, when you update a release it will be used to find out release tied to this tag (mandatory)
 CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TARGETCOMMITISH | The commitish value that determines where the Git tag is created from
-CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE | It uses golang template syntax to produce a changelog from your commits (mandatory), eg: A metadata {{.Metadatas.title}} {{ range $key, $value := .Datas }}{{$value.authorName}} : {{$value.message}}{{ end }}
+CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE | It uses golang template syntax to produce a changelog from your commits (mandatory), look at the [help](#template) to get more informations
 CHYLE_SENDERS_GITHUBRELEASE_RELEASE_UPDATE | Set to true if you want to update an existing changelog, typical usage would be when you produce a release through GUI github release system
 CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME | Github repository where we will publish the release (mandatory)
+
+### Help
+
+#### Template
+
+Chyle uses go template as template engine, documentation can be found in godoc [here](https://golang.org/pkg/text/template/#hdr-Text_and_spaces).
+
+Let's have an example using the following release generated using JSON format :
+
+```json
+{
+  "datas": [
+    {
+      "authorDate": "2017-05-10 22:24:40 +0200 +0200",
+      "authorEmail": "antham@users.noreply.github.com",
+      "authorName": "Anthony HAMON",
+      "committerDate": "2017-05-10 22:24:40 +0200 +0200",
+      "committerEmail": "noreply@github.com",
+      "committerName": "GitHub",
+      "date": "2017-05-10 22:24:40",
+      "githubIssueId": 3,
+      "githubTitle": "Test2",
+      "id": "f617fb708dfa6fa290205615ea98c53a860e499d",
+      "message": "Merge pull request #3 from antham/test2\n\nTest2",
+      "type": "merge"
+    },
+    {
+      "authorDate": "2017-05-10 22:22:03 +0200 +0200",
+      "authorEmail": "antham@users.noreply.github.com",
+      "authorName": "Anthony HAMON",
+      "committerDate": "2017-05-10 22:22:03 +0200 +0200",
+      "committerEmail": "noreply@github.com",
+      "committerName": "GitHub",
+      "date": "2017-05-10 22:22:03",
+      "githubIssueId": 1,
+      "githubTitle": "Whatever",
+      "id": "8fdfae00cbcc66936113a60f5146d110f2ba3c28",
+      "message": "Merge pull request #1 from antham/test\n\nTest",
+      "type": "merge"
+    }
+  ],
+  "metadatas": {
+    "date": "jeu. mai 18 23:01:25 CEST 2017"
+  }
+}
+```
+
+If we want to display a markdown release with the list of pull request title and their authors we can do :
+
+```go
+### Release
+
+{{ range $key, $value := .Datas }} ({{ $value.authorName }}) {{ end }}
+
+Generated at {{ .Metadatas.date }}
+```
+
+We get :
+
+```markdown
+### Release
+
+Test2 (Anthony HAMON)
+Whatever (Anthony HAMON)
+Generated at jeu. mai 18 23:01:25 CEST 2017%
+```
+
+To provide more functionalities to original golang template, [sprig](https://github.com/Masterminds/sprig) library is provided, it gives several useful additional helpers, documentation can be found [here](http://masterminds.github.io/sprig/).
+
+For the sake of convenience, a custom global store is available as well, as templates cannot mutate defined variables : you can store a data using ```{{ set "key" "data"}}```, you can retrieve a data using ```{{ get "key" }}```, you can test if a key is set using ```{{ isset "key" }}```.
