@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	tmpl "html/template"
+
+	"github.com/Masterminds/sprig"
 )
 
 // ErrTemplateMalformed issued when something wrong
@@ -37,11 +39,10 @@ func get(key string) interface{} {
 
 // Build returns, using a template and generic data, an executed template
 func Build(ID string, template string, data interface{}) (string, error) {
-	funcMap := tmpl.FuncMap{
-		"isset": isset,
-		"set":   set,
-		"get":   get,
-	}
+	funcMap := sprig.FuncMap()
+	funcMap["isset"] = isset
+	funcMap["set"] = set
+	funcMap["get"] = get
 
 	t, err := tmpl.New(ID).Funcs(funcMap).Parse(template)
 
