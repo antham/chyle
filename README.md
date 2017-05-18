@@ -87,6 +87,31 @@ CHYLE_EXTRACTORS_*_REG | A regexp used to extract a data
 
 Decorators enrich your changelog with datas.
 
+#### Custom api
+
+You can fetch a custom api to fetch any data.
+First you need to define an id that will be added when calling your api.
+
+Name | Value
+------------ | -------------
+CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY | message
+CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY | CustomApiId
+CHYLE_EXTRACTORS_CUSTOMAPIID_REG | a regexp to extract an id
+
+You need to define a token header that will be given when calling your api and an url endpoint.
+
+Name | Value
+------------ | -------------
+CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL | It's the endpoint of you remote api, use %s as a placeholder to interpolate the id you extracted before
+CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN | Token submitted as authorization header when calling your api
+
+To extract data, you need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * with a name convenient to you, you can get as many value as you want.
+
+Name | Value
+------------ | ------------
+CHYLE_DECORATORS_CUSTOMAPI_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
+CHYLE_DECORATORS_CUSTOMAPI_KEYS_*_FIELD | The field to extract from your custom api response payload, use dot notation to extract a deep value (eg: "fields.summary")
+
 #### Jira issue api
 
 Have a look to the [api documentation](https://docs.atlassian.com/jira/REST/cloud/#api/2/issue-getIssue) to know what you can fetch from this api.
