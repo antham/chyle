@@ -15,3 +15,5 @@ import:
   version: ^4.0.0-rc9
 - package: github.com/antham/envh
   version: 1.2.0
+- package: github.com/Masterminds/sprig
+  version: ^2.12.0

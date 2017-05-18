@@ -30,6 +30,13 @@ func TestPopulateTemplate(t *testing.T) {
 		},
 		{
 			"test",
+			`{{ upper "hello" }}`,
+			``,
+			"HELLO",
+			``,
+		},
+		{
+			"test",
 			`{{ set "test" "whatever" }}{{ get "test" }}`,
 			``,
 			`whatever`,

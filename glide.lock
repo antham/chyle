@@ -1,18 +1,30 @@
-hash: b8ab39b4a936c3f0454fa9a81c5fed7e7ff303c53f1fe2c0125968592a90048f
-updated: 2017-05-03T13:06:47.571707995+02:00
+hash: 02195524985d868b7ad71e691c1ae1b8dc0338382be96ce672c92c59a1ee51db
+updated: 2017-05-18T22:30:36.976675612+02:00
 imports:
 - name: github.com/antham/envh
   version: 81cb62459bcbdf8f0b3e3ca99891c5d248d8b279
+- name: github.com/aokoli/goutils
+  version: e57d01ace047c1a43e6a49ecf3ecc50ed2be81d1
 - name: github.com/fatih/color
   version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
+- name: github.com/huandu/xstrings
+  version: 3959339b333561bf62a38b424fd41517c2c90f40
+- name: github.com/imdario/mergo
+  version: 3e95a51e0639b4cf372f2ccf74c86749d747fbdc
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/Masterminds/semver
+  version: 59c29afe1a994eacb71c833025ca7acf874bb1da
+- name: github.com/Masterminds/sprig
+  version: 9526be0327b26ad31aa70296a7b10704883976d5
 - name: github.com/mattn/go-colorable
   version: 5411d3eea5978e6cdc258b30de592b60df6aba96
   repo: https://github.com/mattn/go-colorable
 - name: github.com/mattn/go-isatty
   version: 57fdcb988a5c543893cc61bce354a6e24ab70022
   repo: https://github.com/mattn/go-isatty
+- name: github.com/satori/go.uuid
+  version: 879c5887cd475cd7864858769793b2ceb0d44feb
 - name: github.com/sergi/go-diff
   version: 24e2351369ec4949b2ed0dc5c477afdd4c4034e8
   subpackages:
@@ -43,6 +55,8 @@ imports:
   - curve25519
   - ed25519
   - ed25519/internal/edwards25519
+  - pbkdf2
+  - scrypt
   - ssh
   - ssh/agent
 - name: golang.org/x/sys
@@ -51,7 +65,7 @@ imports:
   subpackages:
   - unix
 - name: gopkg.in/h2non/gock.v0
-  version: 0ad9c55bec42c49b394bca98d4bcff7f4a82843c
+  version: 2897ffde93a71060ce86518f1e7317ec8433d2d6
 - name: gopkg.in/src-d/go-git.v4
   version: 36c78b9d1b1eea682703fb1cbb0f4f3144354389
 - name: gopkg.in/warnings.v0
