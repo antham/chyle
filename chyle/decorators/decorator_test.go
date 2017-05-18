@@ -83,6 +83,22 @@ func TestDecorator(t *testing.T) {
 func TestCreateDataDecorators(t *testing.T) {
 	tests := []func() (Features, Config){
 		func() (Features, Config) {
+			config := customAPIConfig{}
+			config.CREDENTIALS.TOKEN = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+			config.ENDPOINT.URL = "http://test.com"
+			config.KEYS = map[string]struct {
+				DESTKEY string
+				FIELD   string
+			}{
+				"DESCRIPTION": {
+					"githubTicketDescription",
+					"fields.summary",
+				},
+			}
+
+			return Features{ENABLED: true, CUSTOMAPI: true}, Config{CUSTOMAPI: config}
+		},
+		func() (Features, Config) {
 			config := jiraIssueConfig{}
 			config.CREDENTIALS.USERNAME = "test"
 			config.CREDENTIALS.PASSWORD = "test"
