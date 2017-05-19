@@ -10,12 +10,12 @@ import (
 	"github.com/antham/chyle/chyle/types"
 )
 
-func TestBuildStdout(t *testing.T) {
+func TestNewStdout(t *testing.T) {
 	config := stdoutConfig{FORMAT: "json"}
-	assert.IsType(t, jSONStdout{}, buildStdout(config))
+	assert.IsType(t, jSONStdout{}, newStdout(config))
 
 	config = stdoutConfig{FORMAT: "template", TEMPLATE: "{{.}}"}
-	assert.IsType(t, templateStdout{}, buildStdout(config))
+	assert.IsType(t, templateStdout{}, newStdout(config))
 }
 
 func TestJSONStdout(t *testing.T) {

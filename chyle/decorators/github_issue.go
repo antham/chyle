@@ -51,7 +51,7 @@ func (g githubIssue) Decorate(commitMap *map[string]interface{}) (*map[string]in
 	return jSONResponse{&g.client, req, g.config.KEYS}.Decorate(commitMap)
 }
 
-// buildGithubIssue create a new github issue decorator
-func buildGithubIssue(config githubIssueConfig) Decorater {
+// newGithubIssue create a new github issue decorator
+func newGithubIssue(config githubIssueConfig) Decorater {
 	return githubIssue{http.Client{}, config}
 }

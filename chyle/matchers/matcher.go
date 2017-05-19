@@ -62,19 +62,19 @@ func Create(features Features, matchers Config) *[]Matcher {
 	}
 
 	if features.AUTHOR {
-		results = append(results, buildAuthor(matchers.AUTHOR))
+		results = append(results, newAuthor(matchers.AUTHOR))
 	}
 
 	if features.COMMITTER {
-		results = append(results, buildCommitter(matchers.COMMITTER))
+		results = append(results, newCommitter(matchers.COMMITTER))
 	}
 
 	if features.MESSAGE {
-		results = append(results, buildMessage(matchers.MESSAGE))
+		results = append(results, newMessage(matchers.MESSAGE))
 	}
 
 	if features.TYPE {
-		results = append(results, buildType(matchers.TYPE))
+		results = append(results, newType(matchers.TYPE))
 	}
 
 	return &results

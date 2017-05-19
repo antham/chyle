@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBuildType(t *testing.T) {
-	assert.Equal(t, regularCommit{}, buildType(regularType))
-	assert.Equal(t, mergeCommit{}, buildType(mergeType))
+func TestNewType(t *testing.T) {
+	assert.Equal(t, regularCommit{}, newType(regularType))
+	assert.Equal(t, mergeCommit{}, newType(mergeType))
 }

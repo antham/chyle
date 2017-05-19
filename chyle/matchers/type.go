@@ -27,7 +27,7 @@ func (r regularCommit) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 1 || commit.NumParents() == 0
 }
 
-func buildType(key string) Matcher {
+func newType(key string) Matcher {
 	if key == regularType {
 		return regularCommit{}
 	}

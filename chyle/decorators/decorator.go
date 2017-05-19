@@ -57,23 +57,23 @@ func Create(features Features, decorators Config) *map[string][]Decorater {
 	}
 
 	if features.CUSTOMAPI {
-		results["datas"] = append(results["datas"], buildCustomAPI(decorators.CUSTOMAPI))
+		results["datas"] = append(results["datas"], newCustomAPI(decorators.CUSTOMAPI))
 	}
 
 	if features.JIRAISSUE {
-		results["datas"] = append(results["datas"], buildJiraIssue(decorators.JIRAISSUE))
+		results["datas"] = append(results["datas"], newJiraIssue(decorators.JIRAISSUE))
 	}
 
 	if features.GITHUBISSUE {
-		results["datas"] = append(results["datas"], buildGithubIssue(decorators.GITHUBISSUE))
+		results["datas"] = append(results["datas"], newGithubIssue(decorators.GITHUBISSUE))
 	}
 
 	if features.SHELL {
-		results["datas"] = append(results["datas"], buildShell(decorators.SHELL)...)
+		results["datas"] = append(results["datas"], newShell(decorators.SHELL)...)
 	}
 
 	if features.ENV {
-		results["metadatas"] = append(results["metadatas"], buildEnvs(decorators.ENV)...)
+		results["metadatas"] = append(results["metadatas"], newEnvs(decorators.ENV)...)
 	}
 
 	return &results

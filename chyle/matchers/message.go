@@ -16,7 +16,7 @@ func (m message) Match(commit *object.Commit) bool {
 	return m.regexp.MatchString(commit.Message)
 }
 
-func buildMessage(re *regexp.Regexp) Matcher {
+func newMessage(re *regexp.Regexp) Matcher {
 	return message{re}
 }
 

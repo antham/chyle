@@ -48,7 +48,7 @@ func (j jiraIssue) Decorate(commitMap *map[string]interface{}) (*map[string]inte
 	return jSONResponse{&j.client, req, j.config.KEYS}.Decorate(commitMap)
 }
 
-// buildJiraIssue create a new jira ticket decorator
-func buildJiraIssue(config jiraIssueConfig) Decorater {
+// newJiraIssue create a new jira ticket decorator
+func newJiraIssue(config jiraIssueConfig) Decorater {
 	return jiraIssue{http.Client{}, config}
 }

@@ -39,7 +39,7 @@ func TestGithubReleaseCreateRelease(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubRelease(config).(githubRelease)
+	s := newGithubRelease(config).(githubRelease)
 	s.client = client
 
 	c := types.Changelog{
@@ -77,7 +77,7 @@ func TestGithubReleaseCreateReleaseWithWrongCredentials(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubRelease(config).(githubRelease)
+	s := newGithubRelease(config).(githubRelease)
 	s.client = client
 
 	c := types.Changelog{
@@ -128,7 +128,7 @@ func TestGithubReleaseUpdateRelease(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubRelease(config).(githubRelease)
+	s := newGithubRelease(config).(githubRelease)
 	s.client = client
 
 	c := types.Changelog{
@@ -166,7 +166,7 @@ func TestGithubReleaseUpdateReleaseWithWrongCredentials(t *testing.T) {
 	client := &http.Client{Transport: &http.Transport{}}
 	gock.InterceptClient(client)
 
-	s := buildGithubRelease(config).(githubRelease)
+	s := newGithubRelease(config).(githubRelease)
 	s.client = client
 
 	c := types.Changelog{
