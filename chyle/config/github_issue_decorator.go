@@ -33,6 +33,8 @@ func githubIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
 				&chyleConfig.FEATURES.DECORATORS.ENABLED,
 				&chyleConfig.FEATURES.DECORATORS.GITHUBISSUE,
 			},
+			[]func() error{},
+			[]func(*CHYLE){},
 		},
 	}
 }
