@@ -22,8 +22,8 @@ func (e env) Decorate(metadatas *map[string]interface{}) (*map[string]interface{
 	return metadatas, nil
 }
 
-// buildEnvs creates a list of env decorators
-func buildEnvs(configs envConfig) []Decorater {
+// newEnvs creates a list of env decorators
+func newEnvs(configs envConfig) []Decorater {
 	results := []Decorater{}
 
 	for _, config := range configs {

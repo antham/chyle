@@ -44,21 +44,21 @@ func (t templateStdout) Send(changelog *types.Changelog) error {
 	return nil
 }
 
-func buildStdout(config stdoutConfig) Sender {
+func newStdout(config stdoutConfig) Sender {
 	if config.FORMAT == "json" {
-		return buildJSONStdout()
+		return newJSONStdout()
 	}
 
-	return buildTemplateStdout(config.TEMPLATE)
+	return newTemplateStdout(config.TEMPLATE)
 }
 
-func buildJSONStdout() Sender {
+func newJSONStdout() Sender {
 	return jSONStdout{
 		os.Stdout,
 	}
 }
 
-func buildTemplateStdout(template string) Sender {
+func newTemplateStdout(template string) Sender {
 	return templateStdout{
 		os.Stdout,
 		template,

@@ -16,6 +16,6 @@ func (a author) Match(commit *object.Commit) bool {
 	return a.regexp.MatchString(commit.Author.String())
 }
 
-func buildAuthor(re *regexp.Regexp) Matcher {
+func newAuthor(re *regexp.Regexp) Matcher {
 	return author{re}
 }

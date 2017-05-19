@@ -24,7 +24,7 @@ func TestEnvs(t *testing.T) {
 
 	metadatas := map[string]interface{}{}
 
-	e := buildEnvs(envs)
+	e := newEnvs(envs)
 	m, err := e[0].Decorate(&metadatas)
 
 	assert.NoError(t, err)

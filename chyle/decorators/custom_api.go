@@ -53,6 +53,6 @@ func (c customAPI) Decorate(commitMap *map[string]interface{}) (*map[string]inte
 	return jSONResponse{&c.client, req, c.config.KEYS}.Decorate(commitMap)
 }
 
-func buildCustomAPI(config customAPIConfig) Decorater {
+func newCustomAPI(config customAPIConfig) Decorater {
 	return customAPI{http.Client{}, config}
 }

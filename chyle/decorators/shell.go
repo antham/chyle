@@ -60,8 +60,8 @@ func (s shell) execute(value string) (string, error) {
 	return string(result[:len(result)-1]), nil
 }
 
-// buildShell create a new shell decorator
-func buildShell(configs shellConfig) []Decorater {
+// newShell create a new shell decorator
+func newShell(configs shellConfig) []Decorater {
 	results := []Decorater{}
 
 	for _, config := range configs {

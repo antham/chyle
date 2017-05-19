@@ -84,7 +84,7 @@ func TestShell(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		s := buildShell(test.config)
+		s := newShell(test.config)
 
 		datas, err := s[0].Decorate(&test.datas)
 
