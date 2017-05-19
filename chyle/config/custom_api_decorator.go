@@ -25,6 +25,8 @@ func customAPIDecoratorConfigurator(config *envh.EnvTree) configurater {
 				&chyleConfig.FEATURES.DECORATORS.ENABLED,
 				&chyleConfig.FEATURES.DECORATORS.CUSTOMAPI,
 			},
+			[]func() error{},
+			[]func(*CHYLE){},
 		},
 	}
 }

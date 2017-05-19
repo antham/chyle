@@ -33,6 +33,8 @@ func jiraIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
 				&chyleConfig.FEATURES.DECORATORS.ENABLED,
 				&chyleConfig.FEATURES.DECORATORS.JIRAISSUE,
 			},
+			[]func() error{},
+			[]func(*CHYLE){},
 		},
 	}
 }

@@ -21,7 +21,9 @@ type apiDecoratorConfig struct {
 		ref      *string
 		keyChain []string
 	}
-	featureRefs []*bool
+	featureRefs           []*bool
+	customValidationFuncs []func() error
+	customSetterFuncs     []func(*CHYLE)
 }
 
 // codebeat:enable[TOO_MANY_IVARS]
@@ -43,18 +45,11 @@ func (a *apiDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 		*featureRef = true
 	}
 
-	for _, f := range []func() error{
-		a.validateMandatoryParameters,
-		a.validateKeys,
-		a.validateExtractor,
-	} {
-		if err := f(); err != nil {
-			return true, err
-		}
+	if err := a.validate(); err != nil {
+		return true, err
 	}
 
-	a.setKeys(config)
-	a.setMandatoryParameters(config)
+	a.set(config)
 
 	return true, nil
 }
@@ -65,6 +60,31 @@ func (a *apiDecoratorConfigurator) isDisabled() bool {
 		{"CHYLE", "DECORATORS", a.decoratorKey},
 		{"CHYLE", "EXTRACTORS", a.extractorKey},
 	})
+}
+
+// validate run every defined validators
+func (a *apiDecoratorConfigurator) validate() error {
+	for _, f := range append([]func() error{
+		a.validateMandatoryParameters,
+		a.validateKeys,
+		a.validateExtractor,
+	}, a.customValidationFuncs...) {
+		if err := f(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// set run every settes defined
+func (a *apiDecoratorConfigurator) set(config *CHYLE) {
+	for _, f := range append([]func(*CHYLE){
+		a.setKeys,
+		a.setMandatoryParameters,
+	}, a.customSetterFuncs...) {
+		f(config)
+	}
 }
 
 // validateExtractor checks if an extractor is defined to get
@@ -86,6 +106,7 @@ func (a *apiDecoratorConfigurator) validateMandatoryParameters() error {
 	}
 
 	for _, keyChain := range keyChains {
+
 		if keyChain[len(keyChain)-1] != "URL" {
 			continue
 		}
