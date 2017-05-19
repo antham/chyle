@@ -17,7 +17,7 @@ type apiDecoratorConfig struct {
 		DESTKEY string
 		FIELD   string
 	}
-	credentialsRefs []struct {
+	mandatoryParamsRefs []struct {
 		ref      *string
 		keyChain []string
 	}
@@ -44,7 +44,7 @@ func (a *apiDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 	}
 
 	for _, f := range []func() error{
-		a.validateCredentials,
+		a.validateMandatoryParameters,
 		a.validateKeys,
 		a.validateExtractor,
 	} {
@@ -54,7 +54,7 @@ func (a *apiDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 	}
 
 	a.setKeys(config)
-	a.setCredentials(config)
+	a.setMandatoryParameters(config)
 
 	return true, nil
 }
@@ -73,11 +73,11 @@ func (a *apiDecoratorConfigurator) validateExtractor() error {
 	return validateEnvironmentVariablesDefinition(a.config, [][]string{{"CHYLE", "EXTRACTORS", a.extractorKey, "ORIGKEY"}, {"CHYLE", "EXTRACTORS", a.extractorKey, "DESTKEY"}, {"CHYLE", "EXTRACTORS", a.extractorKey, "REG"}})
 }
 
-// validateCredentials checks credentials are defined to contact api
-func (a *apiDecoratorConfigurator) validateCredentials() error {
+// validateMandatoryParameters checks mandatory parameters are defined
+func (a *apiDecoratorConfigurator) validateMandatoryParameters() error {
 	keyChains := [][]string{}
 
-	for _, ref := range a.credentialsRefs {
+	for _, ref := range a.mandatoryParamsRefs {
 		keyChains = append(keyChains, ref.keyChain)
 	}
 
@@ -115,9 +115,9 @@ func (a *apiDecoratorConfigurator) validateKeys() error {
 	return nil
 }
 
-// setCredentials update api credentials
-func (a *apiDecoratorConfigurator) setCredentials(config *CHYLE) {
-	for _, c := range a.credentialsRefs {
+// setMandatoryParameters update mandatory parameters
+func (a *apiDecoratorConfigurator) setMandatoryParameters(config *CHYLE) {
+	for _, c := range a.mandatoryParamsRefs {
 		*(c.ref) = a.config.FindStringUnsecured(c.keyChain...)
 	}
 }
