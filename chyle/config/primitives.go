@@ -51,6 +51,14 @@ func validateURL(fullconfig *envh.EnvTree, chain []string) error {
 	return nil
 }
 
+func validateStringValue(value string, conf *envh.EnvTree, keyChain []string) error {
+	if conf.FindStringUnsecured(keyChain...) != value {
+		return fmt.Errorf(`variable %s must be equal to "%s"`, strings.Join(keyChain, "_"), value)
+	}
+
+	return nil
+}
+
 func validateRegexp(fullconfig *envh.EnvTree, chain []string) error {
 	if _, err := regexp.Compile(fullconfig.FindStringUnsecured(chain...)); err != nil {
 		return fmt.Errorf(`provide a valid regexp for "%s", "%s" given`, strings.Join(chain, "_"), fullconfig.FindStringUnsecured(chain...))

@@ -59,6 +59,7 @@ func customAPIDecoratorConfigurator(config *envh.EnvTree) configurater {
 		config: config,
 		apiDecoratorConfig: apiDecoratorConfig{
 			"CUSTOMAPIID",
+			"customApiId",
 			"CUSTOMAPI",
 			&chyleConfig.DECORATORS.CUSTOMAPI.KEYS,
 			getCustomAPIMandatoryParamsRefs(),

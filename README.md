@@ -96,7 +96,7 @@ First you need to define an id that will be added when calling your api.
 Name | Value
 ------------ | -------------
 CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY | message
-CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY | CustomApiId
+CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY | customApiId
 CHYLE_EXTRACTORS_CUSTOMAPIID_REG | a regexp to extract an id
 
 You need to define a token header that will be given when calling your api and an url endpoint.
