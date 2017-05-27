@@ -6,6 +6,12 @@ import (
 	"github.com/antham/envh"
 )
 
+// customAPIValidators defines validators called when last key of a key chain matches
+// a key defined in map
+var customAPIValidators = map[string]func(*envh.EnvTree, []string) error{
+	"URL": validateURL,
+}
+
 // codebeat:disable[TOO_MANY_IVARS]
 
 // apiDecoratorConfig declares datas needed
@@ -105,13 +111,19 @@ func (a *apiDecoratorConfigurator) validateMandatoryParameters() error {
 		return err
 	}
 
-	for _, keyChain := range keyChains {
+	return a.applyCustomValidators(&keyChains)
+}
 
-		if keyChain[len(keyChain)-1] != "URL" {
+// applyCustomValidators applies validators defined in map customAPIValidators
+func (a *apiDecoratorConfigurator) applyCustomValidators(keyChains *[][]string) error {
+	for _, keyChain := range *keyChains {
+		f, ok := customAPIValidators[keyChain[len(keyChain)-1]]
+
+		if !ok {
 			continue
 		}
 
-		if err := validateURL(a.config, keyChain); err != nil {
+		if err := f(a.config, keyChain); err != nil {
 			return err
 		}
 	}
