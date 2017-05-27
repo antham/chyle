@@ -43,14 +43,6 @@ func validateEnvironmentVariablesDefinition(conf *envh.EnvTree, keyChains [][]st
 	return nil
 }
 
-func validateURL(fullconfig *envh.EnvTree, chain []string) error {
-	if _, err := url.ParseRequestURI(fullconfig.FindStringUnsecured(chain...)); err != nil {
-		return fmt.Errorf(`provide a valid URL for "%s", "%s" given`, strings.Join(chain, "_"), fullconfig.FindStringUnsecured(chain...))
-	}
-
-	return nil
-}
-
 func validateStringValue(value string, conf *envh.EnvTree, keyChain []string) error {
 	if conf.FindStringUnsecured(keyChain...) != value {
 		return fmt.Errorf(`variable %s must be equal to "%s"`, strings.Join(keyChain, "_"), value)
@@ -59,16 +51,24 @@ func validateStringValue(value string, conf *envh.EnvTree, keyChain []string) er
 	return nil
 }
 
-func validateRegexp(fullconfig *envh.EnvTree, chain []string) error {
-	if _, err := regexp.Compile(fullconfig.FindStringUnsecured(chain...)); err != nil {
-		return fmt.Errorf(`provide a valid regexp for "%s", "%s" given`, strings.Join(chain, "_"), fullconfig.FindStringUnsecured(chain...))
+func validateURL(fullconfig *envh.EnvTree, chain []string) error {
+	if _, err := url.ParseRequestURI(fullconfig.FindStringUnsecured(chain...)); err != nil {
+		return fmt.Errorf(`provide a valid URL for "%s", "%s" given`, strings.Join(chain, "_"), fullconfig.FindStringUnsecured(chain...))
 	}
 
 	return nil
 }
 
-func validateOneOf(fullconfig *envh.EnvTree, chain []string, choices []string) error {
-	val := fullconfig.FindStringUnsecured(chain...)
+func validateRegexp(fullconfig *envh.EnvTree, keyChain []string) error {
+	if _, err := regexp.Compile(fullconfig.FindStringUnsecured(keyChain...)); err != nil {
+		return fmt.Errorf(`provide a valid regexp for "%s", "%s" given`, strings.Join(keyChain, "_"), fullconfig.FindStringUnsecured(keyChain...))
+	}
+
+	return nil
+}
+
+func validateOneOf(fullconfig *envh.EnvTree, keyChain []string, choices []string) error {
+	val := fullconfig.FindStringUnsecured(keyChain...)
 
 	for _, choice := range choices {
 		if choice == val {
@@ -76,16 +76,16 @@ func validateOneOf(fullconfig *envh.EnvTree, chain []string, choices []string) e
 		}
 	}
 
-	return fmt.Errorf(`provide a value for "%s" from one of those values : ["%s"], "%s" given`, strings.Join(chain, "_"), strings.Join(choices, `", "`), val)
+	return fmt.Errorf(`provide a value for "%s" from one of those values : ["%s"], "%s" given`, strings.Join(keyChain, "_"), strings.Join(choices, `", "`), val)
 }
 
-func validateTemplate(fullconfig *envh.EnvTree, chain []string) error {
-	val := fullconfig.FindStringUnsecured(chain...)
+func validateTemplate(fullconfig *envh.EnvTree, keyChain []string) error {
+	val := fullconfig.FindStringUnsecured(keyChain...)
 
 	_, err := template.New("test").Parse(val)
 
 	if err != nil {
-		return fmt.Errorf(`provide a valid template string for "%s" : "%s", "%s" given`, strings.Join(chain, "_"), err.Error(), val)
+		return fmt.Errorf(`provide a valid template string for "%s" : "%s", "%s" given`, strings.Join(keyChain, "_"), err.Error(), val)
 	}
 
 	return nil
