@@ -29,8 +29,6 @@ func (s shell) Decorate(commitMap *map[string]interface{}) (*map[string]interfac
 	var ok bool
 	var err error
 
-	(*commitMap)[s.DESTKEY] = nil
-
 	if tmp, ok = (*commitMap)[s.ORIGKEY]; !ok {
 		return commitMap, nil
 	}
