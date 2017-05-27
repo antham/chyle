@@ -8,7 +8,7 @@ import (
 	"github.com/antham/envh"
 )
 
-func getCustomAPIMandatoryParamsRefs() []struct {
+func getCustomAPIDecoratorMandatoryParamsRefs() []struct {
 	ref      *string
 	keyChain []string
 } {
@@ -27,14 +27,14 @@ func getCustomAPIMandatoryParamsRefs() []struct {
 	}
 }
 
-func getCustomAPIFeatureRefs() []*bool {
+func getCustomAPIDecoratorFeatureRefs() []*bool {
 	return []*bool{
 		&chyleConfig.FEATURES.DECORATORS.ENABLED,
 		&chyleConfig.FEATURES.DECORATORS.CUSTOMAPI,
 	}
 }
 
-func getCustomAPICustomValidationFuncs(config *envh.EnvTree) []func() error {
+func getCustomAPIDecoratorCustomValidationFuncs(config *envh.EnvTree) []func() error {
 	return []func() error{
 		func() error {
 			keyChain := []string{"CHYLE", "DECORATORS", "CUSTOMAPI", "ENDPOINT", "URL"}
@@ -49,7 +49,7 @@ func getCustomAPICustomValidationFuncs(config *envh.EnvTree) []func() error {
 	}
 }
 
-func getCustomAPICustomSettersFuncs() []func(*CHYLE) {
+func getCustomAPIDecoratorCustomSettersFuncs() []func(*CHYLE) {
 	return []func(*CHYLE){}
 }
 
@@ -62,10 +62,10 @@ func customAPIDecoratorConfigurator(config *envh.EnvTree) configurater {
 			"customApiId",
 			"CUSTOMAPI",
 			&chyleConfig.DECORATORS.CUSTOMAPI.KEYS,
-			getCustomAPIMandatoryParamsRefs(),
-			getCustomAPIFeatureRefs(),
-			getCustomAPICustomValidationFuncs(config),
-			getCustomAPICustomSettersFuncs(),
+			getCustomAPIDecoratorMandatoryParamsRefs(),
+			getCustomAPIDecoratorFeatureRefs(),
+			getCustomAPIDecoratorCustomValidationFuncs(config),
+			getCustomAPIDecoratorCustomSettersFuncs(),
 		},
 	}
 }
