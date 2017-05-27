@@ -16,9 +16,9 @@ Changelog creation follows this process :
 
 1 - fetch commits
 2 - filter relevant commits
-3 - extract informations from fetched datas
-4 - contact third part services to retrieve additional informations from extracted datas
-5 - send result to third part services`,
+3 - extract informations from commits fields and publish them to new fields
+4 - enrich extracted datas with external apps
+5 - publish datas`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := chyle.BuildChangelog(envTree)
 

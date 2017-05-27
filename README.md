@@ -12,9 +12,9 @@ Changelog creation follows this process :
 
 1 - fetch commits
 2 - filter relevant commits
-3 - extract informations from fetched datas
-4 - contact third part services to retrieve additional informations from extracted datas
-5 - send result to third part services
+3 - extract informations from commits fields and publish them to new fields
+4 - enrich extracted datas with external apps
+5 - publish datas
 
 Usage:
   chyle create [flags]
@@ -25,7 +25,7 @@ Global Flags:
 
 ## How it works ?
 
-Chyle fetch a range of commits using given criterias from a git repository. From those commits you can extract relevant datas like commit message, author, and so on, and add it to original payload. We can afterwards, contact an external apis to enrich our payload with various useful datas. Finally, we can publish what we harvested to an external api for instance (currently only github release is added) and/or stdout.
+Chyle fetch a range of commits using given criterias from a git repository. From those commits you can extract relevant datas from commit message, author, and so on, and add it to original payload. You can afterwards if needed, enrich your payload with various useful datas contacting external apps (shell command, apis, ....) and finally, you can publish what you harvested (to an external api, stdout, ....). You can mix all steps together, avoid some, combine some, it's up to you.
 
 ## Setup
 
