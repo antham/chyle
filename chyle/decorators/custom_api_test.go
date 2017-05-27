@@ -52,7 +52,6 @@ func TestCustomAPI(t *testing.T) {
 		"test":        "test",
 		"customApiId": int64(1),
 		"authorEmail": "test@test.com",
-		"whatever":    nil,
 	}
 
 	assert.NoError(t, err)
@@ -65,7 +64,6 @@ func TestCustomAPI(t *testing.T) {
 		"test":        "test",
 		"customApiId": "145d5926-2c7b-42c5-b0ff-41cd9b73c56c",
 		"authorEmail": "test@test.com",
-		"whatever":    nil,
 	}
 
 	assert.NoError(t, err)
@@ -105,7 +103,6 @@ func TestCustomAPIWithUnvalidResponse(t *testing.T) {
 	expected := map[string]interface{}{
 		"test":        "test",
 		"customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721",
-		"whatever":    nil,
 	}
 
 	assert.NoError(t, err)

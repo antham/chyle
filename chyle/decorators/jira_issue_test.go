@@ -49,7 +49,6 @@ func TestJira(t *testing.T) {
 		"test":         "test",
 		"jiraIssueId":  int64(10000),
 		"jiraIssueKey": "EX-1",
-		"whatever":     nil,
 	}
 
 	assert.NoError(t, err)
@@ -62,7 +61,6 @@ func TestJira(t *testing.T) {
 		"test":         "test",
 		"jiraIssueId":  "EX-1",
 		"jiraIssueKey": "EX-1",
-		"whatever":     nil,
 	}
 
 	assert.NoError(t, err)

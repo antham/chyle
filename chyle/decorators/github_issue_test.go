@@ -52,7 +52,6 @@ func TestGithubIssue(t *testing.T) {
 		"test":             "test",
 		"githubIssueId":    int64(10000),
 		"milestoneCreator": float64(1),
-		"whatever":         nil,
 	}
 
 	assert.NoError(t, err)

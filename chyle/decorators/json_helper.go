@@ -35,8 +35,6 @@ func (j jSONResponse) Decorate(commitMap *map[string]interface{}) (*map[string]i
 	buf := bytes.NewBuffer(body)
 
 	for _, pair := range j.pairs {
-		(*commitMap)[pair.DESTKEY] = nil
-
 		if gjson.Get(buf.String(), pair.FIELD).Exists() {
 			(*commitMap)[pair.DESTKEY] = gjson.Get(buf.String(), pair.FIELD).Value()
 		}
