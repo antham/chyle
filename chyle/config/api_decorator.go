@@ -17,9 +17,10 @@ var customAPIValidators = map[string]func(*envh.EnvTree, []string) error{
 // apiDecoratorConfig declares datas needed
 // to validate an api configuration
 type apiDecoratorConfig struct {
-	extractorKey string
-	decoratorKey string
-	keysRef      *map[string]struct {
+	extractorKey          string
+	extractorDestKeyValue string
+	decoratorKey          string
+	keysRef               *map[string]struct {
 		DESTKEY string
 		FIELD   string
 	}
@@ -96,7 +97,22 @@ func (a *apiDecoratorConfigurator) set(config *CHYLE) {
 // validateExtractor checks if an extractor is defined to get
 // data needed to contact remote api
 func (a *apiDecoratorConfigurator) validateExtractor() error {
-	return validateEnvironmentVariablesDefinition(a.config, [][]string{{"CHYLE", "EXTRACTORS", a.extractorKey, "ORIGKEY"}, {"CHYLE", "EXTRACTORS", a.extractorKey, "DESTKEY"}, {"CHYLE", "EXTRACTORS", a.extractorKey, "REG"}})
+	if err := validateEnvironmentVariablesDefinition(
+		a.config,
+		[][]string{
+			{"CHYLE", "EXTRACTORS", a.extractorKey, "ORIGKEY"},
+			{"CHYLE", "EXTRACTORS", a.extractorKey, "DESTKEY"},
+			{"CHYLE", "EXTRACTORS", a.extractorKey, "REG"},
+		},
+	); err != nil {
+		return err
+	}
+
+	if err := validateStringValue(a.extractorDestKeyValue, a.config, []string{"CHYLE", "EXTRACTORS", a.extractorKey, "DESTKEY"}); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // validateMandatoryParameters checks mandatory parameters are defined

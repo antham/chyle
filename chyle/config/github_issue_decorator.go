@@ -10,6 +10,7 @@ func githubIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
 		config: config,
 		apiDecoratorConfig: apiDecoratorConfig{
 			"GITHUBISSUEID",
+			"githubIssueId",
 			"GITHUBISSUE",
 			&chyleConfig.DECORATORS.GITHUBISSUE.KEYS,
 			[]struct {

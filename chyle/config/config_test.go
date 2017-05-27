@@ -268,9 +268,24 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
-				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "customApiId")
 			},
 			`environment variable missing : "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com/get/{{ID}}")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_REG", "test")
+			},
+			`variable CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY must be equal to "customApiId"`,
 		},
 		{
 			func() {
@@ -282,7 +297,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
-				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "customApiId")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_REG", "test")
 			},
 			`ensure you defined a placeholder {{ID}} in URL defined in "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"`,
@@ -389,7 +404,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "jiraIssueId")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "test")
 			},
 			`environments variables missing : "CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "CHYLE_EXTRACTORS_JIRAISSUEID_REG"`,
@@ -402,7 +417,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "jiraIssueId")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "test")
 			},
@@ -419,9 +434,25 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "test")
-				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "jiraIssueId")
 			},
 			`environment variable missing : "CHYLE_EXTRACTORS_JIRAISSUEID_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "test")
+				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_REG", "test")
+			},
+			`variable CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY must be equal to "jiraIssueId"`,
 		},
 		// Decorator github
 		{
@@ -461,7 +492,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "test")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME", "test")
-				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "githubIssueId")
 			},
 			`environment variable missing : "CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD"`,
 		},
@@ -485,7 +516,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "test")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME", "test")
-				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "githubIssueId")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD", "test")
 			},
 			`environments variables missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
@@ -498,7 +529,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "test")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME", "test")
-				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "githubIssueId")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
 			},
@@ -515,9 +546,25 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "test")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
-				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "githubIssueId")
 			},
 			`environment variable missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "test")
+				setenv("CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME", "test")
+				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_REG", "test")
+			},
+			`variable CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY must be equal to "githubIssueId"`,
 		},
 		// Decorator shell
 		{
@@ -814,7 +861,7 @@ func TestCreate(t *testing.T) {
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "destKey")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "field")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
-				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "customApiId")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_REG", ".*")
 			},
 			func() CHYLE {
@@ -832,7 +879,7 @@ func TestCreate(t *testing.T) {
 				}{
 					"CUSTOMAPIID": {
 						"test",
-						"test",
+						"customApiId",
 						regexp.MustCompile(".*"),
 					},
 				}
@@ -892,7 +939,7 @@ func TestCreate(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "destkey")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "field")
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "test")
-				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "jiraIssueId")
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_REG", ".*")
 			},
 			func() CHYLE {
@@ -910,7 +957,7 @@ func TestCreate(t *testing.T) {
 				}{
 					"JIRAISSUEID": {
 						"test",
-						"test",
+						"jiraIssueId",
 						regexp.MustCompile(".*"),
 					},
 				}
@@ -942,7 +989,7 @@ func TestCreate(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "destkey")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD", "field")
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
-				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "githubIssueId")
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_REG", ".*")
 			},
 			func() CHYLE {
@@ -960,7 +1007,7 @@ func TestCreate(t *testing.T) {
 				}{
 					"GITHUBISSUEID": {
 						"test",
-						"test",
+						"githubIssueId",
 						regexp.MustCompile(".*"),
 					},
 				}

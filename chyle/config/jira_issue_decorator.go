@@ -10,6 +10,7 @@ func jiraIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
 		config: config,
 		apiDecoratorConfig: apiDecoratorConfig{
 			"JIRAISSUEID",
+			"jiraIssueId",
 			"JIRAISSUE",
 			&chyleConfig.DECORATORS.JIRAISSUE.KEYS,
 			[]struct {
