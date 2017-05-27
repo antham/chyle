@@ -103,7 +103,7 @@ You need to define a token header that will be given when calling your api and a
 
 Name | Value
 ------------ | -------------
-CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL | It's the endpoint of you remote api, use %s as a placeholder to interpolate the id you extracted before
+CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL | It's the endpoint of you remote api, use {{ID}} as a placeholder to interpolate the id you extracted before in URL
 CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN | Token submitted as authorization header when calling your api
 
 To extract data, you need to define everytime both a "DESTKEY" key and a "FIELD" key, replace * with a name convenient to you, you can get as many value as you want.

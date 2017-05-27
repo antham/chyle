@@ -11,7 +11,7 @@ import (
 func TestCustomAPI(t *testing.T) {
 	config := customAPIConfig{}
 	config.CREDENTIALS.TOKEN = "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f"
-	config.ENDPOINT.URL = "http://test.com/api/issue/%s"
+	config.ENDPOINT.URL = "http://test.com/api/issue/{{ID}}"
 	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
@@ -76,7 +76,7 @@ func TestCustomAPI(t *testing.T) {
 func TestCustomAPIWithUnvalidResponse(t *testing.T) {
 	config := customAPIConfig{}
 	config.CREDENTIALS.TOKEN = "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f"
-	config.ENDPOINT.URL = "http://test.com/api/issue/%s"
+	config.ENDPOINT.URL = "http://test.com/api/issue/{{ID}}"
 	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
@@ -141,7 +141,7 @@ func TestCustomAPIWithNoCustomApiIdDefined(t *testing.T) {
 func TestCustomAPIWithAnErrorStatusCode(t *testing.T) {
 	config := customAPIConfig{}
 	config.CREDENTIALS.TOKEN = "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f"
-	config.ENDPOINT.URL = "http://test.com/api/issue/%s"
+	config.ENDPOINT.URL = "http://test.com/api/issue/{{ID}}"
 	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
@@ -180,7 +180,7 @@ func TestCustomAPIWithAnErrorStatusCode(t *testing.T) {
 func TestCustomAPIWhenEntryIsNotFound(t *testing.T) {
 	config := customAPIConfig{}
 	config.CREDENTIALS.TOKEN = "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f"
-	config.ENDPOINT.URL = "http://test.com/api/issue/%s"
+	config.ENDPOINT.URL = "http://test.com/api/issue/{{ID}}"
 	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
