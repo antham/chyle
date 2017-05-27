@@ -174,6 +174,119 @@ func TestCreateWithErrors(t *testing.T) {
 			},
 			`provide a valid regexp for "CHYLE_EXTRACTORS_TEST_REG", ".**" given`,
 		},
+		// Decorators custom api
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_TEST", "test")
+			},
+			`environments variables missing : "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test")
+			},
+			`environment variable missing : "CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+			},
+			`environment variable missing : "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "test")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+			},
+			`provide a valid URL for "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "test" given`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+			},
+			`define at least one environment variable couple "CHYLE_DECORATORS_CUSTOMAPI_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_CUSTOMAPI_KEYS_*_FIELD", replace "*" with your own naming`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
+			},
+			`environment variable missing : "CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
+			},
+			`environments variables missing : "CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
+			},
+			`environments variables missing : "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com/get")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "test")
+			},
+			`environment variable missing : "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com/get")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_REG", "test")
+			},
+			`ensure you defined a placeholder {{ID}} in URL defined in "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"`,
+		},
 		// Decorators env
 		{
 			func() {
@@ -684,6 +797,54 @@ func TestCreate(t *testing.T) {
 						"test",
 						"test",
 						regexp.MustCompile(".*"),
+					},
+				}
+
+				return c
+			},
+		},
+		// Decorators custom api
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com/get/{{ID}}")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "destKey")
+				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "field")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "test")
+				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_REG", ".*")
+			},
+			func() CHYLE {
+				c := CHYLE{}
+				c.GIT.REPOSITORY.PATH = "test"
+				c.GIT.REFERENCE.FROM = "v1.0.0"
+				c.GIT.REFERENCE.TO = "v2.0.0"
+				c.FEATURES.EXTRACTORS.ENABLED = true
+				c.FEATURES.DECORATORS.ENABLED = true
+				c.FEATURES.DECORATORS.CUSTOMAPI = true
+				c.EXTRACTORS = map[string]struct {
+					ORIGKEY string
+					DESTKEY string
+					REG     *regexp.Regexp
+				}{
+					"CUSTOMAPIID": {
+						"test",
+						"test",
+						regexp.MustCompile(".*"),
+					},
+				}
+				c.DECORATORS.CUSTOMAPI.CREDENTIALS.TOKEN = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+				c.DECORATORS.CUSTOMAPI.ENDPOINT.URL = "http://test.com/get/{{ID}}"
+				c.DECORATORS.CUSTOMAPI.KEYS = map[string]struct {
+					DESTKEY string
+					FIELD   string
+				}{
+					"TEST": {
+						"destKey",
+						"field",
 					},
 				}
 

@@ -3,6 +3,7 @@ package decorators
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/antham/chyle/chyle/apih"
 )
@@ -39,7 +40,7 @@ func (c customAPI) Decorate(commitMap *map[string]interface{}) (*map[string]inte
 		return commitMap, nil
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf(c.config.ENDPOINT.URL, ID), nil)
+	req, err := http.NewRequest("GET", regexp.MustCompile(`{{\s*ID\s*}}`).ReplaceAllString(c.config.ENDPOINT.URL, ID), nil)
 
 	apih.SetHeaders(req, map[string]string{
 		"Authorization": "token " + c.config.CREDENTIALS.TOKEN,
