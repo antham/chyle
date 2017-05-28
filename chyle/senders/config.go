@@ -1,5 +1,7 @@
 package senders
 
+// codebeat:disable[TOO_MANY_IVARS]
+
 // Config centralizes config needed for each sender to being
 // used by any third part package to make senders work
 type Config struct {
@@ -16,3 +18,5 @@ type Features struct {
 	STDOUT        bool
 	CUSTOMAPI     bool
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
