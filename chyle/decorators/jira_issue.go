@@ -7,9 +7,11 @@ import (
 
 type jiraIssueConfig struct {
 	CREDENTIALS struct {
-		URL      string
 		USERNAME string
 		PASSWORD string
+	}
+	ENDPOINT struct {
+		URL string
 	}
 	KEYS map[string]struct {
 		DESTKEY string
@@ -36,7 +38,7 @@ func (j jiraIssue) Decorate(commitMap *map[string]interface{}) (*map[string]inte
 		return commitMap, nil
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/rest/api/2/issue/%s", j.config.CREDENTIALS.URL, ID), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/rest/api/2/issue/%s", j.config.ENDPOINT.URL, ID), nil)
 
 	if err != nil {
 		return commitMap, err

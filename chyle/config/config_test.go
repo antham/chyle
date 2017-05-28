@@ -336,7 +336,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 			},
 			`environments variables missing : "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD"`,
 		},
@@ -345,7 +345,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 			},
 			`environment variable missing : "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD"`,
@@ -355,18 +355,18 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "testcom")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "testcom")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 			},
-			`provide a valid URL for "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "testcom" given`,
+			`provide a valid URL for "CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "testcom" given`,
 		},
 		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 			},
@@ -377,7 +377,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "test")
@@ -389,7 +389,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "test")
@@ -401,7 +401,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "jiraIssueId")
@@ -414,7 +414,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "jiraIssueId")
@@ -428,7 +428,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "test")
@@ -443,7 +443,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "test")
@@ -971,7 +971,7 @@ func TestCreate(t *testing.T) {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
-				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL", "http://test.com")
+				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "destkey")
@@ -999,7 +999,7 @@ func TestCreate(t *testing.T) {
 						regexp.MustCompile(".*"),
 					},
 				}
-				c.DECORATORS.JIRAISSUE.CREDENTIALS.URL = "http://test.com"
+				c.DECORATORS.JIRAISSUE.ENDPOINT.URL = "http://test.com"
 				c.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME = "test"
 				c.DECORATORS.JIRAISSUE.CREDENTIALS.PASSWORD = "password"
 				c.DECORATORS.JIRAISSUE.KEYS = map[string]struct {
