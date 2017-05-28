@@ -4,6 +4,8 @@ import (
 	"regexp"
 )
 
+// codebeat:disable[TOO_MANY_IVARS]
+
 // Config centralizes config needed for each matcher to being
 // used by any third part package to make matchers work
 type Config struct {
@@ -21,3 +23,5 @@ type Features struct {
 	AUTHOR    bool
 	TYPE      bool
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
