@@ -13,8 +13,8 @@ func getJiraIssueDecoratorMandatoryParamsRefs() []struct {
 		keyChain []string
 	}{
 		{
-			&chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.URL,
-			[]string{"CHYLE", "DECORATORS", "JIRAISSUE", "CREDENTIALS", "URL"},
+			&chyleConfig.DECORATORS.JIRAISSUE.ENDPOINT.URL,
+			[]string{"CHYLE", "DECORATORS", "JIRAISSUE", "ENDPOINT", "URL"},
 		},
 		{
 			&chyleConfig.DECORATORS.JIRAISSUE.CREDENTIALS.USERNAME,

@@ -12,7 +12,7 @@ func TestJira(t *testing.T) {
 	config := jiraIssueConfig{}
 	config.CREDENTIALS.USERNAME = "test"
 	config.CREDENTIALS.PASSWORD = "test"
-	config.CREDENTIALS.URL = "http://test.com"
+	config.ENDPOINT.URL = "http://test.com"
 	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string
@@ -95,7 +95,7 @@ func TestJiraWhenIssueIsNotFound(t *testing.T) {
 	config := jiraIssueConfig{}
 	config.CREDENTIALS.USERNAME = "test"
 	config.CREDENTIALS.PASSWORD = "test"
-	config.CREDENTIALS.URL = "http://test.com"
+	config.ENDPOINT.URL = "http://test.com"
 	config.KEYS = map[string]struct {
 		DESTKEY string
 		FIELD   string

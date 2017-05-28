@@ -129,7 +129,7 @@ You need to define jira credentials and endpoint.
 
 Name | Value
 ------------ | -------------
-CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_URL | It's the endpoint of you remote jira access point
+CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL | It's the endpoint of you remote jira access point
 CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME | Jira username
 CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD | Jira password
 
