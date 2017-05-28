@@ -54,6 +54,13 @@ func TestCreate(t *testing.T) {
 
 			return Features{ENABLED: true, GITHUBRELEASE: true}, Config{GITHUBRELEASE: config}
 		},
+		func() (Features, Config) {
+			config := customAPIConfig{}
+			config.CREDENTIALS.TOKEN = "test"
+			config.ENDPOINT.URL = "http://test.com"
+
+			return Features{ENABLED: true, CUSTOMAPI: true}, Config{CUSTOMAPI: config}
+		},
 	}
 
 	for _, f := range tests {

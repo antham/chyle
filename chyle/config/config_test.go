@@ -708,6 +708,44 @@ func TestCreateWithErrors(t *testing.T) {
 			},
 			`environment variable missing : "CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME"`,
 		},
+		// Sender custom api
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TEST", "test")
+			},
+			`environment variable missing : "CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+			},
+			`environment variable missing : "CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "http://test.com")
+			},
+			`environment variable missing : "CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN"`,
+		},
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+				setenv("CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "test")
+			},
+			`provide a valid URL for "CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "test" given`,
+		},
 		// Sender stdout
 		{
 			func() {
@@ -1083,6 +1121,28 @@ func TestCreate(t *testing.T) {
 				c.SENDERS.GITHUBRELEASE.RELEASE.TAGNAME = "v2.0.0"
 				c.SENDERS.GITHUBRELEASE.RELEASE.TEMPLATE = "{{.}}"
 				c.SENDERS.GITHUBRELEASE.REPOSITORY.NAME = "test"
+
+				return c
+			},
+		},
+		// Sender custom api
+		{
+			func() {
+				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
+				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
+				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
+				setenv("CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "http://test.com/releases")
+				setenv("CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN", "d41d8cd98f00b204e9800998ecf8427e")
+			},
+			func() CHYLE {
+				c := CHYLE{}
+				c.GIT.REPOSITORY.PATH = "test"
+				c.GIT.REFERENCE.FROM = "v1.0.0"
+				c.GIT.REFERENCE.TO = "v2.0.0"
+				c.FEATURES.SENDERS.ENABLED = true
+				c.FEATURES.SENDERS.CUSTOMAPI = true
+				c.SENDERS.CUSTOMAPI.CREDENTIALS.TOKEN = "d41d8cd98f00b204e9800998ecf8427e"
+				c.SENDERS.CUSTOMAPI.ENDPOINT.URL = "http://test.com/releases"
 
 				return c
 			},

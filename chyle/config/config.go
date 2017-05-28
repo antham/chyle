@@ -66,6 +66,7 @@ func (c *CHYLE) Walk(fullconfig *envh.EnvTree, keyChain []string) (bool, error) 
 		"CHYLE_EXTRACTORS":             func() configurater { return &extractorsConfigurator{fullconfig} },
 		"CHYLE_MATCHERS":               func() configurater { return &matchersConfigurator{fullconfig} },
 		"CHYLE_SENDERS_GITHUBRELEASE":  func() configurater { return &githubReleaseSenderConfigurator{fullconfig} },
+		"CHYLE_SENDERS_CUSTOMAPI":      func() configurater { return &customAPISenderConfigurator{fullconfig} },
 		"CHYLE_SENDERS_STDOUT":         func() configurater { return &stdoutSenderConfigurator{fullconfig} },
 	}[strings.Join(keyChain, "_")]; ok {
 		return processor().process(c)

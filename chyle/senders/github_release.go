@@ -45,7 +45,7 @@ type githubReleasePayload struct {
 
 // codebeat:enable[TOO_MANY_IVARS]
 
-// newGithubRelease create a new githubRelease
+// newGithubRelease creates a new githubRelease
 func newGithubRelease(config githubReleaseConfig) Sender {
 	return githubRelease{&http.Client{}, config}
 }

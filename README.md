@@ -41,7 +41,7 @@ You need afterwards to configure each module through environments variables : th
 * [Matchers](#matchers)
 * [Extractors](#extractors)
 * [Decorators](#decorators)
-  * [Custom api](#custom-api)
+  * [Custom api decorator](#custom-api-decorator)
   * [Jira issue api](#jira-issue-api)
   * [Github issue api](#github-issue-api)
   * [Shell](#shell)
@@ -49,6 +49,7 @@ You need afterwards to configure each module through environments variables : th
 * [Senders](#senders)
   * [Stdout](#stdout)
   * [Github release api](#github-release-api)
+  * [Custom api sender](#custom-api-sender)
 * [Help](#help)
   * [Template](#template)
 
@@ -88,7 +89,7 @@ CHYLE_EXTRACTORS_*_REG | A regexp used to extract a data
 
 Decorators enrich your changelog with datas.
 
-#### Custom api
+#### Custom api decorator
 
 You can fetch a custom api to fetch any data.
 First you need to define an id that will be added when calling your api.
@@ -217,6 +218,15 @@ CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TARGETCOMMITISH | The commitish value that d
 CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE | It uses golang template syntax to produce a changelog from your commits (mandatory), look at the [help](#template) to get more informations
 CHYLE_SENDERS_GITHUBRELEASE_RELEASE_UPDATE | Set to true if you want to update an existing changelog, typical usage would be when you produce a release through GUI github release system
 CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME | Github repository where we will publish the release (mandatory)
+
+#### Custom api sender
+
+Send release to a custom http endpoint through a POST request as a JSON payload.
+
+Name | Value
+------------ | -------------
+CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN | Access token given in request header "Authorization"
+CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL | The URL endpoint where the POST request will be made
 
 ### Help
 
