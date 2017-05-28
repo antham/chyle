@@ -1,12 +1,12 @@
-hash: 02195524985d868b7ad71e691c1ae1b8dc0338382be96ce672c92c59a1ee51db
-updated: 2017-05-18T22:30:36.976675612+02:00
+hash: c2d5260435b6254cd62018733c1ca47c296010d7f93e14a058cce2759c223c63
+updated: 2017-05-29T01:55:43.128452457+02:00
 imports:
 - name: github.com/antham/envh
   version: 81cb62459bcbdf8f0b3e3ca99891c5d248d8b279
 - name: github.com/aokoli/goutils
   version: e57d01ace047c1a43e6a49ecf3ecc50ed2be81d1
 - name: github.com/fatih/color
-  version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
+  version: 570b54cabe6b8eb0bc2dfce68d964677d63b5260
 - name: github.com/huandu/xstrings
   version: 3959339b333561bf62a38b424fd41517c2c90f40
 - name: github.com/imdario/mergo
@@ -16,7 +16,7 @@ imports:
 - name: github.com/Masterminds/semver
   version: 59c29afe1a994eacb71c833025ca7acf874bb1da
 - name: github.com/Masterminds/sprig
-  version: 9526be0327b26ad31aa70296a7b10704883976d5
+  version: e039e20e500c2c025d9145be375e27cf42a94174
 - name: github.com/mattn/go-colorable
   version: 5411d3eea5978e6cdc258b30de592b60df6aba96
   repo: https://github.com/mattn/go-colorable
@@ -67,7 +67,7 @@ imports:
 - name: gopkg.in/h2non/gock.v0
   version: 2897ffde93a71060ce86518f1e7317ec8433d2d6
 - name: gopkg.in/src-d/go-git.v4
-  version: 36c78b9d1b1eea682703fb1cbb0f4f3144354389
+  version: 7e249dfcf28765939bde8f38784b3274b522f880
 - name: gopkg.in/warnings.v0
   version: 8a331561fe74dadba6edfc59f3be66c22c3b065d
 - name: srcd.works/go-billy.v1
