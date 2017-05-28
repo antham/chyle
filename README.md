@@ -297,3 +297,54 @@ Generated at jeu. mai 18 23:01:25 CEST 2017%
 To provide more functionalities to original golang template, [sprig](https://github.com/Masterminds/sprig) library is provided, it gives several useful additional helpers, documentation can be found [here](http://masterminds.github.io/sprig/).
 
 For the sake of convenience, a custom global store is available as well, as templates cannot mutate defined variables : you can store a data using ```{{ set "key" "data"}}```, you can retrieve a data using ```{{ get "key" }}```, you can test if a key is set using ```{{ isset "key" }}```.
+
+## Examples
+
+We will use this repository : [https://github.com/antham/test-git](https://github.com/antham/test-git), created for chyle testing purpose only, you can try examples on it. Don't forget to clone repository and adapt some environment variables to your configuration.
+
+### Get a JSON ouput of all merge commits
+
+commands :
+
+```bash
+export CHYLE_GIT_REFERENCE_FROM=a00ee81c109c8787f0ea161a776d2c9795f816cd
+export CHYLE_GIT_REFERENCE_TO=f617fb708dfa6fa290205615ea98c53a860e499d
+export CHYLE_GIT_REPOSITORY_PATH=/home/miramaze/test-git
+export CHYLE_MATCHERS_TYPE=merge
+export CHYLE_SENDERS_STDOUT_FORMAT="json"
+
+chyle create
+```
+
+output :
+
+```json
+{
+  "datas": [
+    {
+      "authorDate": "2017-05-10 22:24:40 +0200 +0200",
+      "authorEmail": "antham@users.noreply.github.com",
+      "authorName": "Anthony HAMON",
+      "committerDate": "2017-05-10 22:24:40 +0200 +0200",
+      "committerEmail": "noreply@github.com",
+      "committerName": "GitHub",
+      "id": "f617fb708dfa6fa290205615ea98c53a860e499d",
+      "message": "Merge pull request #3 from antham/test2\n\nTest2",
+      "type": "merge"
+    },
+    {
+      "authorDate": "2017-05-10 22:22:03 +0200 +0200",
+      "authorEmail": "antham@users.noreply.github.com",
+      "authorName": "Anthony HAMON",
+      "committerDate": "2017-05-10 22:22:03 +0200 +0200",
+      "committerEmail": "noreply@github.com",
+      "committerName": "GitHub",
+      "id": "8fdfae00cbcc66936113a60f5146d110f2ba3c28",
+      "message": "Merge pull request #1 from antham/test\n\nTest",
+      "type": "merge"
+    }
+  ],
+  "metadatas": {}
+}
+```
+
