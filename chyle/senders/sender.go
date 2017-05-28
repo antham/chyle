@@ -34,6 +34,10 @@ func Create(features Features, senders Config) *[]Sender {
 		results = append(results, newGithubRelease(senders.GITHUBRELEASE))
 	}
 
+	if features.CUSTOMAPI {
+		results = append(results, newCustomAPI(senders.CUSTOMAPI))
+	}
+
 	if features.STDOUT {
 		results = append(results, newStdout(senders.STDOUT))
 	}

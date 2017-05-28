@@ -5,6 +5,7 @@ package senders
 type Config struct {
 	STDOUT        stdoutConfig
 	GITHUBRELEASE githubReleaseConfig
+	CUSTOMAPI     customAPIConfig
 }
 
 // Features gives the informations if a sender or several are defined
@@ -13,4 +14,5 @@ type Features struct {
 	ENABLED       bool
 	GITHUBRELEASE bool
 	STDOUT        bool
+	CUSTOMAPI     bool
 }
