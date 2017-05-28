@@ -200,7 +200,7 @@ Dump result to stdout
 Name | Value
 ------------ | -------------
 CHYLE_SENDERS_STDOUT_FORMAT | "json" : output payload as JSON , "template" : output payload using golang template syntax look at the [help](#template) to get more informations
-CHYLE_SENDERS_STDOUT_TEMPLATE | Linked to "template" stdout format, it must be set to defined a template following golang template syntax, look
+CHYLE_SENDERS_STDOUT_TEMPLATE | Linked to "template" stdout format, it must be set to defined a template following golang template syntax, look at the [help](#template) to get more informations
 
 #### Github release api
 
