@@ -31,4 +31,4 @@ test-all: gometalinter run-tests doc-hunt
 
 test-package:
 	go test -race -cover -coverprofile=/tmp/chyle github.com/antham/chyle/$(pkg)
-	go tool cover -html=/tmp/chyle
+	go tool cover -html=/tmp/chyle -o /tmp/chyle.html
