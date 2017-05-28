@@ -5,7 +5,8 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"text/template"
+
+	"github.com/antham/chyle/chyle/tmplh"
 
 	"github.com/antham/envh"
 )
@@ -82,7 +83,7 @@ func validateOneOf(fullconfig *envh.EnvTree, keyChain []string, choices []string
 func validateTemplate(fullconfig *envh.EnvTree, keyChain []string) error {
 	val := fullconfig.FindStringUnsecured(keyChain...)
 
-	_, err := template.New("test").Parse(val)
+	_, err := tmplh.Parse("test", val)
 
 	if err != nil {
 		return fmt.Errorf(`provide a valid template string for "%s" : "%s", "%s" given`, strings.Join(keyChain, "_"), err.Error(), val)
