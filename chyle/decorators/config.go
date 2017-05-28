@@ -1,5 +1,7 @@
 package decorators
 
+// codebeat:disable[TOO_MANY_IVARS]
+
 // Config centralizes config needed for each decorator to being
 // used by any third part package to make decorators work
 type Config struct {
@@ -20,3 +22,5 @@ type Features struct {
 	ENV         bool
 	SHELL       bool
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
