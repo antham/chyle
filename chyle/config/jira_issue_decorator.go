@@ -42,8 +42,7 @@ func getJiraIssueDecoratorCustomSettersFuncs() []func(*CHYLE) {
 	return []func(*CHYLE){}
 }
 
-// jiraIssueDecoratorConfigurator creates a jira configurater from apiDecoratorConfigurator
-func jiraIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
+func newJiraIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
 	return &apiDecoratorConfigurator{
 		config: config,
 		apiDecoratorConfig: apiDecoratorConfig{

@@ -53,8 +53,7 @@ func getCustomAPIDecoratorCustomSettersFuncs() []func(*CHYLE) {
 	return []func(*CHYLE){}
 }
 
-// customAPIDecoratorConfigurator creates a custom api configurater from apiDecoratorConfigurator
-func customAPIDecoratorConfigurator(config *envh.EnvTree) configurater {
+func newCustomAPIDecoratorConfigurator(config *envh.EnvTree) configurater {
 	return &apiDecoratorConfigurator{
 		config: config,
 		apiDecoratorConfig: apiDecoratorConfig{

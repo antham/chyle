@@ -42,8 +42,7 @@ func getGithubIssueDecoratorCustomSettersFuncs() []func(*CHYLE) {
 	return []func(*CHYLE){}
 }
 
-// githubIssueDecoratorConfigurator creates a github configurater from apiDecoratorConfigurator
-func githubIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
+func newGithubIssueDecoratorConfigurator(config *envh.EnvTree) configurater {
 	return &apiDecoratorConfigurator{
 		config: config,
 		apiDecoratorConfig: apiDecoratorConfig{
