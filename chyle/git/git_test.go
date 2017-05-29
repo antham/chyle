@@ -177,8 +177,8 @@ func TestFetchCommits(t *testing.T) {
 			getCommitFromRef("HEAD~4").ID().String(),
 			getCommitFromRef("test~2^2^2").ID().String(),
 			func(cs *[]object.Commit, err error) {
-				assert.NoError(t, err, "Must return no errors")
-				assert.Len(t, *cs, 5, "Must contains 3 commits")
+				assert.NoError(t, err)
+				assert.Len(t, *cs, 5)
 
 				commitTests := []string{
 					"feat(file6) : new file 6\n\ncreate a new file 6\n",
@@ -237,12 +237,12 @@ func TestShallowCloneProducesNoErrors(t *testing.T) {
 	cmd := exec.Command("rm", "-rf", path)
 	_, err := cmd.Output()
 
-	assert.NoError(t, err, "Must delete repository")
+	assert.NoError(t, err)
 
 	cmd = exec.Command("git", "clone", "--depth", "2", "https://github.com/octocat/Spoon-Knife.git", path)
 	_, err = cmd.Output()
 
-	assert.NoError(t, err, "Must shallow clone repository")
+	assert.NoError(t, err)
 
 	cmd = exec.Command("git", "rev-parse", "HEAD~1")
 	cmd.Dir = path
@@ -258,7 +258,7 @@ func TestShallowCloneProducesNoErrors(t *testing.T) {
 	toRef, err := cmd.Output()
 	toRef = toRef[:len(toRef)-1]
 
-	assert.NoError(t, err, "Must extract HEAD")
+	assert.NoError(t, err)
 
 	commits, err := FetchCommits("shallow-repository-test", string(fromRef), string(toRef))
 
