@@ -4,8 +4,6 @@ import (
 	"github.com/antham/envh"
 )
 
-// envDecoratorConfigurator validates environment variables decorator config
-// defined through environment variables
 type envDecoratorConfigurator struct {
 	config *envh.EnvTree
 }
@@ -31,12 +29,10 @@ func (e *envDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 	return true, nil
 }
 
-// isDisabled checks if environment variable decorator is enabled
 func (e *envDecoratorConfigurator) isDisabled() bool {
 	return featureDisabled(e.config, [][]string{{"CHYLE", "DECORATORS", "ENV"}})
 }
 
-// validateEnvironmentVariables checks env pairs are defined
 func (e *envDecoratorConfigurator) validateEnvironmentVariables() error {
 	for _, key := range e.config.FindChildrenKeysUnsecured("CHYLE", "DECORATORS", "ENV") {
 		if err := validateEnvironmentVariablesDefinition(e.config, [][]string{{"CHYLE", "DECORATORS", "ENV", key, "DESTKEY"}, {"CHYLE", "DECORATORS", "ENV", key, "VARNAME"}}); err != nil {
@@ -47,7 +43,6 @@ func (e *envDecoratorConfigurator) validateEnvironmentVariables() error {
 	return nil
 }
 
-// setEnvDecorator update decorator environment config
 func (e *envDecoratorConfigurator) setEnvConfigs(config *CHYLE) {
 	config.DECORATORS.ENV = map[string]struct {
 		DESTKEY string

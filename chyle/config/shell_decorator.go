@@ -4,9 +4,6 @@ import (
 	"github.com/antham/envh"
 )
 
-// shellDecoratorConfigurator is a generic api
-// decorator configurator it must be used with
-// shellDecoratorConfig
 type shellDecoratorConfigurator struct {
 	config *envh.EnvTree
 }
@@ -32,14 +29,12 @@ func (s *shellDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 	return true, nil
 }
 
-// isDisabled checks if decorator is enabled
 func (s *shellDecoratorConfigurator) isDisabled() bool {
 	return featureDisabled(s.config, [][]string{
 		{"CHYLE", "DECORATORS", "SHELL"},
 	})
 }
 
-// validateShellConfigs ensures we get three options defined
 func (s *shellDecoratorConfigurator) validateShellConfigs() error {
 	for _, key := range s.config.FindChildrenKeysUnsecured("CHYLE", "DECORATORS", "SHELL") {
 		if err := validateEnvironmentVariablesDefinition(s.config, [][]string{{"CHYLE", "DECORATORS", "SHELL", key, "DESTKEY"}, {"CHYLE", "DECORATORS", "SHELL", key, "ORIGKEY"}, {"CHYLE", "DECORATORS", "SHELL", key, "COMMAND"}}); err != nil {
@@ -50,7 +45,6 @@ func (s *shellDecoratorConfigurator) validateShellConfigs() error {
 	return nil
 }
 
-// setShellConfigsDecorator update shell environment config
 func (s *shellDecoratorConfigurator) setShellConfigs(config *CHYLE) {
 	config.DECORATORS.SHELL = map[string]struct {
 		COMMAND string
