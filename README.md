@@ -47,6 +47,14 @@ You need afterwards to configure each module through environments variables : th
 
 We will use this repository : [https://github.com/antham/test-git](https://github.com/antham/test-git), created for chyle testing purpose only, you can try examples on it. Don't forget to clone repository and adapt some environment variables to your configuration.
 
+---
+
+* [Get a JSON ouput of all merge commits](#get-a-json-ouput-of-all-merge-commits)
+* [Get a markdown ouput of merge and regular commits](#get-a-markdown-ouput-of-merge-and-regular-commits)
+* [Get a JSON ouput of all merge commits and contact github issue api to enrich payload](#get-a-json-ouput-of-all-merge-commits-and-contact-github-issue-api-to-enrich-payload)
+
+---
+
 ### Get a JSON ouput of all merge commits
 
 commands :
@@ -126,6 +134,67 @@ e0a746c906fba7e2462f5717322b9eb55aca3943 => **Whatever** *(antham - 2017-05-29 0
 8fdfae00cbcc66936113a60f5146d110f2ba3c28 => **Merge pull request #1 from antham/test** *(Anthony HAMON - 2017-05-29 02:08:37)*
 ```
 
+### Get a JSON ouput of all merge commits and contact github issue api to enrich payload
+
+commands :
+
+```bash
+export CHYLE_GIT_REFERENCE_FROM=a00ee81c109c8787f0ea161a776d2c9795f816cd
+export CHYLE_GIT_REFERENCE_TO=f617fb708dfa6fa290205615ea98c53a860e499d
+export CHYLE_GIT_REPOSITORY_PATH=/your-local-path/test-git
+export CHYLE_MATCHERS_TYPE=merge
+export CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY=message
+export CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY=githubIssueId
+export CHYLE_EXTRACTORS_GITHUBISSUEID_REG="\#(\d+)"
+export CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME=test-git
+export CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN=token
+export CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER=antham
+export CHYLE_DECORATORS_GITHUBISSUE_KEYS_NUMBER_DESTKEY=ticketNumber
+export CHYLE_DECORATORS_GITHUBISSUE_KEYS_NUMBER_FIELD=number
+export CHYLE_DECORATORS_GITHUBISSUE_KEYS_COMMENTNUMBER_DESTKEY=commentNumber
+export CHYLE_DECORATORS_GITHUBISSUE_KEYS_COMMENTNUMBER_FIELD=comments
+export CHYLE_SENDERS_STDOUT_FORMAT="json"
+
+chyle create
+```
+output :
+
+```json
+{
+  "datas": [
+    {
+      "authorDate": "2017-05-10 22:24:40 +0200 +0200",
+      "authorEmail": "antham@users.noreply.github.com",
+      "authorName": "Anthony HAMON",
+      "commentNumber": 0,
+      "committerDate": "2017-05-10 22:24:40 +0200 +0200",
+      "committerEmail": "noreply@github.com",
+      "committerName": "GitHub",
+      "githubIssueId": 3,
+      "id": "f617fb708dfa6fa290205615ea98c53a860e499d",
+      "message": "Merge pull request #3 from antham/test2\n\nTest2",
+      "ticketNumber": 3,
+      "type": "merge"
+    },
+    {
+      "authorDate": "2017-05-10 22:22:03 +0200 +0200",
+      "authorEmail": "antham@users.noreply.github.com",
+      "authorName": "Anthony HAMON",
+      "commentNumber": 0,
+      "committerDate": "2017-05-10 22:22:03 +0200 +0200",
+      "committerEmail": "noreply@github.com",
+      "committerName": "GitHub",
+      "githubIssueId": 1,
+      "id": "8fdfae00cbcc66936113a60f5146d110f2ba3c28",
+      "message": "Merge pull request #1 from antham/test\n\nTest",
+      "ticketNumber": 1,
+      "type": "merge"
+    }
+  ],
+  "metadatas": {}
+}
+```
+
 ## Documentation
 
 * [General config](#general-config)
@@ -189,9 +258,9 @@ First you need to define an id that will be added when calling your api.
 
 Name | Value
 ------------ | -------------
-CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY | message
+CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY | Field from which you you want to extract the id
 CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY | customApiId
-CHYLE_EXTRACTORS_CUSTOMAPIID_REG | a regexp to extract an id
+CHYLE_EXTRACTORS_CUSTOMAPIID_REG | A regexp to extract the id
 
 You need to define a token header that will be given when calling your api and an url endpoint.
 
@@ -214,9 +283,9 @@ First, you need to use an extractor to define a "jiraIssueId" key to extract jir
 
 Name | Value
 ------------ | -------------
-CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY | message
+CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY | Field from which you you want to extract the jira issue id
 CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY | jiraIssueId
-CHYLE_EXTRACTORS_JIRAISSUEID_REG | "(\w+-\d+)"
+CHYLE_EXTRACTORS_JIRAISSUEID_REG | A regexp to extract jira issue id
 
 You need to define jira credentials and endpoint.
 
@@ -240,9 +309,9 @@ First, you need to use an extractor to define a "githubIssueId" key to extract g
 
 Name | Value
 ------------ | -------------
-CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY | message
+CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY | Field from which you you want to extract the github issue id
 CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY | githubIssueId
-CHYLE_EXTRACTORS_GITHUBISSUEID_REG | "(\w+-\d+)"
+CHYLE_EXTRACTORS_GITHUBISSUEID_REG | A regexp to extract the github issue id
 
 You need to define github credentials.
 
