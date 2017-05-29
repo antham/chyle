@@ -4,8 +4,7 @@ import (
 	"regexp"
 )
 
-// Config centralizes config needed for each extractor to being
-// used by any third part package to make extractors work
+// Config centralizes config needed for each extractor
 type Config map[string]struct {
 	ORIGKEY string
 	DESTKEY string

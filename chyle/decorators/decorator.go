@@ -4,12 +4,12 @@ import (
 	"github.com/antham/chyle/chyle/types"
 )
 
-// Decorater extends data from commit hashmap with data picked from third part service
+// Decorater extends data from commit hashmap with data picked from third part apps
 type Decorater interface {
 	Decorate(*map[string]interface{}) (*map[string]interface{}, error)
 }
 
-// Decorate process all defined decorator and apply them
+// Decorate process all defined decorator and apply them against datas
 func Decorate(decorators *map[string][]Decorater, changelog *types.Changelog) (*types.Changelog, error) {
 	var err error
 

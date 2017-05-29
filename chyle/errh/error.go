@@ -13,7 +13,7 @@ func (e errWrapper) Error() string {
 	return fmt.Sprintf("%s : %s", e.msg, e.err)
 }
 
-// AddCustomMessageToError append an string message to an error
+// AddCustomMessageToError appends a string message to an error
 // by creating a brand new error
 func AddCustomMessageToError(msg string, err error) error {
 	if err == nil {
