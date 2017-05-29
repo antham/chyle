@@ -5,6 +5,8 @@ import (
 	"strconv"
 )
 
+// parseBool replaces original ParseBool functions from strconv
+// package to only convert "true" and "false" strings and nothing more
 func parseBool(str string) (bool, error) {
 	b, err := strconv.ParseBool(str)
 
