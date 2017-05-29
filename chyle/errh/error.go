@@ -4,15 +4,15 @@ import (
 	"fmt"
 )
 
-// ErrWapper render a string error from an existing error
+// errWrapper render a string error from an existing error
 // with added string message
-type ErrWapper struct {
+type errWrapper struct {
 	msg string
 	err error
 }
 
 // Error dump error string
-func (e ErrWapper) Error() string {
+func (e errWrapper) Error() string {
 	return fmt.Sprintf("%s : %s", e.msg, e.err)
 }
 
@@ -23,5 +23,5 @@ func AddCustomMessageToError(msg string, err error) error {
 		return nil
 	}
 
-	return ErrWapper{msg, err}
+	return errWrapper{msg, err}
 }
