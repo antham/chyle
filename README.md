@@ -309,7 +309,7 @@ commands :
 ```bash
 export CHYLE_GIT_REFERENCE_FROM=a00ee81c109c8787f0ea161a776d2c9795f816cd
 export CHYLE_GIT_REFERENCE_TO=f617fb708dfa6fa290205615ea98c53a860e499d
-export CHYLE_GIT_REPOSITORY_PATH=/home/miramaze/test-git
+export CHYLE_GIT_REPOSITORY_PATH=/your-local-path/test-git
 export CHYLE_MATCHERS_TYPE=merge
 export CHYLE_SENDERS_STDOUT_FORMAT="json"
 
@@ -348,3 +348,35 @@ output :
 }
 ```
 
+### Get a markdown ouput of merge and regular commits
+
+commands :
+
+```bash
+export CHYLE_GIT_REFERENCE_FROM=a00ee81c109c8787f0ea161a776d2c9795f816cd
+export CHYLE_GIT_REFERENCE_TO=f617fb708dfa6fa290205615ea98c53a860e499d
+export CHYLE_GIT_REPOSITORY_PATH=/your-local-path/test-git
+export CHYLE_SENDERS_STDOUT_FORMAT="template"
+export CHYLE_SENDERS_STDOUT_TEMPLATE='{{ range $key, $value := .Datas }}
+{{ $value.id }} => **{{ regexFind ".*?\n" $value.message | trim }}** *({{ $value.authorName }} - {{ $value.authorDate | date "2006-01-02 15:04:05" }})*
+{{ end }}'
+
+chyle create
+```
+output :
+
+```markdown
+f617fb708dfa6fa290205615ea98c53a860e499d => **Merge pull request #3 from antham/test2** *(Anthony HAMON - 2017-05-29 02:08:37)*
+
+d8106fffee242f5b6394a103059b4064a83fcf3b => **Whatever** *(antham - 2017-05-29 02:08:37)*
+
+e0a746c906fba7e2462f5717322b9eb55aca3943 => **Whatever** *(antham - 2017-05-29 02:08:37)*
+
+118ad33a1d4ffc66bbeb74a1aba7524ef192ae62 => **Whatever** *(antham - 2017-05-29 02:08:37)*
+
+78dcf412cc21d4054e06c534876200a89c04622e => **Whatever** *(antham - 2017-05-29 02:08:37)*
+
+44fb3316ea67298df5a2b6fbb43795990575ec32 => **Whatever** *(antham - 2017-05-29 02:08:37)*
+
+8fdfae00cbcc66936113a60f5146d110f2ba3c28 => **Merge pull request #1 from antham/test** *(Anthony HAMON - 2017-05-29 02:08:37)*
+```
