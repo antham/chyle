@@ -11,12 +11,10 @@ import (
 	"github.com/antham/envh"
 )
 
-// errMissingEnvVar is triggered when a required environment variable is missing
 type errMissingEnvVar struct {
 	keys []string
 }
 
-// Error output error as string
 func (e errMissingEnvVar) Error() string {
 	switch len(e.keys) {
 	case 1:

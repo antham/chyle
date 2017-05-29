@@ -14,8 +14,6 @@ var customAPIValidators = map[string]func(*envh.EnvTree, []string) error{
 
 // codebeat:disable[TOO_MANY_IVARS]
 
-// apiDecoratorConfig declares datas needed
-// to validate an api configuration
 type apiDecoratorConfig struct {
 	extractorKey          string
 	extractorDestKeyValue string
@@ -36,8 +34,7 @@ type apiDecoratorConfig struct {
 // codebeat:enable[TOO_MANY_IVARS]
 
 // apiDecoratorConfigurator is a generic api
-// decorator configurator it must be used with
-// apiDecoratorConfig
+// decorator configurator
 type apiDecoratorConfigurator struct {
 	config *envh.EnvTree
 	apiDecoratorConfig
@@ -61,7 +58,6 @@ func (a *apiDecoratorConfigurator) process(config *CHYLE) (bool, error) {
 	return true, nil
 }
 
-// isDisabled checks if decorator is enabled
 func (a *apiDecoratorConfigurator) isDisabled() bool {
 	return featureDisabled(a.config, [][]string{
 		{"CHYLE", "DECORATORS", a.decoratorKey},
@@ -69,7 +65,6 @@ func (a *apiDecoratorConfigurator) isDisabled() bool {
 	})
 }
 
-// validate run every defined validators
 func (a *apiDecoratorConfigurator) validate() error {
 	for _, f := range append([]func() error{
 		a.validateMandatoryParameters,
@@ -84,7 +79,6 @@ func (a *apiDecoratorConfigurator) validate() error {
 	return nil
 }
 
-// set run every settes defined
 func (a *apiDecoratorConfigurator) set(config *CHYLE) {
 	for _, f := range append([]func(*CHYLE){
 		a.setKeys,
@@ -115,7 +109,6 @@ func (a *apiDecoratorConfigurator) validateExtractor() error {
 	return nil
 }
 
-// validateMandatoryParameters checks mandatory parameters are defined
 func (a *apiDecoratorConfigurator) validateMandatoryParameters() error {
 	keyChains := [][]string{}
 
@@ -164,14 +157,12 @@ func (a *apiDecoratorConfigurator) validateKeys() error {
 	return nil
 }
 
-// setMandatoryParameters update mandatory parameters
 func (a *apiDecoratorConfigurator) setMandatoryParameters(config *CHYLE) {
 	for _, c := range a.mandatoryParamsRefs {
 		*(c.ref) = a.config.FindStringUnsecured(c.keyChain...)
 	}
 }
 
-// setKeys update keys needed for extraction
 func (a *apiDecoratorConfigurator) setKeys(config *CHYLE) {
 	ref := a.keysRef
 	*ref = map[string]struct {
