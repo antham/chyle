@@ -197,6 +197,7 @@ output :
 
 ## Documentation
 
+* [Default fields](#default-fields)
 * [General config](#general-config)
 * [Matchers](#matchers)
 * [Extractors](#extractors)
@@ -214,6 +215,29 @@ output :
   * [Template](#template)
 
 ---
+
+### Default fields
+
+Below you have an example, as a JSON, of a payload that shows fields extracted by default.
+
+```json
+{
+  "datas": [
+    {
+      "authorDate": "2017-05-10 22:24:40 +0200 +0200",
+      "authorEmail": "antham@users.noreply.github.com",
+      "authorName": "Anthony HAMON",
+      "committerDate": "2017-05-10 22:24:40 +0200 +0200",
+      "committerEmail": "noreply@github.com",
+      "committerName": "GitHub",
+      "id": "f617fb708dfa6fa290205615ea98c53a860e499d",
+      "message": "Merge pull request #3 from antham/test2\n\nTest2",
+      "type": "merge"
+    }
+  ],
+  "metadatas": {}
+}
+```
 
 ### General config
 
