@@ -22,7 +22,6 @@ type shell struct {
 	DESTKEY string
 }
 
-// Decorate executes shell command on field content
 func (s shell) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var tmp interface{}
 	var value string
@@ -58,7 +57,6 @@ func (s shell) execute(value string) (string, error) {
 	return string(result[:len(result)-1]), nil
 }
 
-// newShell create a new shell decorator
 func newShell(configs shellConfig) []Decorater {
 	results := []Decorater{}
 

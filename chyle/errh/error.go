@@ -4,14 +4,11 @@ import (
 	"fmt"
 )
 
-// errWrapper render a string error from an existing error
-// with added string message
 type errWrapper struct {
 	msg string
 	err error
 }
 
-// Error dump error string
 func (e errWrapper) Error() string {
 	return fmt.Sprintf("%s : %s", e.msg, e.err)
 }

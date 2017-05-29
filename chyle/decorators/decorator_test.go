@@ -75,8 +75,8 @@ func TestDecorator(t *testing.T) {
 		Metadatas: map[string]interface{}{},
 	}
 
-	assert.NoError(t, err, "Must return no errors")
-	assert.Equal(t, expected, *result, "Must return same struct than the one submitted")
+	assert.NoError(t, err)
+	assert.Equal(t, expected, *result)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 

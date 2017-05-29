@@ -25,7 +25,6 @@ type jiraIssue struct {
 	config jiraIssueConfig
 }
 
-// Decorate fetch remote jira service if a jiraIssueId is defined to fetch issue datas
 func (j jiraIssue) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
 
@@ -50,7 +49,6 @@ func (j jiraIssue) Decorate(commitMap *map[string]interface{}) (*map[string]inte
 	return jSONResponse{&j.client, req, j.config.KEYS}.Decorate(commitMap)
 }
 
-// newJiraIssue create a new jira ticket decorator
 func newJiraIssue(config jiraIssueConfig) Decorater {
 	return jiraIssue{http.Client{}, config}
 }
