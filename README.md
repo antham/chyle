@@ -10,6 +10,7 @@ Chyle produces a changelog from a git repository.
 * [Setup](#setup)
 * [Examples](#examples)
 * [Documentation](#documentation)
+* [Contribute](#contribute)
 
 ---
 
@@ -605,3 +606,13 @@ Generated at jeu. mai 18 23:01:25 CEST 2017%
 To provide more functionalities to original golang template, [sprig](https://github.com/Masterminds/sprig) library is provided, it gives several useful additional helpers, documentation can be found [here](http://masterminds.github.io/sprig/).
 
 For the sake of convenience, a custom global store is available as well, as templates cannot mutate defined variables : you can store a data using ```{{ set "key" "data"}}```, you can retrieve a data using ```{{ get "key" }}```, you can test if a key is set using ```{{ isset "key" }}```.
+
+
+## Contribute
+
+If you want to add a new feature to chyle project, the best way is to open a ticket first to know exactly how to implement your changes in code.
+
+### Setup
+
+After cloning the repository you need to install vendors with [glide](https://github.com/Masterminds/glide).
+To test your changes locally you can run go tests with : ```make run-quick-tests```, and you can run gometalinter check with : ```make gometalinter```, with those two commands you will fix lot of issues, other tests will be ran through travis so only open a pull request to see what break.
