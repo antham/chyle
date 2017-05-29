@@ -19,8 +19,8 @@ type process struct {
 	senders    *[]senders.Sender
 }
 
-// buildProcess creates process entity from defined configuration
-func buildProcess(conf *config.CHYLE) *process {
+// newProcess creates process entity from defined configuration
+func newProcess(conf *config.CHYLE) *process {
 	return &process{
 		matchers.Create(conf.FEATURES.MATCHERS, conf.MATCHERS),
 		extractors.Create(conf.FEATURES.EXTRACTORS, conf.EXTRACTORS),
