@@ -125,7 +125,7 @@ func TestCreateWithErrors(t *testing.T) {
 		w.Wait()
 
 		assert.EqualValues(t, 1, code, "Must exit with an error (exit 1)")
-		assert.EqualError(t, err, errStr, "Must return an error message")
+		assert.EqualError(t, err, errStr)
 
 		err = fmt.Errorf("Not a valid error")
 	}
