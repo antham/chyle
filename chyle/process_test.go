@@ -16,7 +16,7 @@ import (
 func TestBuildProcessWithAnEmptyConfig(t *testing.T) {
 	conf := config.CHYLE{}
 
-	p := buildProcess(&conf)
+	p := newProcess(&conf)
 
 	expected := process{
 		&[]matchers.Matcher{},
@@ -64,7 +64,7 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 	conf.FEATURES.SENDERS.STDOUT = true
 	conf.SENDERS.STDOUT.FORMAT = "json"
 
-	p := buildProcess(&conf)
+	p := newProcess(&conf)
 
 	assert.Len(t, *(p.matchers), 1)
 	assert.Len(t, *(p.extractors), 1)

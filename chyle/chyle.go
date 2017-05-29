@@ -37,5 +37,5 @@ func BuildChangelog(envConfig *envh.EnvTree) error {
 		return err
 	}
 
-	return proceed(buildProcess(conf), commits)
+	return proceed(newProcess(conf), commits)
 }
