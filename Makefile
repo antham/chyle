@@ -13,6 +13,9 @@ gometalinter:
 doc-hunt:
 	doc-hunt check -e
 
+gommit:
+	perl test-branch-commit-messages-in-travis.pl
+
 setup-test-fixtures:
 	cd cmd && sh $(featurePath)/features/init.sh
 	cd cmd && sh $(featurePath)/features/merge-commits.sh
@@ -27,7 +30,7 @@ run-tests: setup-test-fixtures
 run-quick-tests: setup-test-fixtures
 	go test -v $(shell glide nv)
 
-test-all: gometalinter run-tests doc-hunt
+test-all: gometalinter run-tests gommit doc-hunt
 
 test-package:
 	go test -race -cover -coverprofile=/tmp/chyle github.com/antham/chyle/$(pkg)

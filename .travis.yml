@@ -9,6 +9,8 @@ before_install:
   - export PATH=$BIN_PATH:$PATH
   - wget -O $BIN_PATH/doc-hunt https://github.com/antham/doc-hunt/releases/download/v2.1.1/doc-hunt_linux_amd64
   - chmod 777 $BIN_PATH/doc-hunt
+  - wget -O $BIN_PATH/gommit https://github.com/antham/gommit/releases/download/v2.0.0/gommit_linux_386
+  - chmod 777 $BIN_PATH/gommit
   - go get github.com/onsi/gomega
   - go get github.com/onsi/ginkgo
   - go get github.com/Masterminds/glide
