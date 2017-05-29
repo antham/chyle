@@ -15,9 +15,9 @@ type node struct {
 	parent *node
 }
 
-// ErrNoDiffBetweenReferences is triggered when we can't
+// errNoDiffBetweenReferences is triggered when we can't
 // produce any diff between 2 references
-type ErrNoDiffBetweenReferences struct {
+type errNoDiffBetweenReferences struct {
 	from string
 	to   string
 }
@@ -26,8 +26,8 @@ func (e errNoDiffBetweenReferences) Error() string {
 	return fmt.Sprintf(`can't produce a diff between %s and %s, check your range is correct by running "git log %[1]s..%[2]s" command`, e.from, e.to)
 }
 
-// ErrRepositoryPath is triggered when repository path can't be opened
-type ErrRepositoryPath struct {
+// errRepositoryPath is triggered when repository path can't be opened
+type errRepositoryPath struct {
 	path string
 }
 
@@ -35,9 +35,9 @@ func (e errRepositoryPath) Error() string {
 	return fmt.Sprintf(`check "%s" is an existing git repository path`, e.path)
 }
 
-// ErrReferenceNotFound is triggered when reference can't be
+// errReferenceNotFound is triggered when reference can't be
 // found in git repository
-type ErrReferenceNotFound struct {
+type errReferenceNotFound struct {
 	ref string
 }
 
@@ -45,8 +45,8 @@ func (e errReferenceNotFound) Error() string {
 	return fmt.Sprintf(`reference "%s" can't be found in git repository`, e.ref)
 }
 
-// ErrBrowsingTree is triggered when something wrong occurred during commit analysis process
-var ErrBrowsingTree = fmt.Errorf("an issue occurred during tree analysis")
+// errBrowsingTree is triggered when something wrong occurred during commit analysis process
+var errBrowsingTree = fmt.Errorf("an issue occurred during tree analysis")
 
 // resolveRef give hash commit for a given string reference
 func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, error) {
@@ -63,7 +63,7 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 	iter, err := repository.References()
 
 	if err != nil {
-		return &object.Commit{}, ErrReferenceNotFound{refCommit}
+		return &object.Commit{}, errReferenceNotFound{refCommit}
 	}
 
 	err = iter.ForEach(func(ref *plumbing.Reference) error {
@@ -84,7 +84,7 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 		return repository.Commit(hash)
 	}
 
-	return &object.Commit{}, ErrReferenceNotFound{refCommit}
+	return &object.Commit{}, errReferenceNotFound{refCommit}
 }
 
 // FetchCommits retrieves commits in a reference range
@@ -92,7 +92,7 @@ func FetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 	rep, err := git.PlainOpen(repoPath)
 
 	if err != nil {
-		return nil, ErrRepositoryPath{repoPath}
+		return nil, errRepositoryPath{repoPath}
 	}
 
 	fromCommit, err := resolveRef(fromRef, rep)
@@ -117,7 +117,7 @@ func FetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 	}
 
 	if _, ok = exclusionList[toCommit.ID().String()]; ok {
-		return nil, ErrNoDiffBetweenReferences{fromRef, toRef}
+		return nil, errNoDiffBetweenReferences{fromRef, toRef}
 	}
 
 	commits, err = findDiffCommits(toCommit, &exclusionList)
@@ -127,7 +127,7 @@ func FetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 	}
 
 	if len(*commits) == 0 {
-		return nil, ErrNoDiffBetweenReferences{fromRef, toRef}
+		return nil, errNoDiffBetweenReferences{fromRef, toRef}
 	}
 
 	return commits, nil
@@ -155,7 +155,7 @@ func buildOriginCommitList(commit *object.Commit) (map[string]bool, error) {
 			})
 
 		if err != nil && err.Error() != git.ErrObjectNotFound.Error() {
-			return seen, ErrBrowsingTree
+			return seen, errBrowsingTree
 		}
 	}
 
@@ -190,7 +190,7 @@ func findDiffCommits(commit *object.Commit, exclusionList *map[string]bool) (*[]
 			})
 
 		if err != nil && err.Error() != git.ErrObjectNotFound.Error() {
-			return &commits, ErrBrowsingTree
+			return &commits, errBrowsingTree
 		}
 	}
 
