@@ -4,12 +4,12 @@ import (
 	"github.com/antham/chyle/chyle/types"
 )
 
-// Sender define where the date must be sent
+// Sender defines where the changelog produced must be sent
 type Sender interface {
 	Send(changelog *types.Changelog) error
 }
 
-// Send forward changelog to senders
+// Send forwards changelog to senders
 func Send(senders *[]Sender, changelog *types.Changelog) error {
 	for _, sender := range *senders {
 		err := sender.Send(changelog)

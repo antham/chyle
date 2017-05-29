@@ -55,7 +55,7 @@ type githubRelease struct {
 	config githubReleaseConfig
 }
 
-// buildBody create a request body from changelog
+// buildBody creates a request body from changelog
 func (g githubRelease) buildBody(changelog *types.Changelog) ([]byte, error) {
 	body, err := tmplh.Build("github-release-template", g.config.RELEASE.TEMPLATE, changelog)
 

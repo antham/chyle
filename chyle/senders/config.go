@@ -2,8 +2,7 @@ package senders
 
 // codebeat:disable[TOO_MANY_IVARS]
 
-// Config centralizes config needed for each sender to being
-// used by any third part package to make senders work
+// Config centralizes config needed for each sender
 type Config struct {
 	STDOUT        stdoutConfig
 	GITHUBRELEASE githubReleaseConfig

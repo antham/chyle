@@ -4,12 +4,12 @@ import (
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
-// Matcher describe a way of applying a matcher against a commit
+// Matcher describes a way of applying a matcher against a commit
 type Matcher interface {
 	Match(*object.Commit) bool
 }
 
-// Filter commits that don't fit any matchers
+// Filter filters commits that don't fit any matchers
 func Filter(matchers *[]Matcher, commits *[]object.Commit) *[]map[string]interface{} {
 	results := []object.Commit{}
 
