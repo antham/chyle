@@ -38,7 +38,7 @@ func Parse(ID string, template string) (*tmpl.Template, error) {
 }
 
 // Build creates a template instance and runs it against datas to get
-// final string
+// final resolved string
 func Build(ID string, template string, data interface{}) (string, error) {
 	t, err := Parse(ID, template)
 

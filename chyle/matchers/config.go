@@ -6,8 +6,7 @@ import (
 
 // codebeat:disable[TOO_MANY_IVARS]
 
-// Config centralizes config needed for each matcher to being
-// used by any third part package to make matchers work
+// Config centralizes config needed for each matcher
 type Config struct {
 	MESSAGE   *regexp.Regexp
 	COMMITTER *regexp.Regexp
