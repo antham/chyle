@@ -6,7 +6,6 @@ import (
 	"github.com/antham/chyle/chyle"
 )
 
-// createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new changelog",
