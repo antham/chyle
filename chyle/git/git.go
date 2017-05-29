@@ -22,8 +22,7 @@ type ErrNoDiffBetweenReferences struct {
 	to   string
 }
 
-// Error returns string error
-func (e ErrNoDiffBetweenReferences) Error() string {
+func (e errNoDiffBetweenReferences) Error() string {
 	return fmt.Sprintf(`can't produce a diff between %s and %s, check your range is correct by running "git log %[1]s..%[2]s" command`, e.from, e.to)
 }
 
@@ -32,8 +31,7 @@ type ErrRepositoryPath struct {
 	path string
 }
 
-// Error returns string error
-func (e ErrRepositoryPath) Error() string {
+func (e errRepositoryPath) Error() string {
 	return fmt.Sprintf(`check "%s" is an existing git repository path`, e.path)
 }
 
@@ -43,8 +41,7 @@ type ErrReferenceNotFound struct {
 	ref string
 }
 
-// Error returns string error
-func (e ErrReferenceNotFound) Error() string {
+func (e errReferenceNotFound) Error() string {
 	return fmt.Sprintf(`reference "%s" can't be found in git repository`, e.ref)
 }
 

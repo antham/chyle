@@ -28,5 +28,5 @@ func TestEnvs(t *testing.T) {
 	m, err := e[0].Decorate(&metadatas)
 
 	assert.NoError(t, err)
-	assert.Equal(t, map[string]interface{}{"envTesting": "this is a test"}, *m, "Must dump environment variable in given destination key")
+	assert.Equal(t, map[string]interface{}{"envTesting": "this is a test"}, *m)
 }

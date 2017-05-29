@@ -27,7 +27,6 @@ type customAPI struct {
 	config customAPIConfig
 }
 
-// Decorate fetchs remote custom HTTP api to fetch datas
 func (c customAPI) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
 	var ID string
 

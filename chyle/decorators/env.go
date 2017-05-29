@@ -15,14 +15,12 @@ type env struct {
 	destKey string
 }
 
-// Decorate adds an environment variable to changelog metadatas
 func (e env) Decorate(metadatas *map[string]interface{}) (*map[string]interface{}, error) {
 	(*metadatas)[e.destKey] = os.Getenv(e.varName)
 
 	return metadatas, nil
 }
 
-// newEnvs creates a list of env decorators
 func newEnvs(configs envConfig) []Decorater {
 	results := []Decorater{}
 

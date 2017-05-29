@@ -13,7 +13,6 @@ type regex struct {
 	re         *regexp.Regexp
 }
 
-// Extract data from a commitMap
 func (r regex) Extract(commitMap *map[string]interface{}) *map[string]interface{} {
 	var mapValue interface{}
 	var ok bool
