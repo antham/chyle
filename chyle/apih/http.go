@@ -7,15 +7,15 @@ import (
 	"net/http"
 )
 
-// ErrResponse is triggered when status code is greater or equal to 400
-type ErrResponse struct {
+// errResponse is triggered when status code is greater or equal to 400
+type errResponse struct {
 	request  *http.Request
 	response *http.Response
 	body     []byte
 }
 
 // Error output error as string
-func (e ErrResponse) Error() string {
+func (e errResponse) Error() string {
 	return fmt.Sprintf("an error occurred when contacting remote api through %s, status code %d, body %s", e.request.URL, e.response.StatusCode, e.body)
 }
 
@@ -45,11 +45,11 @@ func SendRequest(client *http.Client, request *http.Request) (int, []byte, error
 	b, err := ioutil.ReadAll(response.Body)
 
 	if err != nil {
-		return response.StatusCode, b, ErrResponse{request, response, b}
+		return response.StatusCode, b, errResponse{request, response, b}
 	}
 
 	if response.StatusCode >= 400 {
-		return response.StatusCode, b, ErrResponse{request, response, b}
+		return response.StatusCode, b, errResponse{request, response, b}
 	}
 
 	return response.StatusCode, b, nil
