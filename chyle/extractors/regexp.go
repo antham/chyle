@@ -6,7 +6,7 @@ import (
 	"github.com/antham/chyle/chyle/convh"
 )
 
-// regex use a regexp to extract data
+// regex uses a regexp to extract data
 type regex struct {
 	index      string
 	identifier string

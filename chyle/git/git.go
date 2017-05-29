@@ -48,7 +48,7 @@ func (e errReferenceNotFound) Error() string {
 // errBrowsingTree is triggered when something wrong occurred during commit analysis process
 var errBrowsingTree = fmt.Errorf("an issue occurred during tree analysis")
 
-// resolveRef give hash commit for a given string reference
+// resolveRef gives hash commit for a given string reference
 func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, error) {
 	hash := plumbing.Hash{}
 
@@ -162,7 +162,7 @@ func buildOriginCommitList(commit *object.Commit) (map[string]bool, error) {
 	return seen, nil
 }
 
-// diffCommitGraphs extracts commits that are no part of a given commit list
+// findDiffCommits extracts commits that are no part of a given commit list
 // using kind of depth first search algorithm to keep commits ordered
 func findDiffCommits(commit *object.Commit, exclusionList *map[string]bool) (*[]object.Commit, error) {
 	commits := []object.Commit{}

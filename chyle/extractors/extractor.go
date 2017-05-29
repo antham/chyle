@@ -4,7 +4,7 @@ import (
 	"github.com/antham/chyle/chyle/types"
 )
 
-// Extracter describe a way to extract data from a commit hashmap summary
+// Extracter describes a way to extract data from a commit hashmap summary
 type Extracter interface {
 	Extract(*map[string]interface{}) *map[string]interface{}
 }
