@@ -20,18 +20,15 @@ type jSONStdout struct {
 	stdout io.Writer
 }
 
-// Send produces an output on stdout
 func (j jSONStdout) Send(changelog *types.Changelog) error {
 	return json.NewEncoder(j.stdout).Encode(changelog)
 }
 
-// templateStdout output commit payload using given template on stdout
 type templateStdout struct {
 	stdout   io.Writer
 	template string
 }
 
-// Send produces an output on stdout
 func (t templateStdout) Send(changelog *types.Changelog) error {
 	datas, err := tmplh.Build("stdout-template", t.template, changelog)
 

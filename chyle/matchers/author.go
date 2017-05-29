@@ -11,7 +11,6 @@ type author struct {
 	regexp *regexp.Regexp
 }
 
-// Match apply a regexp against commit author field
 func (a author) Match(commit *object.Commit) bool {
 	return a.regexp.MatchString(commit.Author.String())
 }
