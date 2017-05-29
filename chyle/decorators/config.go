@@ -2,8 +2,7 @@ package decorators
 
 // codebeat:disable[TOO_MANY_IVARS]
 
-// Config centralizes config needed for each decorator to being
-// used by any third part package to make decorators work
+// Config centralizes config needed for each decorator
 type Config struct {
 	CUSTOMAPI   customAPIConfig
 	GITHUBISSUE githubIssueConfig
@@ -12,8 +11,7 @@ type Config struct {
 	SHELL       shellConfig
 }
 
-// Features gives the informations if a decorator or several are defined
-// and if so, which ones
+// Features gives which decorators are enabled
 type Features struct {
 	ENABLED     bool
 	CUSTOMAPI   bool
