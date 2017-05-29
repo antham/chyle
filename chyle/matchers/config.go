@@ -15,7 +15,7 @@ type Config struct {
 	TYPE      string
 }
 
-// Features gives the informations if matchers are enabled
+// Features gives which matchers are enabled
 type Features struct {
 	ENABLED   bool
 	MESSAGE   bool

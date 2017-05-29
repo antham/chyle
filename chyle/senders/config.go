@@ -10,8 +10,7 @@ type Config struct {
 	CUSTOMAPI     customAPIConfig
 }
 
-// Features gives the informations if a sender or several are defined
-// and if so, which ones
+// Features gives which senders are enabled
 type Features struct {
 	ENABLED       bool
 	GITHUBRELEASE bool

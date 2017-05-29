@@ -12,7 +12,7 @@ type Config map[string]struct {
 	REG     *regexp.Regexp
 }
 
-// Features gives the informations if extractors are enabled
+// Features gives tell if extractors are enabled
 type Features struct {
 	ENABLED bool
 }
