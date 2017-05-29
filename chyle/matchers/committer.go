@@ -11,7 +11,6 @@ type committer struct {
 	regexp *regexp.Regexp
 }
 
-// Match apply a regexp against commit committer field
 func (c committer) Match(commit *object.Commit) bool {
 	return c.regexp.MatchString(commit.Committer.String())
 }

@@ -45,7 +45,6 @@ type githubReleasePayload struct {
 
 // codebeat:enable[TOO_MANY_IVARS]
 
-// newGithubRelease creates a new githubRelease
 func newGithubRelease(config githubReleaseConfig) Sender {
 	return githubRelease{&http.Client{}, config}
 }
@@ -76,7 +75,6 @@ func (g githubRelease) buildBody(changelog *types.Changelog) ([]byte, error) {
 	return json.Marshal(r)
 }
 
-// createRelease creates a release on github
 func (g githubRelease) createRelease(body []byte) error {
 	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME)
 
@@ -162,7 +160,6 @@ func (g githubRelease) updateRelease(body []byte) error {
 	return errh.AddCustomMessageToError(fmt.Sprintf("can't update github release %s", g.config.RELEASE.TAGNAME), err)
 }
 
-// Send push changelog to github release
 func (g githubRelease) Send(changelog *types.Changelog) error {
 	body, err := g.buildBody(changelog)
 

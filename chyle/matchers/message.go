@@ -11,7 +11,6 @@ type message struct {
 	regexp *regexp.Regexp
 }
 
-// Match apply a regexp against commit message
 func (m message) Match(commit *object.Commit) bool {
 	return m.regexp.MatchString(commit.Message)
 }

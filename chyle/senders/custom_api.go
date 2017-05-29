@@ -60,7 +60,6 @@ func (c customAPI) Send(changelog *types.Changelog) error {
 	return errh.AddCustomMessageToError(errMsg, err)
 }
 
-// newCustomAPI creates a new customAPI
 func newCustomAPI(config customAPIConfig) Sender {
 	return customAPI{&http.Client{}, config}
 }

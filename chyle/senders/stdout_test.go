@@ -41,8 +41,8 @@ func TestJSONStdout(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.NoError(t, err, "Must return no errors")
-	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations as json")
+	assert.NoError(t, err)
+	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"))
 }
 
 func TestTemplateStdout(t *testing.T) {
@@ -68,6 +68,6 @@ func TestTemplateStdout(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.NoError(t, err, "Must return no errors")
-	assert.Equal(t, `1 : test | 2 : test | `, strings.TrimRight(buf.String(), "\n"), "Must output all commit informations shaped on given template")
+	assert.NoError(t, err)
+	assert.Equal(t, `1 : test | 2 : test | `, strings.TrimRight(buf.String(), "\n"))
 }

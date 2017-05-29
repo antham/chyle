@@ -24,6 +24,6 @@ func TestRemovePGPKey(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		assert.Equal(t, test.expected, removePGPKey(test.originalValue), "Must trim PGP key")
+		assert.Equal(t, test.expected, removePGPKey(test.originalValue))
 	}
 }

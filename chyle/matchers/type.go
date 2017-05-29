@@ -13,7 +13,6 @@ const (
 type mergeCommit struct {
 }
 
-// match is valid if commit is a merge commit
 func (m mergeCommit) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 2
 }
@@ -22,7 +21,6 @@ func (m mergeCommit) Match(commit *object.Commit) bool {
 type regularCommit struct {
 }
 
-// Match is valid if commit is not a merge commit
 func (r regularCommit) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 1 || commit.NumParents() == 0
 }
