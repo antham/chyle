@@ -10,8 +10,8 @@ import (
 	"srcd.works/go-git.v4/plumbing/object"
 )
 
-// process represents all configuration operations defined
-// needed to create a changelog
+// process represents all steps executed
+// when creating a changelog
 type process struct {
 	matchers   *[]matchers.Matcher
 	extractors *[]extractors.Extracter
