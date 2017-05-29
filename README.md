@@ -52,6 +52,7 @@ We will use this repository : [https://github.com/antham/test-git](https://githu
 * [Get a JSON ouput of all merge commits](#get-a-json-ouput-of-all-merge-commits)
 * [Get a markdown ouput of merge and regular commits](#get-a-markdown-ouput-of-merge-and-regular-commits)
 * [Get a JSON ouput of all merge commits and contact github issue api to enrich payload](#get-a-json-ouput-of-all-merge-commits-and-contact-github-issue-api-to-enrich-payload)
+* [Populate a release in github from CircleCI](#populate-a-release-in-github-from-circleci)
 
 ---
 
@@ -194,6 +195,127 @@ output :
   "metadatas": {}
 }
 ```
+
+### Populate a release in github from CircleCI
+
+Let's create a script release.sh
+
+```bash
+#!/usr/bin/env bash
+
+set -e
+
+### Functions
+
+function setPreviousTag {
+    if [ ! -n "$1" ]; then
+        PREVIOUS_TAG="$(git describe --abbrev=0 --always --tags $2^)"
+    fi
+
+    if [[ $PREVIOUS_TAG =~ ^[0-9a-f]{40} ]];then
+        PREVIOUS_TAG_SHA="$(git rev-list --max-parents=0 HEAD|head -n 1)"
+        PREVIOUS_TAG="first commit"
+
+        return
+    fi
+
+    PREVIOUS_TAG_SHA="$(git rev-parse $PREVIOUS_TAG^{commit})"
+}
+
+function setCurrentTag {
+    local tag=""
+
+    if [ -n "$1" ]; then
+        tag="$1"
+    fi
+
+    if [ -n "$2" ]; then
+        tag="$2"
+    fi
+
+    if [ ! -n "$tag" ]; then
+        echo "You must declare CIRCLE_TAG or CURRENT_TAG variable"
+        exit 1
+    fi
+
+    CURRENT_TAG_SHA="$(git rev-parse $tag^{commit})"
+    CURRENT_TAG="$tag"
+}
+
+echo "-> Setup environment variables"
+
+cd "$REPOSITORY_PATH"
+
+setCurrentTag "$CURRENT_TAG" "$CIRCLE_TAG"
+setPreviousTag "$PREVIOUS_TAG" "$CURRENT_TAG"
+
+export CHYLE_GIT_REPOSITORY_PATH=$REPOSITORY_PATH
+export CHYLE_GIT_REFERENCE_FROM=$PREVIOUS_TAG_SHA
+export CHYLE_GIT_REFERENCE_TO=$CURRENT_TAG_SHA
+
+# Setup matchers
+
+## Pick only merge commits
+export CHYLE_MATCHERS_TYPE=merge
+
+# Setup decorators
+
+## Setup github issue decorator
+
+### Github issue id extractor
+export CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY=message
+export CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY=githubIssueId
+export CHYLE_EXTRACTORS_GITHUBISSUEID_REG="\#(\d+)"
+
+### Github credentials
+export CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN=$GITHUB_TOKEN
+export CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER=antham
+
+### Git path
+export CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME=$CIRCLE_PROJECT_REPONAME
+
+### Extract title field
+export CHYLE_DECORATORS_GITHUBISSUE_KEYS_TITLE_DESTKEY=title
+export CHYLE_DECORATORS_GITHUBISSUE_KEYS_TITLE_FIELD=title
+
+# Setup senders
+
+## Setup github release
+
+### Github credentials
+export CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN=$GITHUB_TOKEN
+export CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER=antham
+
+### Github release config
+export CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME=$CIRCLE_TAG
+export CHYLE_SENDERS_GITHUBRELEASE_RELEASE_UPDATE=true
+export CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE='{{ range $key, $value := .Datas }}
+{{ $value.id }} => **{{ $value.title | trim }}** *({{ $value.authorName }} - {{ $value.authorDate | date "2006-01-02 15:04:05" }})*
+{{ end }}'
+
+### Git path
+export CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME=$CIRCLE_PROJECT_REPONAME
+
+# Generate changelog
+echo "-> Generating changelog between $PREVIOUS_TAG ($PREVIOUS_TAG_SHA) and $CURRENT_TAG ($CURRENT_TAG_SHA)"
+```
+
+In CircleCI (v1) we add a deployment section to trigger a build when a tag is created (we need to declare credentials envs inside circle settings project) :
+
+```yaml
+machine:
+  environment:
+    REPOSITORY_PATH: $HOME/$CIRCLE_PROJECT_REPONAME
+
+deployment:
+  release:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: antham
+    commands:
+      - ./release.sh
+```
+
+Now we can create a release in github (we create a tag in the same time), it triggers a circle build and at the end, chyle generates a diff between two tags and populate the release, check [v1.0.0 release of test-git](https://github.com/antham/test-git/releases/tag/v1.0.0).
 
 ## Documentation
 
