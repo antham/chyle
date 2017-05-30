@@ -37,6 +37,10 @@ func (j jiraIssue) Decorate(commitMap *map[string]interface{}) (*map[string]inte
 		return commitMap, nil
 	}
 
+	if ID == "" {
+		return commitMap, nil
+	}
+
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/rest/api/2/issue/%s", j.config.ENDPOINT.URL, ID), nil)
 
 	if err != nil {

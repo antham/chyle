@@ -132,3 +132,72 @@ func TestJiraWhenIssueIsNotFound(t *testing.T) {
 	assert.Equal(t, expected, *result)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
+
+func TestJiraWithJiraIssueIdMissing(t *testing.T) {
+	config := jiraIssueConfig{}
+	config.CREDENTIALS.USERNAME = "test"
+	config.CREDENTIALS.PASSWORD = "test"
+	config.ENDPOINT.URL = "http://test.com"
+	config.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"ISSUEKEY": {
+			"jiraIssueKey",
+			"key",
+		},
+		"WHATEVER": {
+			"whatever",
+			"whatever",
+		},
+	}
+
+	client := &http.Client{Transport: &http.Transport{}}
+	gock.InterceptClient(client)
+
+	j := jiraIssue{*client, config}
+
+	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
+
+	expected := map[string]interface{}{
+		"test": "test",
+	}
+
+	assert.NoError(t, err)
+	assert.Equal(t, expected, *result)
+}
+
+func TestJiraWithJiraIssueIdEmpty(t *testing.T) {
+	config := jiraIssueConfig{}
+	config.CREDENTIALS.USERNAME = "test"
+	config.CREDENTIALS.PASSWORD = "test"
+	config.ENDPOINT.URL = "http://test.com"
+	config.KEYS = map[string]struct {
+		DESTKEY string
+		FIELD   string
+	}{
+		"ISSUEKEY": {
+			"jiraIssueKey",
+			"key",
+		},
+		"WHATEVER": {
+			"whatever",
+			"whatever",
+		},
+	}
+
+	client := &http.Client{Transport: &http.Transport{}}
+	gock.InterceptClient(client)
+
+	j := jiraIssue{*client, config}
+
+	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": ""})
+
+	expected := map[string]interface{}{
+		"test":        "test",
+		"jiraIssueId": "",
+	}
+
+	assert.NoError(t, err)
+	assert.Equal(t, expected, *result)
+}
