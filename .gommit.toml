@@ -4,7 +4,7 @@ check-summary-length=true
 
 [matchers]
 simple="(?:feat|test|ref|fix|style|doc)\\(.*?\\) : .+(?:\n)?"
-extended="(?:feat|test|ref|fix|style|doc)\\(.*?\\) : .+?\n(?:\n?\\* .+)+(?:\n)?"
+extended="(?:feat|test|ref|fix|style|doc)\\(.*?\\) : .+?\n(?:\n?.+)+(?:\n)?"
 
 [examples]
 a_simple_commit="""
