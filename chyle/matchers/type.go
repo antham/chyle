@@ -1,7 +1,7 @@
 package matchers
 
 import (
-	"srcd.works/go-git.v4/plumbing/object"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 const (

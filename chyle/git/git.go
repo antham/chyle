@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"srcd.works/go-git.v4"
-	"srcd.works/go-git.v4/plumbing"
-	"srcd.works/go-git.v4/plumbing/object"
+	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 // node is a tree node in commit tree
@@ -56,7 +56,7 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 		head, err := repository.Head()
 
 		if err == nil {
-			return repository.Commit(head.Hash())
+			return repository.CommitObject(head.Hash())
 		}
 	}
 
@@ -75,13 +75,13 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 	})
 
 	if err == nil && !hash.IsZero() {
-		return repository.Commit(hash)
+		return repository.CommitObject(hash)
 	}
 
 	hash = plumbing.NewHash(refCommit)
 
 	if !hash.IsZero() {
-		return repository.Commit(hash)
+		return repository.CommitObject(hash)
 	}
 
 	return &object.Commit{}, errReferenceNotFound{refCommit}
