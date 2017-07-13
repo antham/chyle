@@ -1,4 +1,5 @@
 featurePath = $(PWD)
+PKGS := $(shell go list ./... | grep -v /vendor)
 
 compile:
 	git stash -u
@@ -28,7 +29,7 @@ run-tests: setup-test-fixtures
 	./test.sh
 
 run-quick-tests: setup-test-fixtures
-	go test -v $(shell glide nv)
+	go test -v $(PKGS)
 
 test-all: gometalinter run-tests gommit doc-hunt
 

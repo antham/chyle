@@ -9,9 +9,9 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/Sirupsen/logrus"
-	"srcd.works/go-git.v4"
-	"srcd.works/go-git.v4/plumbing"
-	"srcd.works/go-git.v4/plumbing/object"
+	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 var repo *git.Repository
@@ -44,7 +44,7 @@ func getCommitFromRef(ref string) *object.Commit {
 		logrus.WithField("ID", string(ID)).Fatal(err)
 	}
 
-	c, err := repo.Commit(plumbing.NewHash(string(ID)))
+	c, err := repo.CommitObject(plumbing.NewHash(string(ID)))
 
 	if err != nil {
 		logrus.WithField("ID", ID).Fatal(err)
