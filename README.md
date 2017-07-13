@@ -614,5 +614,5 @@ If you want to add a new feature to chyle project, the best way is to open a tic
 
 ### Setup
 
-After cloning the repository you need to install vendors with [glide](https://github.com/Masterminds/glide).
+After cloning the repository you need to install vendors with [dep](https://github.com/golang/dep).
 To test your changes locally you can run go tests with : ```make run-quick-tests```, and you can run gometalinter check with : ```make gometalinter```, with those two commands you will fix lot of issues, other tests will be ran through travis so only open a pull request to see what break.
