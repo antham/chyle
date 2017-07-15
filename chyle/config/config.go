@@ -15,6 +15,24 @@ import (
 
 var chyleConfig CHYLE
 
+// EnvValidationError is called when validating a
+// configuration failed, it keeps a track of which
+// environment variable is actually tested
+type EnvValidationError struct {
+	message string
+	env     string
+}
+
+// Env returns environment variable currently tested
+func (v EnvValidationError) Env() string {
+	return v.env
+}
+
+// Error returns error as string
+func (v EnvValidationError) Error() string {
+	return v.message
+}
+
 // configurater must be implemented to process custom config
 type configurater interface {
 	process(config *CHYLE) (bool, error)
