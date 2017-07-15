@@ -42,7 +42,7 @@ func (s *stdoutSenderConfigurator) validateFormat() error {
 		return s.validateTemplateFormat()
 	}
 
-	return fmt.Errorf(`"CHYLE_SENDERS_STDOUT_FORMAT" "%s" doesn't exist`, format)
+	return EnvValidationError{fmt.Sprintf(`"CHYLE_SENDERS_STDOUT_FORMAT" "%s" doesn't exist`, format), "CHYLE_SENDERS_STDOUT_FORMAT"}
 }
 
 func (s *stdoutSenderConfigurator) validateTemplateFormat() error {
