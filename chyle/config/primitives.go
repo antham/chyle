@@ -11,16 +11,24 @@ import (
 	"github.com/antham/envh"
 )
 
-type errMissingEnvVar struct {
-	keys []string
+// MissingEnvError is called when one or several
+// environment variables are missing
+type MissingEnvError struct {
+	envs []string
 }
 
-func (e errMissingEnvVar) Error() string {
-	switch len(e.keys) {
+// Envs returns environment variables missing
+func (e MissingEnvError) Envs() []string {
+	return e.envs
+}
+
+// Errors returns error as string
+func (e MissingEnvError) Error() string {
+	switch len(e.envs) {
 	case 1:
-		return fmt.Sprintf(`environment variable missing : "%s"`, e.keys[0])
+		return fmt.Sprintf(`environment variable missing : "%s"`, e.envs[0])
 	default:
-		return fmt.Sprintf(`environments variables missing : "%s"`, strings.Join(e.keys, `", "`))
+		return fmt.Sprintf(`environments variables missing : "%s"`, strings.Join(e.envs, `", "`))
 	}
 }
 
@@ -36,7 +44,7 @@ func validateEnvironmentVariablesDefinition(conf *envh.EnvTree, keyChains [][]st
 	}
 
 	if len(undefinedKeys) > 0 {
-		return errMissingEnvVar{undefinedKeys}
+		return MissingEnvError{undefinedKeys}
 	}
 
 	return nil
