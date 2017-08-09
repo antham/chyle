@@ -482,9 +482,9 @@ To extract data, you need to define a threesome, a "COMMAND" key, an "ORIGKEY" k
 
 Name | Value
 ------------ | ------------
-CHYLE_DECORATORS_SHELL_KEYS_*_COMMAND | Command to execute
-CHYLE_DECORATORS_SHELL_KEYS_*_ORIGKEY | A field from which you want to use the content to pipe a command on
-CHYLE_DECORATORS_SHELL_KEYS_*_DESTKEY | A name for the key which will receive the extracted value
+CHYLE_DECORATORS_SHELL_*_COMMAND | Command to execute
+CHYLE_DECORATORS_SHELL_*_ORIGKEY | A field from which you want to use the content to pipe a command on
+CHYLE_DECORATORS_SHELL_*_DESTKEY | A name for the key which will receive the extracted value
 
 
 #### Environment variable
