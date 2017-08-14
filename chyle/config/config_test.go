@@ -53,6 +53,12 @@ func setenv(key string, value string) {
 	}
 }
 
+func TestEnvValidationError(t *testing.T) {
+	err := EnvValidationError{`wrong value`, "TEST"}
+	assert.Equal(t, err.Env(), err.env)
+	assert.Equal(t, err.Error(), err.message)
+}
+
 func TestCreateWithErrors(t *testing.T) {
 	type g struct {
 		f func()
