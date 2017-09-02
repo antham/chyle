@@ -2,7 +2,6 @@ package prompt
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/antham/strumt"
 )
@@ -35,13 +34,17 @@ func (g *genericPrompt) NextOnError(err error) string {
 	return g.onError(err)
 }
 
-func parseEnv(env string) func(value string) error {
+func parseEnv(env string, store *Store) func(value string) error {
 	return func(value string) error {
 		if value == "" {
 			return fmt.Errorf("No value given")
 		}
 
-		return os.Setenv(env, value)
+		(*store)[env] = value
+
+		return nil
+	}
+}
 	}
 }
 
@@ -52,12 +55,14 @@ type envConfig struct {
 	promptString string
 }
 
-func newEnvPrompt(config envConfig) strumt.Prompter {
+func newEnvPrompt(config envConfig, store *Store) strumt.Prompter {
 	return &genericPrompt{
 		config.ID,
 		config.promptString,
 		func(string) string { return config.nextID },
 		func(error) string { return config.ID },
-		parseEnv(config.env),
+		parseEnv(config.env, store),
+	}
+}
 	}
 }

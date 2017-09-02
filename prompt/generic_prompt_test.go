@@ -2,7 +2,6 @@ package prompt
 
 import (
 	"bytes"
-	"os"
 	"testing"
 
 	"github.com/antham/strumt"
@@ -10,13 +9,11 @@ import (
 )
 
 func TestNewEnvPrompt(t *testing.T) {
-	err := os.Unsetenv("TEST_NEW_ENV_PROMPT")
-
-	assert.Nil(t, err)
+	store := &Store{}
 
 	var stdout bytes.Buffer
 	buf := "1\n"
-	p := newEnvPrompt(envConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value"})
+	p := newEnvPrompt(envConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value"}, store)
 
 	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
 	s.AddLinePrompter(p.(strumt.LinePrompter))
@@ -31,17 +28,15 @@ func TestNewEnvPrompt(t *testing.T) {
 	assert.Equal(t, scenario[0].Inputs()[0], "1")
 	assert.Nil(t, scenario[0].Error())
 
-	assert.Equal(t, "1", os.Getenv("TEST_NEW_ENV_PROMPT"))
+	assert.Equal(t, &Store{"TEST_NEW_ENV_PROMPT": "1"}, store)
 }
 
 func TestNewEnvPromptWithEmptyValueGiven(t *testing.T) {
-	err := os.Unsetenv("TEST_NEW_ENV_PROMPT")
-
-	assert.Nil(t, err)
+	store := &Store{}
 
 	var stdout bytes.Buffer
 	buf := "\n1\n"
-	p := newEnvPrompt(envConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value"})
+	p := newEnvPrompt(envConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value"}, store)
 
 	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
 	s.AddLinePrompter(p.(strumt.LinePrompter))
@@ -60,5 +55,9 @@ func TestNewEnvPromptWithEmptyValueGiven(t *testing.T) {
 	assert.Equal(t, scenario[1].Inputs()[0], "1")
 	assert.Nil(t, scenario[1].Error())
 
-	assert.Equal(t, "1", os.Getenv("TEST_NEW_ENV_PROMPT"))
+	assert.Equal(t, &Store{"TEST_NEW_ENV_PROMPT": "1"}, store)
+}
+
+func TestNewGroupEnvPromptWithCounter(t *testing.T) {
+
 }
