@@ -125,5 +125,13 @@ func newGroupEnvPromptWithCounter(configs []envConfig, store *Store) []strumt.Pr
 
 	return results
 }
+
+func newPromptWithCustomHandlers(config envConfig, onSuccess func(string) string, onError func(error) string, parse func(string) error, store *Store) strumt.Prompter {
+	return &genericPrompt{
+		config.ID,
+		config.promptString,
+		onSuccess,
+		onError,
+		parse,
 	}
 }
