@@ -81,6 +81,16 @@ type envConfig struct {
 	promptString string
 }
 
+func newEnvPrompts(configs []envConfig, store *Store) []strumt.Prompter {
+	results := []strumt.Prompter{}
+
+	for _, config := range configs {
+		results = append(results, newEnvPrompt(config, store))
+	}
+
+	return results
+}
+
 func newEnvPrompt(config envConfig, store *Store) strumt.Prompter {
 	return &genericPrompt{
 		config.ID,
