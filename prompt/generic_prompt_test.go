@@ -139,3 +139,40 @@ func TestNewGroupEnvPromptWithCounter(t *testing.T) {
 
 	assert.Equal(t, &Store{"TEST_0_0": "test0", "TEST_0_1": "test1", "TEST_1_0": "test2", "TEST_1_1": "test3"}, store)
 }
+
+func TestNewEnvPrompts(t *testing.T) {
+	store := &Store{}
+
+	var stdout bytes.Buffer
+	buf := "1\n2\n"
+	p := newEnvPrompts([]envConfig{
+		envConfig{"TEST1", "TEST2", "TEST_PROMPT_1", "Enter a value for prompt 1"},
+		envConfig{"TEST2", "", "TEST_PROMPT_2", "Enter a value for prompt 2"},
+	}, store)
+
+	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
+	for _, item := range p {
+		switch prompt := item.(type) {
+		case strumt.LinePrompter:
+			s.AddLinePrompter(prompt)
+		case strumt.MultilinePrompter:
+			s.AddMultilinePrompter(prompt)
+		}
+	}
+	s.SetFirst("TEST1")
+	s.Run()
+
+	scenario := s.Scenario()
+
+	assert.Len(t, scenario, 2)
+	assert.Equal(t, scenario[0].PromptString(), "Enter a value for prompt 1")
+	assert.Len(t, scenario[0].Inputs(), 1)
+	assert.Equal(t, scenario[0].Inputs()[0], "1")
+	assert.Nil(t, scenario[0].Error())
+	assert.Equal(t, scenario[1].PromptString(), "Enter a value for prompt 2")
+	assert.Len(t, scenario[1].Inputs(), 1)
+	assert.Equal(t, scenario[1].Inputs()[0], "2")
+	assert.Nil(t, scenario[1].Error())
+
+	assert.Equal(t, &Store{"TEST_PROMPT_1": "1", "TEST_PROMPT_2": "2"}, store)
+}
