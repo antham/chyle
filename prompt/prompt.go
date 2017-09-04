@@ -14,6 +14,17 @@ func New() Prompts {
 	return Prompts{strumt.NewPrompts()}
 }
 
+func (p *Prompts) populatePrompts(prompts []strumt.Prompter) {
+	for _, item := range prompts {
+		switch prompt := item.(type) {
+		case strumt.LinePrompter:
+			p.prompts.AddLinePrompter(prompt)
+		case strumt.MultilinePrompter:
+			p.prompts.AddMultilinePrompter(prompt)
+		}
+	}
+}
+
 // Run starts a prompt session
 func (p *Prompts) Run() (*Store, error) {
 	store := &Store{}
@@ -26,14 +37,7 @@ func (p *Prompts) Run() (*Store, error) {
 		newSenders(store),
 	)
 
-	for _, item := range prompts {
-		switch prompt := item.(type) {
-		case strumt.LinePrompter:
-			p.prompts.AddLinePrompter(prompt)
-		case strumt.MultilinePrompter:
-			p.prompts.AddMultilinePrompter(prompt)
-		}
-	}
+	p.populatePrompts(prompts)
 
 	p.prompts.SetFirst("referenceFrom")
 	p.prompts.Run()
