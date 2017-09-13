@@ -2,6 +2,8 @@ package prompt
 
 import (
 	"github.com/antham/strumt"
+
+	"github.com/antham/chyle/prompt/internal/builder"
 )
 
 func mergePrompters(prompters ...[]strumt.Prompter) []strumt.Prompter {
@@ -14,14 +16,14 @@ func mergePrompters(prompters ...[]strumt.Prompter) []strumt.Prompter {
 	return results
 }
 
-func addMainMenuChoice(choices []switchChoice) []switchChoice {
-	return append(choices, switchChoice{"m", "Menu", "mainMenu"})
+func addMainMenuChoice(choices []builder.SwitchConfig) []builder.SwitchConfig {
+	return append(choices, builder.SwitchConfig{"m", "Menu", "mainMenu"})
 }
 
-func addQuitChoice(choices []switchChoice) []switchChoice {
-	return append(choices, switchChoice{"q", "Dump generated configuration and quit", ""})
+func addQuitChoice(choices []builder.SwitchConfig) []builder.SwitchConfig {
+	return append(choices, builder.SwitchConfig{"q", "Dump generated configuration and quit", ""})
 }
 
-func addMainMenuAndQuitChoice(choices []switchChoice) []switchChoice {
+func addMainMenuAndQuitChoice(choices []builder.SwitchConfig) []builder.SwitchConfig {
 	return addQuitChoice(addMainMenuChoice(choices))
 }

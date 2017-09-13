@@ -1,4 +1,4 @@
-package prompt
+package builder
 
 import (
 	"bytes"
@@ -14,18 +14,18 @@ func TestCreateSwitchChoice(t *testing.T) {
 	sws := []strumt.Prompter{
 		&switchPrompt{
 			"test",
-			[]switchChoice{
-				switchChoice{
+			[]SwitchConfig{
+				SwitchConfig{
 					"1",
 					"1 - Choice number 1",
 					"test",
 				},
-				switchChoice{
+				SwitchConfig{
 					"2",
 					"2 - Choice number 2",
 					"test",
 				},
-				switchChoice{
+				SwitchConfig{
 					"3",
 					"3 - Choice number 3",
 					"",
