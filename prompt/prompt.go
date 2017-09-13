@@ -2,6 +2,8 @@ package prompt
 
 import (
 	"github.com/antham/strumt"
+
+	"github.com/antham/chyle/prompt/internal/builder"
 )
 
 // Prompts held prompts
@@ -26,8 +28,8 @@ func (p *Prompts) populatePrompts(prompts []strumt.Prompter) {
 }
 
 // Run starts a prompt session
-func (p *Prompts) Run() (*Store, error) {
-	store := &Store{}
+func (p *Prompts) Run() (*builder.Store, error) {
+	store := &builder.Store{}
 	prompts := mergePrompters(
 		newMainMenu(),
 		newMandatoryOption(store),
