@@ -34,6 +34,14 @@ Flags:
 Use "chyle [command] --help" for more information about a command.
 ```
 
+### config
+
+Run a serie of prompt to help generate quickly and easily a configuration.
+
+### create
+
+Generate changelog.
+
 ## How it works ?
 
 Chyle fetch a range of commits using given criterias from a git repository. From those commits you can extract relevant datas from commit message, author, and so on, and add it to original payload. You can afterwards if needed, enrich your payload with various useful datas contacting external apps (shell command, apis, ....) and finally, you can publish what you harvested (to an external api, stdout, ....). You can mix all steps together, avoid some, combine some, it's up to you.
