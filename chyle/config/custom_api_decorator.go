@@ -41,7 +41,7 @@ func getCustomAPIDecoratorCustomValidationFuncs(config *envh.EnvTree) []func() e
 			URL := config.FindStringUnsecured(keyChain...)
 
 			if !regexp.MustCompile(`{{\s*ID\s*}}`).MatchString(URL) {
-				return fmt.Errorf(`ensure you defined a placeholder {{ID}} in URL defined in "%s"`, strings.Join(keyChain, "_"))
+				return EnvValidationError{fmt.Sprintf(`ensure you defined a placeholder {{ID}} in URL defined in "%s"`, strings.Join(keyChain, "_")), strings.Join(keyChain, "_")}
 			}
 
 			return nil

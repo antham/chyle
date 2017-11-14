@@ -53,10 +53,16 @@ func setenv(key string, value string) {
 	}
 }
 
+func TestEnvValidationError(t *testing.T) {
+	err := EnvValidationError{`wrong value`, "TEST"}
+	assert.Equal(t, err.Env(), err.env)
+	assert.Equal(t, err.Error(), err.message)
+}
+
 func TestCreateWithErrors(t *testing.T) {
 	type g struct {
 		f func()
-		e string
+		e error
 	}
 
 	tests := []g{
@@ -64,20 +70,20 @@ func TestCreateWithErrors(t *testing.T) {
 		{
 			func() {
 			},
-			`environment variable missing : "CHYLE_GIT_REPOSITORY_PATH"`,
+			MissingEnvError{[]string{`CHYLE_GIT_REPOSITORY_PATH`}},
 		},
 		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 			},
-			`environments variables missing : "CHYLE_GIT_REFERENCE_FROM", "CHYLE_GIT_REFERENCE_TO"`,
+			MissingEnvError{[]string{"CHYLE_GIT_REFERENCE_FROM", "CHYLE_GIT_REFERENCE_TO"}},
 		},
 		{
 			func() {
 				setenv("CHYLE_GIT_REPOSITORY_PATH", "test")
 				setenv("CHYLE_GIT_REFERENCE_FROM", "v1.0.0")
 			},
-			`environment variable missing : "CHYLE_GIT_REFERENCE_TO"`,
+			MissingEnvError{[]string{"CHYLE_GIT_REFERENCE_TO"}},
 		},
 		// Matchers
 		{
@@ -87,7 +93,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_MATCHERS_MESSAGE", ".**")
 			},
-			`provide a valid regexp for "CHYLE_MATCHERS_MESSAGE", ".**" given`,
+			EnvValidationError{`provide a valid regexp for "CHYLE_MATCHERS_MESSAGE", ".**" given`, "CHYLE_MATCHERS_MESSAGE"},
 		},
 		{
 			func() {
@@ -96,7 +102,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_MATCHERS_COMMITTER", ".**")
 			},
-			`provide a valid regexp for "CHYLE_MATCHERS_COMMITTER", ".**" given`,
+			EnvValidationError{`provide a valid regexp for "CHYLE_MATCHERS_COMMITTER", ".**" given`, "CHYLE_MATCHERS_COMMITTER"},
 		},
 		{
 			func() {
@@ -105,7 +111,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_MATCHERS_AUTHOR", ".**")
 			},
-			`provide a valid regexp for "CHYLE_MATCHERS_AUTHOR", ".**" given`,
+			EnvValidationError{`provide a valid regexp for "CHYLE_MATCHERS_AUTHOR", ".**" given`, "CHYLE_MATCHERS_AUTHOR"},
 		},
 		{
 			func() {
@@ -114,7 +120,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_MATCHERS_TYPE", "test")
 			},
-			`provide a value for "CHYLE_MATCHERS_TYPE" from one of those values : ["regular", "merge"], "test" given`,
+			EnvValidationError{`provide a value for "CHYLE_MATCHERS_TYPE" from one of those values : ["regular", "merge"], "test" given`, "CHYLE_MATCHERS_TYPE"},
 		},
 		// Extractors
 		{
@@ -124,7 +130,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_EXTRACTORS_TEST", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_DESTKEY", "CHYLE_EXTRACTORS_TEST_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_DESTKEY", "CHYLE_EXTRACTORS_TEST_REG"}},
 		},
 		{
 			func() {
@@ -133,7 +139,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_EXTRACTORS_TEST_ORIGKEY", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_TEST_DESTKEY", "CHYLE_EXTRACTORS_TEST_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_TEST_DESTKEY", "CHYLE_EXTRACTORS_TEST_REG"}},
 		},
 		{
 			func() {
@@ -142,7 +148,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_EXTRACTORS_TEST_DESTKEY", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_REG"}},
 		},
 		{
 			func() {
@@ -151,7 +157,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_EXTRACTORS_TEST_REG", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_DESTKEY"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_TEST_ORIGKEY", "CHYLE_EXTRACTORS_TEST_DESTKEY"}},
 		},
 		{
 			func() {
@@ -161,7 +167,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_TEST_ORIGKEY", "test")
 				setenv("CHYLE_EXTRACTORS_TEST_DESTKEY", "test")
 			},
-			`environment variable missing : "CHYLE_EXTRACTORS_TEST_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_TEST_REG"}},
 		},
 		{
 			func() {
@@ -172,7 +178,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_TEST_DESTKEY", "test")
 				setenv("CHYLE_EXTRACTORS_TEST_REG", ".**")
 			},
-			`provide a valid regexp for "CHYLE_EXTRACTORS_TEST_REG", ".**" given`,
+			EnvValidationError{`provide a valid regexp for "CHYLE_EXTRACTORS_TEST_REG", ".**" given`, "CHYLE_EXTRACTORS_TEST_REG"},
 		},
 		// Decorators custom api
 		{
@@ -182,7 +188,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_TEST", "test")
 			},
-			`environments variables missing : "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN"}},
 		},
 		{
 			func() {
@@ -191,7 +197,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN"}},
 		},
 		{
 			func() {
@@ -200,7 +206,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"}},
 		},
 		{
 			func() {
@@ -210,7 +216,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "test")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
 			},
-			`provide a valid URL for "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "test" given`,
+			EnvValidationError{`provide a valid URL for "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "test" given`, "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"},
 		},
 		{
 			func() {
@@ -220,7 +226,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
 			},
-			`define at least one environment variable couple "CHYLE_DECORATORS_CUSTOMAPI_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_CUSTOMAPI_KEYS_*_FIELD", replace "*" with your own naming`,
+			EnvValidationError{`define at least one environment variable couple "CHYLE_DECORATORS_CUSTOMAPI_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_CUSTOMAPI_KEYS_*_FIELD", replace "*" with your own naming`, "CHYLE_DECORATORS_CUSTOMAPI_KEYS"},
 		},
 		{
 			func() {
@@ -231,7 +237,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_CREDENTIALS_TOKEN", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD"}},
 		},
 		{
 			func() {
@@ -243,7 +249,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_DESTKEY", "test")
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"}},
 		},
 		{
 			func() {
@@ -256,7 +262,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_CUSTOMAPI_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"}},
 		},
 		{
 			func() {
@@ -270,7 +276,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "test")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "customApiId")
 			},
-			`environment variable missing : "CHYLE_EXTRACTORS_CUSTOMAPIID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_CUSTOMAPIID_REG"}},
 		},
 		{
 			func() {
@@ -285,7 +291,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "test")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_REG", "test")
 			},
-			`variable CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY must be equal to "customApiId"`,
+			EnvValidationError{`variable CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY must be equal to "customApiId"`, "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY"},
 		},
 		{
 			func() {
@@ -300,7 +306,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "customApiId")
 				setenv("CHYLE_EXTRACTORS_CUSTOMAPIID_REG", "test")
 			},
-			`ensure you defined a placeholder {{ID}} in URL defined in "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"`,
+			EnvValidationError{`ensure you defined a placeholder {{ID}} in URL defined in "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"`, "CHYLE_DECORATORS_CUSTOMAPI_ENDPOINT_URL"},
 		},
 		// Decorators env
 		{
@@ -310,7 +316,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_ENV_TEST", "test")
 			},
-			`environments variables missing : "CHYLE_DECORATORS_ENV_TEST_DESTKEY", "CHYLE_DECORATORS_ENV_TEST_VARNAME"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_ENV_TEST_DESTKEY", "CHYLE_DECORATORS_ENV_TEST_VARNAME"}},
 		},
 		{
 			func() {
@@ -319,7 +325,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_ENV_TEST_DESTKEY", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_ENV_TEST_VARNAME"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_ENV_TEST_VARNAME"}},
 		},
 		{
 			func() {
@@ -328,7 +334,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_ENV_TEST_VARNAME", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_ENV_TEST_DESTKEY"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_ENV_TEST_DESTKEY"}},
 		},
 		// Decorator jira
 		{
@@ -338,7 +344,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 			},
-			`environments variables missing : "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD"}},
 		},
 		{
 			func() {
@@ -348,7 +354,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "http://test.com")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD"}},
 		},
 		{
 			func() {
@@ -359,7 +365,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 			},
-			`provide a valid URL for "CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "testcom" given`,
+			EnvValidationError{`provide a valid URL for "CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "testcom" given`, "CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL"},
 		},
 		{
 			func() {
@@ -370,7 +376,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "test")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 			},
-			`define at least one environment variable couple "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_FIELD", replace "*" with your own naming`,
+			EnvValidationError{`define at least one environment variable couple "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_FIELD", replace "*" with your own naming`, "CHYLE_DECORATORS_JIRAISSUE_KEYS"},
 		},
 		{
 			func() {
@@ -382,7 +388,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD"}},
 		},
 		{
 			func() {
@@ -394,7 +400,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "password")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY"}},
 		},
 		{
 			func() {
@@ -407,7 +413,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_DESTKEY", "jiraIssueId")
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "CHYLE_EXTRACTORS_JIRAISSUEID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "CHYLE_EXTRACTORS_JIRAISSUEID_REG"}},
 		},
 		{
 			func() {
@@ -421,7 +427,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_JIRAISSUE_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "CHYLE_EXTRACTORS_JIRAISSUEID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "CHYLE_EXTRACTORS_JIRAISSUEID_REG"}},
 		},
 		{
 			func() {
@@ -436,7 +442,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "test")
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "jiraIssueId")
 			},
-			`environment variable missing : "CHYLE_EXTRACTORS_JIRAISSUEID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_JIRAISSUEID_REG"}},
 		},
 		{
 			func() {
@@ -452,7 +458,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "test")
 				setenv("CHYLE_EXTRACTORS_JIRAISSUEID_REG", "test")
 			},
-			`variable CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY must be equal to "jiraIssueId"`,
+			EnvValidationError{`variable CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY must be equal to "jiraIssueId"`, "CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY"},
 		},
 		// Decorator github
 		{
@@ -462,7 +468,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 			},
-			`environments variables missing : "CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME"}},
 		},
 		{
 			func() {
@@ -471,7 +477,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "test")
 			},
-			`environments variables missing : "CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN", "CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN", "CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME"}},
 		},
 		{
 			func() {
@@ -482,7 +488,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "test")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME", "test")
 			},
-			`define at least one environment variable couple "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_FIELD", replace "*" with your own naming`,
+			EnvValidationError{`define at least one environment variable couple "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_FIELD", replace "*" with your own naming`, "CHYLE_DECORATORS_GITHUBISSUE_KEYS"},
 		},
 		{
 			func() {
@@ -494,7 +500,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME", "test")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "githubIssueId")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD"}},
 		},
 		{
 			func() {
@@ -506,7 +512,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME", "test")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY"}},
 		},
 		{
 			func() {
@@ -519,7 +525,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_DESTKEY", "githubIssueId")
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"}},
 		},
 		{
 			func() {
@@ -533,7 +539,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_GITHUBISSUE_KEYS_TEST_FIELD", "test")
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
 			},
-			`environments variables missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"}},
 		},
 		{
 			func() {
@@ -548,7 +554,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "test")
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "githubIssueId")
 			},
-			`environment variable missing : "CHYLE_EXTRACTORS_GITHUBISSUEID_REG"`,
+			MissingEnvError{[]string{"CHYLE_EXTRACTORS_GITHUBISSUEID_REG"}},
 		},
 		{
 			func() {
@@ -564,7 +570,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "test")
 				setenv("CHYLE_EXTRACTORS_GITHUBISSUEID_REG", "test")
 			},
-			`variable CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY must be equal to "githubIssueId"`,
+			EnvValidationError{`variable CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY must be equal to "githubIssueId"`, "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY"},
 		},
 		// Decorator shell
 		{
@@ -574,7 +580,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_SHELL_TEST_COMMAND", "test")
 			},
-			`environments variables missing : "CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "CHYLE_DECORATORS_SHELL_TEST_ORIGKEY"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "CHYLE_DECORATORS_SHELL_TEST_ORIGKEY"}},
 		},
 		{
 			func() {
@@ -583,7 +589,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "test")
 			},
-			`environments variables missing : "CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "CHYLE_DECORATORS_SHELL_TEST_COMMAND"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "CHYLE_DECORATORS_SHELL_TEST_COMMAND"}},
 		},
 		{
 			func() {
@@ -592,7 +598,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "test")
 			},
-			`environments variables missing : "CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "CHYLE_DECORATORS_SHELL_TEST_COMMAND"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "CHYLE_DECORATORS_SHELL_TEST_COMMAND"}},
 		},
 		{
 			func() {
@@ -602,7 +608,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_SHELL_TEST_COMMAND", "test")
 				setenv("CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_SHELL_TEST_DESTKEY"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_SHELL_TEST_DESTKEY"}},
 		},
 		{
 			func() {
@@ -612,7 +618,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_SHELL_TEST_COMMAND", "test")
 				setenv("CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_SHELL_TEST_ORIGKEY"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_SHELL_TEST_ORIGKEY"}},
 		},
 		{
 			func() {
@@ -622,7 +628,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_DECORATORS_SHELL_TEST_ORIGKEY", "test")
 				setenv("CHYLE_DECORATORS_SHELL_TEST_DESTKEY", "test")
 			},
-			`environment variable missing : "CHYLE_DECORATORS_SHELL_TEST_COMMAND"`,
+			MissingEnvError{[]string{"CHYLE_DECORATORS_SHELL_TEST_COMMAND"}},
 		},
 		// Sender github
 		{
@@ -632,7 +638,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_TEST", "test")
 			},
-			`environments variables missing : "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN", "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN", "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER"}},
 		},
 		{
 			func() {
@@ -641,7 +647,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 			},
-			`environment variable missing : "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER"}},
 		},
 		{
 			func() {
@@ -650,7 +656,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER", "user")
 			},
-			`environment variable missing : "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN"}},
 		},
 		{
 			func() {
@@ -660,7 +666,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER", "user")
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 			},
-			`environments variables missing : "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE"}},
 		},
 		{
 			func() {
@@ -671,7 +677,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME", "v2.0.0")
 			},
-			`environment variable missing : "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE"}},
 		},
 		{
 			func() {
@@ -683,7 +689,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME", "v2.0.0")
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE", "{{.....}}")
 			},
-			`provide a valid template string for "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE" : "template: test:1: unexpected <.> in operand", "{{.....}}" given`,
+			EnvValidationError{`provide a valid template string for "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE" : "template: test:1: unexpected <.> in operand", "{{.....}}" given`, "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE"},
 		},
 		{
 			func() {
@@ -694,7 +700,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE", "{{.}}")
 			},
-			`environment variable missing : "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME"}},
 		},
 		{
 			func() {
@@ -706,7 +712,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE", "{{.}}")
 				setenv("CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME", "v2.0.0")
 			},
-			`environment variable missing : "CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME"}},
 		},
 		// Sender custom api
 		{
@@ -716,7 +722,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TEST", "test")
 			},
-			`environment variable missing : "CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN"}},
 		},
 		{
 			func() {
@@ -725,7 +731,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 			},
-			`environment variable missing : "CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL"}},
 		},
 		{
 			func() {
@@ -734,7 +740,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "http://test.com")
 			},
-			`environment variable missing : "CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN"}},
 		},
 		{
 			func() {
@@ -744,7 +750,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN", "d41d8cd98f00b204e9800998ecf8427e")
 				setenv("CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "test")
 			},
-			`provide a valid URL for "CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "test" given`,
+			EnvValidationError{`provide a valid URL for "CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "test" given`, "CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL"},
 		},
 		// Sender stdout
 		{
@@ -754,7 +760,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_STDOUT_TEST", "test")
 			},
-			`environment variable missing : "CHYLE_SENDERS_STDOUT_FORMAT"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_STDOUT_FORMAT"}},
 		},
 		{
 			func() {
@@ -763,7 +769,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_STDOUT_FORMAT", "test")
 			},
-			`"CHYLE_SENDERS_STDOUT_FORMAT" "test" doesn't exist`,
+			EnvValidationError{`"CHYLE_SENDERS_STDOUT_FORMAT" "test" doesn't exist`, "CHYLE_SENDERS_STDOUT_FORMAT"},
 		},
 		{
 			func() {
@@ -772,7 +778,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_GIT_REFERENCE_TO", "v2.0.0")
 				setenv("CHYLE_SENDERS_STDOUT_FORMAT", "template")
 			},
-			`environment variable missing : "CHYLE_SENDERS_STDOUT_TEMPLATE"`,
+			MissingEnvError{[]string{"CHYLE_SENDERS_STDOUT_TEMPLATE"}},
 		},
 		{
 			func() {
@@ -782,7 +788,7 @@ func TestCreateWithErrors(t *testing.T) {
 				setenv("CHYLE_SENDERS_STDOUT_FORMAT", "template")
 				setenv("CHYLE_SENDERS_STDOUT_TEMPLATE", "{{.....}}")
 			},
-			`provide a valid template string for "CHYLE_SENDERS_STDOUT_TEMPLATE" : "template: test:1: unexpected <.> in operand", "{{.....}}" given`,
+			EnvValidationError{`provide a valid template string for "CHYLE_SENDERS_STDOUT_TEMPLATE" : "template: test:1: unexpected <.> in operand", "{{.....}}" given`, "CHYLE_SENDERS_STDOUT_TEMPLATE"},
 		},
 	}
 
@@ -796,10 +802,9 @@ func TestCreateWithErrors(t *testing.T) {
 
 		_, err = Create(&config)
 
-		errDetail := fmt.Sprintf("Test %d failed", i+1)
+		errDetail := fmt.Sprintf("Test %d", i+1)
 
-		assert.Error(t, err, errDetail)
-		assert.EqualError(t, err, test.e, errDetail)
+		assert.True(t, assert.ObjectsAreEqualValues(test.e, err), errDetail)
 	}
 }
 

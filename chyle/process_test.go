@@ -1,6 +1,7 @@
 package chyle
 
 import (
+	"fmt"
 	"regexp"
 	"testing"
 
@@ -9,6 +10,9 @@ import (
 	"github.com/antham/chyle/chyle/extractors"
 	"github.com/antham/chyle/chyle/matchers"
 	"github.com/antham/chyle/chyle/senders"
+	"github.com/antham/chyle/chyle/types"
+
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -70,4 +74,50 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 	assert.Len(t, *(p.extractors), 1)
 	assert.Len(t, *(p.decorators), 2)
 	assert.Len(t, *(p.senders), 1)
+}
+
+type mockDecorator struct {
+}
+
+func (m mockDecorator) Decorate(*map[string]interface{}) (*map[string]interface{}, error) {
+	return &map[string]interface{}{}, fmt.Errorf("An error occured from mock decorator")
+}
+
+type mockSender struct {
+}
+
+func (m mockSender) Send(changelog *types.Changelog) error {
+	return fmt.Errorf("An error occured from mock sender")
+}
+
+func (m mockSender) Decorate(*map[string]interface{}) (*map[string]interface{}, error) {
+	return &map[string]interface{}{}, fmt.Errorf("An error occured from mock decorator")
+}
+
+func TestBuildProcessWithErrorsFromDecorator(t *testing.T) {
+	p := process{
+		&[]matchers.Matcher{},
+		&[]extractors.Extracter{},
+		&map[string][]decorators.Decorater{"metadatas": {}, "datas": {mockDecorator{}}},
+		&[]senders.Sender{},
+	}
+
+	err := proceed(&p, &[]object.Commit{{}})
+
+	assert.Error(t, err)
+	assert.EqualError(t, err, "An error occured from mock decorator")
+}
+
+func TestBuildProcessWithErrorsFromSender(t *testing.T) {
+	p := process{
+		&[]matchers.Matcher{},
+		&[]extractors.Extracter{},
+		&map[string][]decorators.Decorater{"metadatas": {}, "datas": {}},
+		&[]senders.Sender{mockSender{}},
+	}
+
+	err := proceed(&p, &[]object.Commit{{}})
+
+	assert.Error(t, err)
+	assert.EqualError(t, err, "An error occured from mock sender")
 }

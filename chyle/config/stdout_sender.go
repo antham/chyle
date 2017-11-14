@@ -32,7 +32,7 @@ func (s *stdoutSenderConfigurator) validateFormat() error {
 	keyChain := []string{"CHYLE", "SENDERS", "STDOUT"}
 
 	if format, err = s.config.FindString(append(keyChain, "FORMAT")...); err != nil {
-		return errMissingEnvVar{[]string{strings.Join(append(keyChain, "FORMAT"), "_")}}
+		return MissingEnvError{[]string{strings.Join(append(keyChain, "FORMAT"), "_")}}
 	}
 
 	switch format {
@@ -42,14 +42,14 @@ func (s *stdoutSenderConfigurator) validateFormat() error {
 		return s.validateTemplateFormat()
 	}
 
-	return fmt.Errorf(`"CHYLE_SENDERS_STDOUT_FORMAT" "%s" doesn't exist`, format)
+	return EnvValidationError{fmt.Sprintf(`"CHYLE_SENDERS_STDOUT_FORMAT" "%s" doesn't exist`, format), "CHYLE_SENDERS_STDOUT_FORMAT"}
 }
 
 func (s *stdoutSenderConfigurator) validateTemplateFormat() error {
 	tmplKeyChain := []string{"CHYLE", "SENDERS", "STDOUT", "TEMPLATE"}
 
 	if ok, err := s.config.HasSubTreeValue(tmplKeyChain...); !ok || err != nil {
-		return errMissingEnvVar{[]string{strings.Join(tmplKeyChain, "_")}}
+		return MissingEnvError{[]string{strings.Join(tmplKeyChain, "_")}}
 	}
 
 	if err := validateTemplate(s.config, tmplKeyChain); err != nil {

@@ -17,22 +17,30 @@ Chyle produces a changelog from a git repository.
 ## Usage
 
 ```
-Create a new changelog according to what is defined as config.
-
-Changelog creation follows this process :
-
-1 - fetch commits
-2 - filter relevant commits
-3 - extract informations from commits fields and publish them to new fields
-4 - enrich extracted datas with external apps
-5 - publish datas
+Create a changelog from your commit history
 
 Usage:
-  chyle create [flags]
+  chyle [command]
 
-Global Flags:
+Available Commands:
+  config      Generate environments variables from a prompt session
+  create      Create a new changelog
+  help        Help about any command
+
+Flags:
       --debug   enable debugging
+  -h, --help    help for chyle
+
+Use "chyle [command] --help" for more information about a command.
 ```
+
+### config
+
+Run a serie of prompt to help generate quickly and easily a configuration.
+
+### create
+
+Generate changelog.
 
 ## How it works ?
 
