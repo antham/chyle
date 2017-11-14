@@ -15,17 +15,17 @@ func TestCreateSwitchChoice(t *testing.T) {
 		&switchPrompt{
 			"test",
 			[]SwitchConfig{
-				SwitchConfig{
+				{
 					"1",
 					"1 - Choice number 1",
 					"test",
 				},
-				SwitchConfig{
+				{
 					"2",
 					"2 - Choice number 2",
 					"test",
 				},
-				SwitchConfig{
+				{
 					"3",
 					"3 - Choice number 3",
 					"",

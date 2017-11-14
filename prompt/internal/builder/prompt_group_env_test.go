@@ -15,18 +15,18 @@ func TestNewGroupEnvPromptWithCounter(t *testing.T) {
 	buf := "test0\ntest1\n1\ntest2\ntest3\nq\n"
 	prompts := NewGroupEnvPromptWithCounter(
 		[]EnvConfig{
-			EnvConfig{"TEST_0", "TEST_1", "TEST_*_0", "Enter a value"},
-			EnvConfig{"TEST_1", "choice", "TEST_*_1", "Enter a value"},
+			{"TEST_0", "TEST_1", "TEST_*_0", "Enter a value"},
+			{"TEST_1", "choice", "TEST_*_1", "Enter a value"},
 		}, store)
 
 	var choice = []strumt.Prompter{
 		&switchPrompt{
 			"choice",
 			[]SwitchConfig{
-				SwitchConfig{
+				{
 					"1", "Add new test values", "TEST_0",
 				},
-				SwitchConfig{
+				{
 					"q", "Quit", "",
 				},
 			},

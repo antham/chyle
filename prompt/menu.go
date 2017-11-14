@@ -11,10 +11,10 @@ var mainMenu = []strumt.Prompter{
 		"mainMenu",
 		addQuitChoice(
 			[]builder.SwitchConfig{
-				builder.SwitchConfig{"1", "Add a matcher", "matcherChoice"},
-				builder.SwitchConfig{"2", "Add an extractor", "extractorOrigKey"},
-				builder.SwitchConfig{"3", "Add a decorator", "decoratorChoice"},
-				builder.SwitchConfig{"4", "Add a sender", "senderChoice"},
+				{"1", "Add a matcher", "matcherChoice"},
+				{"2", "Add an extractor", "extractorOrigKey"},
+				{"3", "Add a decorator", "decoratorChoice"},
+				{"4", "Add a sender", "senderChoice"},
 			},
 		),
 	),

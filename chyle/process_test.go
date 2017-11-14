@@ -55,7 +55,6 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 	conf.FEATURES.DECORATORS.ENABLED = true
 	conf.FEATURES.DECORATORS.ENABLED = true
 	conf.DECORATORS.ENV = map[string]struct {
-
 		DESTKEY string
 		VARNAME string
 	}{
@@ -103,7 +102,7 @@ func TestBuildProcessWithErrorsFromDecorator(t *testing.T) {
 		&[]senders.Sender{},
 	}
 
-	err := proceed(&p, &[]object.Commit{object.Commit{}})
+	err := proceed(&p, &[]object.Commit{{}})
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, "An error occured from mock decorator")
@@ -117,7 +116,7 @@ func TestBuildProcessWithErrorsFromSender(t *testing.T) {
 		&[]senders.Sender{mockSender{}},
 	}
 
-	err := proceed(&p, &[]object.Commit{object.Commit{}})
+	err := proceed(&p, &[]object.Commit{{}})
 
 	assert.Error(t, err)
 	assert.EqualError(t, err, "An error occured from mock sender")

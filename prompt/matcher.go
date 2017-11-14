@@ -18,18 +18,18 @@ var matcherChoice = []strumt.Prompter{
 		"matcherChoice",
 		addMainMenuAndQuitChoice(
 			[]builder.SwitchConfig{
-				builder.SwitchConfig{"1", "Add a type matcher", "matcherType"},
-				builder.SwitchConfig{"2", "Add a message matcher", "matcherMessage"},
-				builder.SwitchConfig{"3", "Add a committer matcher", "matcherCommitter"},
-				builder.SwitchConfig{"4", "Add an author matcher", "matcherAuthor"},
+				{"1", "Add a type matcher", "matcherType"},
+				{"2", "Add a message matcher", "matcherMessage"},
+				{"3", "Add a committer matcher", "matcherCommitter"},
+				{"4", "Add an author matcher", "matcherAuthor"},
 			},
 		),
 	),
 }
 
 var matcher = []builder.EnvConfig{
-	builder.EnvConfig{"matcherType", "matcherChoice", "CHYLE_MATCHERS_TYPE", "Enter a matcher type (regular or merge)"},
-	builder.EnvConfig{"matcherMessage", "matcherChoice", "CHYLE_MATCHERS_MESSAGE", "Enter a regexp to match commit message"},
-	builder.EnvConfig{"matcherCommitter", "matcherChoice", "CHYLE_MATCHERS_COMMITTER", "Enter a regexp to match git committer"},
-	builder.EnvConfig{"matcherAuthor", "matcherChoice", "CHYLE_MATCHERS_AUTHOR", "Enter a regexp to match git author"},
+	{"matcherType", "matcherChoice", "CHYLE_MATCHERS_TYPE", "Enter a matcher type (regular or merge)"},
+	{"matcherMessage", "matcherChoice", "CHYLE_MATCHERS_MESSAGE", "Enter a regexp to match commit message"},
+	{"matcherCommitter", "matcherChoice", "CHYLE_MATCHERS_COMMITTER", "Enter a regexp to match git committer"},
+	{"matcherAuthor", "matcherChoice", "CHYLE_MATCHERS_AUTHOR", "Enter a regexp to match git author"},
 }
