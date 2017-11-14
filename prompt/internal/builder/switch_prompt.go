@@ -64,7 +64,3 @@ func (s *switchPrompt) NextOnSuccess(value string) string {
 func (s *switchPrompt) NextOnError(err error) string {
 	return s.iD
 }
-
-func (s *switchPrompt) PrintPrompt(prompt string) {
-	fmt.Printf("%s", prompt)
-}
