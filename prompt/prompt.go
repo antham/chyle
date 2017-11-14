@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"github.com/antham/strumt"
+	"io"
 
 	"github.com/antham/chyle/prompt/internal/builder"
 )
@@ -12,8 +13,8 @@ type Prompts struct {
 }
 
 // New creates a new prompt chain
-func New() Prompts {
-	return Prompts{strumt.NewPrompts()}
+func New(reader io.Reader, writer io.Writer) Prompts {
+	return Prompts{strumt.NewPromptsFromReaderAndWriter(reader, writer)}
 }
 
 func (p *Prompts) populatePrompts(prompts []strumt.Prompter) {
