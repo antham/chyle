@@ -64,8 +64,8 @@ func TestNewEnvPrompts(t *testing.T) {
 	var stdout bytes.Buffer
 	buf := "1\n2\n"
 	p := NewEnvPrompts([]EnvConfig{
-		EnvConfig{"TEST1", "TEST2", "TEST_PROMPT_1", "Enter a value for prompt 1"},
-		EnvConfig{"TEST2", "", "TEST_PROMPT_2", "Enter a value for prompt 2"},
+		{"TEST1", "TEST2", "TEST_PROMPT_1", "Enter a value for prompt 1"},
+		{"TEST2", "", "TEST_PROMPT_2", "Enter a value for prompt 2"},
 	}, store)
 
 	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
