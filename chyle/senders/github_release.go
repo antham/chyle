@@ -13,21 +13,21 @@ import (
 )
 
 type githubReleaseConfig struct {
+	REPOSITORY struct {
+		NAME string
+	}
 	CREDENTIALS struct {
 		OAUTHTOKEN string
 		OWNER      string
 	}
 	RELEASE struct {
 		DRAFT           bool
-		NAME            string
+		UPDATE          bool
 		PRERELEASE      bool
+		NAME            string
 		TAGNAME         string
 		TARGETCOMMITISH string
 		TEMPLATE        string
-		UPDATE          bool
-	}
-	REPOSITORY struct {
-		NAME string
 	}
 }
 
