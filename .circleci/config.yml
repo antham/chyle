@@ -12,7 +12,7 @@ jobs:
           name: Get doc-hunt binary
           command: |
             mkdir /home/circleci/bin
-            wget -O ~/bin/gommit https://github.com/antham/doc-hunt/releases/download/v2.1.1/doc-hunt_linux_amd64 && chmod 777 ~/bin/doc-hunt
+            wget -O ~/bin/doc-hunt https://github.com/antham/doc-hunt/releases/download/v2.1.1/doc-hunt_linux_amd64 && chmod 777 ~/bin/doc-hunt
       - run:
           name: Get gommit binary
           command: |
