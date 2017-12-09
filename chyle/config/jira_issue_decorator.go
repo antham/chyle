@@ -4,14 +4,8 @@ import (
 	"github.com/antham/envh"
 )
 
-func getJiraIssueDecoratorMandatoryParamsRefs() []struct {
-	ref      *string
-	keyChain []string
-} {
-	return []struct {
-		ref      *string
-		keyChain []string
-	}{
+func getJiraIssueDecoratorMandatoryParamsRefs() []ref {
+	return []ref{
 		{
 			&chyleConfig.DECORATORS.JIRAISSUE.ENDPOINT.URL,
 			[]string{"CHYLE", "DECORATORS", "JIRAISSUE", "ENDPOINT", "URL"},

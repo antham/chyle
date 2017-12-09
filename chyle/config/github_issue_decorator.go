@@ -4,14 +4,8 @@ import (
 	"github.com/antham/envh"
 )
 
-func getGithubIssueDecoratorMandatoryParamsRefs() []struct {
-	ref      *string
-	keyChain []string
-} {
-	return []struct {
-		ref      *string
-		keyChain []string
-	}{
+func getGithubIssueDecoratorMandatoryParamsRefs() []ref {
+	return []ref{
 		{
 			&chyleConfig.DECORATORS.GITHUBISSUE.CREDENTIALS.OAUTHTOKEN,
 			[]string{"CHYLE", "DECORATORS", "GITHUBISSUE", "CREDENTIALS", "OAUTHTOKEN"},

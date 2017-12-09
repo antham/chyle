@@ -8,14 +8,8 @@ import (
 	"github.com/antham/envh"
 )
 
-func getCustomAPIDecoratorMandatoryParamsRefs() []struct {
-	ref      *string
-	keyChain []string
-} {
-	return []struct {
-		ref      *string
-		keyChain []string
-	}{
+func getCustomAPIDecoratorMandatoryParamsRefs() []ref {
+	return []ref{
 		{
 			&chyleConfig.DECORATORS.CUSTOMAPI.ENDPOINT.URL,
 			[]string{"CHYLE", "DECORATORS", "CUSTOMAPI", "ENDPOINT", "URL"},

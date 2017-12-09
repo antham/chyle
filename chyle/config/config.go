@@ -20,6 +20,11 @@ type configurater interface {
 	process(config *CHYLE) (bool, error)
 }
 
+type ref struct {
+	ref      *string
+	keyChain []string
+}
+
 // codebeat:disable[TOO_MANY_IVARS]
 
 // CHYLE hold config extracted from environment variables

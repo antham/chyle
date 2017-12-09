@@ -22,10 +22,7 @@ type apiDecoratorConfig struct {
 		DESTKEY string
 		FIELD   string
 	}
-	mandatoryParamsRefs []struct {
-		ref      *string
-		keyChain []string
-	}
+	mandatoryParamsRefs   []ref
 	featureRefs           []*bool
 	customValidationFuncs []func() error
 	customSetterFuncs     []func(*CHYLE)
