@@ -16,7 +16,6 @@ jobs:
       - run:
           name: Get gommit binary
           command: |
-            mkdir /home/circleci/bin
             wget -O ~/bin/gommit https://github.com/antham/gommit/releases/download/v2.1.0/gommit_linux_386 && chmod 777 ~/bin/gommit
       - run:
           name: Install dep and gometalinter
