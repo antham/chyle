@@ -38,7 +38,7 @@ jobs:
       - run:
           name: Run doc-hunt
           command: |
-            doc-hunt check -e
+            ~/bin/doc-hunt check -e
       - run:
           name: Push on codecov result
           command: |
