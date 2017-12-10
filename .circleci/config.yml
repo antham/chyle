@@ -28,9 +28,13 @@ jobs:
           command: |
             dep ensure -v
       - run:
+          name: Run gometalinter
+          command: |
+            make gometalinter
+      - run:
           name: Run tests
           command: |
-            make test-all
+            make run-tests
       - run:
           name: Run gommit
           command: |
