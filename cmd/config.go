@@ -24,11 +24,11 @@ var configCmd = &cobra.Command{
 		}
 
 		printWithNewLine("")
-		printWithNewLine("Generated environments variables :")
+		printWithNewLine("Generated configuration :")
 		printWithNewLine("")
 
 		for key, value := range *store {
-			printWithNewLine(fmt.Sprintf("%s=%s", key, value))
+			printWithNewLine(fmt.Sprintf("export %s=%s", key, value))
 		}
 	},
 }

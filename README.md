@@ -49,7 +49,7 @@ Chyle fetch a range of commits using given criterias from a git repository. From
 
 Download from release page according to your architecture chyle binary : https://github.com/antham/chyle/releases
 
-Look at the documentation and examples,  run ```chyle config``` to run the configuration prompt.
+Look at the documentation and examples,  run ```chyle config``` to launch the configuration prompt.
 
 ## Documentation and examples
 
