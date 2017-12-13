@@ -12,7 +12,7 @@ import (
 // configCmd represents the config command
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: "Generate environments variables from a prompt session",
+	Short: "Configuration prompt",
 	Run: func(cmd *cobra.Command, args []string) {
 		prompts := createPrompt(os.Stdin, os.Stdout)
 		store, err := prompts.Run()

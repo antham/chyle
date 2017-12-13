@@ -22,7 +22,7 @@ Usage:
   chyle [command]
 
 Available Commands:
-  config      Generate environments variables from a prompt session
+  config      Configuration prompt
   create      Create a new changelog
   help        Help about any command
 
@@ -49,11 +49,11 @@ Chyle fetch a range of commits using given criterias from a git repository. From
 
 Download from release page according to your architecture chyle binary : https://github.com/antham/chyle/releases
 
-You need afterwards to configure each module through environments variables : there are activated when you configure at least one environment variable they need to work.
+Look at the documentation and examples,  run ```chyle config``` to run the configuration prompt.
 
 ## Documentation and examples
 
-Have a look to the [wiki of this project](https://github.com/antham/chyle/wiki)
+Have a look to the [wiki of this project](https://github.com/antham/chyle/wiki).
 
 ## Contribute
 
