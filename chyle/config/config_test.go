@@ -1230,3 +1230,10 @@ func TestDebug(t *testing.T) {
 
 	assert.Regexp(t, `CHYLE - \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} {\n\s+"GIT": {\n\s+"REPOSITORY": {\n`, actual, "Must output given format with argument when debug is enabled")
 }
+
+func TestEnvValidationError(t *testing.T) {
+	e := EnvValidationError{"No variable found", "TEST"}
+
+	assert.Equal(t, "No variable found", e.Error())
+	assert.Equal(t, "TEST", e.Env())
+}
