@@ -28,8 +28,8 @@
 [[projects]]
   name = "github.com/antham/strumt"
   packages = ["."]
-  revision = "dcc2a4b796a5be4d59e887601d6ceb6423aaa178"
-  version = "v1.0.0"
+  revision = "6776189777d3914b1ae91344d6ed9199dd2036f6"
+  version = "v2.0.0"
 
 [[projects]]
   name = "github.com/aokoli/goutils"
@@ -178,6 +178,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4531c6dfa7cda36ddba4ca41ee384082dcc7c237a07e1ad55f1abca1736f7cad"
+  inputs-digest = "733e8c6c8fb719977b3d3e65e15aed01ddf3094a0781d2454c1fb04fc7d68c0c"
   solver-name = "gps-cdcl"
   solver-version = 1

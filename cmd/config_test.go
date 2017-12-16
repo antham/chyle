@@ -63,7 +63,7 @@ func TestConfig(t *testing.T) {
 	}
 
 	assert.EqualValues(t, 0, code, "Must exit with no errors (exit 0)")
-	assert.Equal(t, "Enter a git commit ID that start your range : \n\nEnter a git commit ID that end your range : \n\nEnter your git path repository : \n\nChoose one of this option and press enter:\n1 - Add a matcher\n2 - Add an extractor\n3 - Add a decorator\n4 - Add a sender\nq - Dump generated configuration and quit\n : \n", string(promptRecord))
+	assert.Equal(t, "Enter a git commit ID that start your range\n\nEnter a git commit ID that end your range\n\nEnter your git path repository\n\nChoose one of this option and press enter:\n1 - Add a matcher\n2 - Add an extractor\n3 - Add a decorator\n4 - Add a sender\nq - Dump generated configuration and quit\n\n", string(promptRecord))
 
 	expected := []string{"", "Generated configuration :", "", "export CHYLE_GIT_REFERENCE_FROM=test", "export CHYLE_GIT_REFERENCE_TO=test", "export CHYLE_GIT_REPOSITORY_PATH=test"}
 
