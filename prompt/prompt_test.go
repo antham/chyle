@@ -267,10 +267,9 @@ func TestPrompt(t *testing.T) {
 		p := Prompts{}
 		p.prompts = strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
 
-		envs, err := p.Run()
+		envs := p.Run()
 
-		assert.NoError(t, err)
-		assert.Equal(t, test.expected, map[string]string(*envs))
+		assert.Equal(t, test.expected, map[string]string(envs))
 
 		for i, s := range test.scenario {
 			if i+1 > len(p.prompts.Scenario()) {

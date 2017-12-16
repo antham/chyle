@@ -15,19 +15,12 @@ var configCmd = &cobra.Command{
 	Short: "Configuration prompt",
 	Run: func(cmd *cobra.Command, args []string) {
 		prompts := createPrompt(os.Stdin, os.Stdout)
-		store, err := prompts.Run()
-
-		if err != nil {
-			failure(err)
-
-			exitError()
-		}
 
 		printWithNewLine("")
 		printWithNewLine("Generated configuration :")
 		printWithNewLine("")
 
-		for key, value := range *store {
+		for key, value := range (map[string]string)(prompts.Run()) {
 			printWithNewLine(fmt.Sprintf("export %s=%s", key, value))
 		}
 	},

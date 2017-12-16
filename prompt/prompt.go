@@ -29,7 +29,7 @@ func (p *Prompts) populatePrompts(prompts []strumt.Prompter) {
 }
 
 // Run starts a prompt session
-func (p *Prompts) Run() (*builder.Store, error) {
+func (p *Prompts) Run() builder.Store {
 	store := &builder.Store{}
 	prompts := mergePrompters(
 		newMainMenu(),
@@ -45,5 +45,5 @@ func (p *Prompts) Run() (*builder.Store, error) {
 	p.prompts.SetFirst("referenceFrom")
 	p.prompts.Run()
 
-	return store, nil
+	return *store
 }
