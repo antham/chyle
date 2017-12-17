@@ -2,14 +2,10 @@ package cmd
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
 	"os"
-	"sort"
 	"sync"
 	"testing"
-
-	"github.com/antham/chyle/prompt"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -17,7 +13,6 @@ import (
 func TestConfig(t *testing.T) {
 	var code int
 	var wg sync.WaitGroup
-	var output []string
 
 	exitError = func() {
 		panic(1)
@@ -27,18 +22,10 @@ func TestConfig(t *testing.T) {
 		panic(0)
 	}
 
-	printWithNewLine = func(str string) {
-		output = append(output, str)
-	}
-
 	wg.Add(1)
 
-	rd := bytes.NewBufferString("test\ntest\ntest\nq\n")
-	wr := bytes.Buffer{}
-
-	createPrompt = func(reader io.Reader, writer io.Writer) prompt.Prompts {
-		return prompt.New(rd, &wr)
-	}
+	reader = bytes.NewBufferString("test\ntest\ntest\nq\n")
+	writer = &bytes.Buffer{}
 
 	go func() {
 		defer func() {
@@ -56,25 +43,13 @@ func TestConfig(t *testing.T) {
 
 	wg.Wait()
 
-	promptRecord, err := ioutil.ReadAll(&wr)
+	promptRecord, err := ioutil.ReadAll(writer.(*bytes.Buffer))
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert.EqualValues(t, 0, code, "Must exit with no errors (exit 0)")
-	assert.Equal(t, "Enter a git commit ID that start your range\n\nEnter a git commit ID that end your range\n\nEnter your git path repository\n\nChoose one of this option and press enter:\n1 - Add a matcher\n2 - Add an extractor\n3 - Add a decorator\n4 - Add a sender\nq - Dump generated configuration and quit\n\n", string(promptRecord))
-
-	expected := []string{"", "Generated configuration :", "", "export CHYLE_GIT_REFERENCE_FROM=test", "export CHYLE_GIT_REFERENCE_TO=test", "export CHYLE_GIT_REPOSITORY_PATH=test"}
-
-	sort.Strings(output)
-	sort.Strings(expected)
-
-	assert.Equal(t, expected, output)
-}
-
-func TestCreatePrompt(t *testing.T) {
-	p := createPrompt(&bytes.Buffer{}, &bytes.Buffer{})
-
-	assert.IsType(t, prompt.Prompts{}, p)
+	assert.Contains(t, string(promptRecord), "Enter a git commit ID that start your range")
+	assert.Contains(t, string(promptRecord), "CHYLE_GIT_REFERENCE_TO=test")
 }

@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io"
-	"os"
 
 	"github.com/antham/chyle/prompt"
 	"github.com/spf13/cobra"
@@ -14,20 +12,18 @@ var configCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Configuration prompt",
 	Run: func(cmd *cobra.Command, args []string) {
-		prompts := createPrompt(os.Stdin, os.Stdout)
+		prompts := prompt.New(reader, writer)
+
+		p := prompts.Run()
 
 		printWithNewLine("")
 		printWithNewLine("Generated configuration :")
 		printWithNewLine("")
 
-		for key, value := range (map[string]string)(prompts.Run()) {
+		for key, value := range (map[string]string)(p) {
 			printWithNewLine(fmt.Sprintf("export %s=%s", key, value))
 		}
 	},
-}
-
-var createPrompt = func(reader io.Reader, writer io.Writer) prompt.Prompts {
-	return prompt.New(reader, writer)
 }
 
 func init() {
