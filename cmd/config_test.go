@@ -72,3 +72,9 @@ func TestConfig(t *testing.T) {
 
 	assert.Equal(t, expected, output)
 }
+
+func TestCreatePrompt(t *testing.T) {
+	p := createPrompt(&bytes.Buffer{}, &bytes.Buffer{})
+
+	assert.IsType(t, prompt.Prompts{}, p)
+}
