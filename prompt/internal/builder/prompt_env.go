@@ -18,20 +18,24 @@ func NewEnvPrompts(configs []EnvConfig, store *Store) []strumt.Prompter {
 
 // NewEnvPrompt creates a prompt to populate an environment variable
 func NewEnvPrompt(config EnvConfig, store *Store) strumt.Prompter {
-	return &template{
+	return &GenericPrompt{
 		config.ID,
 		config.PromptString,
 		func(string) string { return config.NextID },
 		func(error) string { return config.ID },
-		ParseEnv(config.Env, store),
+		ParseEnv(config.Validator, config.Env, store),
 	}
 }
 
 // ParseEnv provides an env parser callback
-func ParseEnv(env string, store *Store) func(value string) error {
+func ParseEnv(validator func(string) error, env string, store *Store) func(value string) error {
 	return func(value string) error {
 		if value == "" {
 			return fmt.Errorf("No value given")
+		}
+
+		if err := validator(value); err != nil {
+			return err
 		}
 
 		(*store)[env] = value

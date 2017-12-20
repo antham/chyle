@@ -22,11 +22,31 @@ var decorator = []strumt.Prompter{
 		"decoratorChoice",
 		addMainMenuAndQuitChoice(
 			[]builder.SwitchConfig{
-				{"1", "Add a custom api decorator", "extractorOrigKeyCustomAPI"},
-				{"2", "Add a jira issue decorator", "extractorOrigKeyJiraIssueID"},
-				{"3", "Add a github issue decorator", "extractorOrigKeyGithubIssueID"},
-				{"4", "Add a shell decorator", "shellDecoratorCommand"},
-				{"5", "Add an environment variable decorator", "envDecoratorVarName"},
+				{
+					Choice:       "1",
+					PromptString: "Add a custom api decorator",
+					NextPromptID: "extractorOrigKeyCustomAPI",
+				},
+				{
+					Choice:       "2",
+					PromptString: "Add a jira issue decorator",
+					NextPromptID: "extractorOrigKeyJiraIssueID",
+				},
+				{
+					Choice:       "3",
+					PromptString: "Add a github issue decorator",
+					NextPromptID: "extractorOrigKeyGithubIssueID",
+				},
+				{
+					Choice:       "4",
+					PromptString: "Add a shell decorator",
+					NextPromptID: "shellDecoratorCommand",
+				},
+				{
+					Choice:       "5",
+					PromptString: "Add an environment variable decorator",
+					NextPromptID: "envDecoratorVarName",
+				},
 			},
 		),
 	),
@@ -41,16 +61,58 @@ func newCustomAPIDecorator(store *builder.Store) []strumt.Prompter {
 }
 
 var customAPIDecorator = []builder.EnvConfig{
-	{"extractorOrigKeyCustomAPI", "extractorDestKeyCustomAPI", "CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY", "Enter a commit field where your custom api id is located"},
-	{"extractorDestKeyCustomAPI", "extractorRegCustomAPI", "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY", "Enter a name for the key which will receive the extracted value"},
-	{"extractorRegCustomAPI", "customAPIDecoratorEndpoint", "CHYLE_EXTRACTORS_CUSTOMAPIID_REG", "Enter a regexp to extract custom api id"},
-	{"customAPIDecoratorEndpoint", "customAPIDecoratorToken", "CHYLE_DECORATORS_CUSTOMAPIID_ENDPOINT_URL", "Enter custom api endpoint URL, use {{ID}} as a placeholder to interpolate the id you extracted before in URL if you need to"},
-	{"customAPIDecoratorToken", "customAPIDecoratorDestKey", "CHYLE_DECORATORS_CUSTOMAPIID_CREDENTIALS_TOKEN", "Enter token submitted as authorization header when calling your api"},
+	{
+		ID:           "extractorOrigKeyCustomAPI",
+		NextID:       "extractorDestKeyCustomAPI",
+		Env:          "CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY",
+		PromptString: "Enter a commit field where your custom api id is located",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "extractorDestKeyCustomAPI",
+		NextID:       "extractorRegCustomAPI",
+		Env:          "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY",
+		PromptString: "Enter a name for the key which will receive the extracted value",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "extractorRegCustomAPI",
+		NextID:       "customAPIDecoratorEndpoint",
+		Env:          "CHYLE_EXTRACTORS_CUSTOMAPIID_REG",
+		PromptString: "Enter a regexp to extract custom api id",
+		Validator:    validateRegexp,
+	},
+	{
+		ID:           "customAPIDecoratorEndpoint",
+		NextID:       "customAPIDecoratorToken",
+		Env:          "CHYLE_DECORATORS_CUSTOMAPIID_ENDPOINT_URL",
+		PromptString: "Enter custom api endpoint URL, use {{ID}} as a placeholder to interpolate the id you extracted before in URL if you need to",
+		Validator:    validateURL,
+	},
+	{
+		ID:           "customAPIDecoratorToken",
+		NextID:       "customAPIDecoratorDestKey",
+		Env:          "CHYLE_DECORATORS_CUSTOMAPIID_CREDENTIALS_TOKEN",
+		PromptString: "Enter token submitted as authorization header when calling your api",
+		Validator:    noOpValidator,
+	},
 }
 
 var customAPIDecoratorKeys = []builder.EnvConfig{
-	{"customAPIDecoratorDestKey", "customAPIDecoratorField", "CHYLE_DECORATORS_CUSTOMAPIID_KEYS_*_DESTKEY", "A name for the key which will receive the data extracted from the custom api"},
-	{"customAPIDecoratorField", "customAPIDecoratorChoice", "CHYLE_DECORATORS_CUSTOMAPIID_KEYS_*_FIELD", `The field to extract from your custom api response payload, use dot notation to extract a deep value (eg: "fields.summary")`},
+	{
+		ID:           "customAPIDecoratorDestKey",
+		NextID:       "customAPIDecoratorField",
+		Env:          "CHYLE_DECORATORS_CUSTOMAPIID_KEYS_*_DESTKEY",
+		PromptString: "A name for the key which will receive the data extracted from the custom api",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "customAPIDecoratorField",
+		NextID:       "customAPIDecoratorChoice",
+		Env:          "CHYLE_DECORATORS_CUSTOMAPIID_KEYS_*_FIELD",
+		PromptString: `The field to extract from your custom api response payload, use dot notation to extract a deep value (eg: "fields.summary")`,
+		Validator:    noOpValidator,
+	},
 }
 
 var customAPIDecoratorChoice = []strumt.Prompter{
@@ -59,7 +121,9 @@ var customAPIDecoratorChoice = []strumt.Prompter{
 		addMainMenuAndQuitChoice(
 			[]builder.SwitchConfig{
 				{
-					"1", "Add a new custom api decorator field", "customAPIDecoratorDestKey",
+					Choice:       "1",
+					PromptString: "Add a new custom api decorator field",
+					NextPromptID: "customAPIDecoratorDestKey",
 				},
 			},
 		),
@@ -75,17 +139,65 @@ func newJiraIssueDecorator(store *builder.Store) []strumt.Prompter {
 }
 
 var jiraIssueDecorator = []builder.EnvConfig{
-	{"extractorOrigKeyJiraIssueID", "extractorDestKeyJiraIssueID", "CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY", "Enter a commit field where your jira issue id is located"},
-	{"extractorDestKeyJiraIssueID", "extractorRegJiraIssueID", "CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY", "Enter a name for the key which will receive the extracted value"},
-	{"extractorRegJiraIssueID", "jiraIssueDecoratorEndpoint", "CHYLE_EXTRACTORS_JIRAISSUEID_REG", "Enter a regexp to extract jira issue id"},
-	{"jiraIssueDecoratorEndpoint", "jiraIssueDecoratorUsername", "CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL", "Enter jira api endpoint URL"},
-	{"jiraIssueDecoratorUsername", "jiraIssueDecoratorPassword", "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME", "Enter jira username"},
-	{"jiraIssueDecoratorPassword", "jiraIssueDecoratorDestKey", "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD", "Enter jira password"},
+	{
+		ID:           "extractorOrigKeyJiraIssueID",
+		NextID:       "extractorDestKeyJiraIssueID",
+		Env:          "CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY",
+		PromptString: "Enter a commit field where your jira issue id is located",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "extractorDestKeyJiraIssueID",
+		NextID:       "extractorRegJiraIssueID",
+		Env:          "CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY",
+		PromptString: "Enter a name for the key which will receive the extracted value",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "extractorRegJiraIssueID",
+		NextID:       "jiraIssueDecoratorEndpoint",
+		Env:          "CHYLE_EXTRACTORS_JIRAISSUEID_REG",
+		PromptString: "Enter a regexp to extract jira issue id",
+		Validator:    validateRegexp,
+	},
+	{
+		ID:           "jiraIssueDecoratorEndpoint",
+		NextID:       "jiraIssueDecoratorUsername",
+		Env:          "CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL",
+		PromptString: "Enter jira api endpoint URL",
+		Validator:    validateURL,
+	},
+	{
+		ID:           "jiraIssueDecoratorUsername",
+		NextID:       "jiraIssueDecoratorPassword",
+		Env:          "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME",
+		PromptString: "Enter jira username",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "jiraIssueDecoratorPassword",
+		NextID:       "jiraIssueDecoratorDestKey",
+		Env:          "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD",
+		PromptString: "Enter jira password",
+		Validator:    noOpValidator,
+	},
 }
 
 var jiraIssueDecoratorKeys = []builder.EnvConfig{
-	{"jiraIssueDecoratorDestKey", "jiraIssueDecoratorField", "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_DESTKEY", "A name for the key which will receive the extracted value"},
-	{"jiraIssueDecoratorField", "jiraIssueDecoratorChoice", "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_FIELD", `The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")`},
+	{
+		ID:           "jiraIssueDecoratorDestKey",
+		NextID:       "jiraIssueDecoratorField",
+		Env:          "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_DESTKEY",
+		PromptString: "A name for the key which will receive the extracted value",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "jiraIssueDecoratorField",
+		NextID:       "jiraIssueDecoratorChoice",
+		Env:          "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_FIELD",
+		PromptString: `The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")`,
+		Validator:    noOpValidator,
+	},
 }
 
 var jiraIssueDecoratorChoice = []strumt.Prompter{
@@ -94,7 +206,9 @@ var jiraIssueDecoratorChoice = []strumt.Prompter{
 		addMainMenuAndQuitChoice(
 			[]builder.SwitchConfig{
 				{
-					"1", "Add a new jira issue decorator field", "jiraIssueDecoratorDestKey",
+					Choice:       "1",
+					PromptString: "Add a new jira issue decorator field",
+					NextPromptID: "jiraIssueDecoratorDestKey",
 				},
 			},
 		),
@@ -110,16 +224,58 @@ func newGithubIssueDecorator(store *builder.Store) []strumt.Prompter {
 }
 
 var githubIssueDecorator = []builder.EnvConfig{
-	{"extractorOrigKeyGithubIssueID", "extractorDestKeyGithubIssueID", "CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY", "Enter a commit field where your github issue id is located"},
-	{"extractorDestKeyGithubIssueID", "extractorRegGithubIssueID", "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY", "Enter a name for the key which will receive the extracted value"},
-	{"extractorRegGithubIssueID", "githubIssueCredentialsToken", "CHYLE_EXTRACTORS_GITHUBISSUEID_REG", "Enter a regexp to extract github issue id"},
-	{"githubIssueCredentialsToken", "githubIssueCredentialsOwner", "CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN", "Enter github oauth token"},
-	{"githubIssueCredentialsOwner", "githubIssueDecoratorDestKey", "CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER", "Enter github owner name"},
+	{
+		ID:           "extractorOrigKeyGithubIssueID",
+		NextID:       "extractorDestKeyGithubIssueID",
+		Env:          "CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY",
+		PromptString: "Enter a commit field where your github issue id is located",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "extractorDestKeyGithubIssueID",
+		NextID:       "extractorRegGithubIssueID",
+		Env:          "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY",
+		PromptString: "Enter a name for the key which will receive the extracted value",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "extractorRegGithubIssueID",
+		NextID:       "githubIssueCredentialsToken",
+		Env:          "CHYLE_EXTRACTORS_GITHUBISSUEID_REG",
+		PromptString: "Enter a regexp to extract github issue id",
+		Validator:    validateRegexp,
+	},
+	{
+		ID:           "githubIssueCredentialsToken",
+		NextID:       "githubIssueCredentialsOwner",
+		Env:          "CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN",
+		PromptString: "Enter github oauth token",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "githubIssueCredentialsOwner",
+		NextID:       "githubIssueDecoratorDestKey",
+		Env:          "CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER",
+		PromptString: "Enter github owner name",
+		Validator:    noOpValidator,
+	},
 }
 
 var githubIssueDecoratorKeys = []builder.EnvConfig{
-	{"githubIssueDecoratorDestKey", "githubIssueDecoratorField", "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_DESTKEY", "A name for the key which will receive the extracted value"},
-	{"githubIssueDecoratorField", "githubIssueDecoratorChoice", "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_FIELD", `The field to extract from github issue api response payload, use dot notation to extract a deep value (eg: "fields.summary")`},
+	{
+		ID:           "githubIssueDecoratorDestKey",
+		NextID:       "githubIssueDecoratorField",
+		Env:          "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_DESTKEY",
+		PromptString: "A name for the key which will receive the extracted value",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "githubIssueDecoratorField",
+		NextID:       "githubIssueDecoratorChoice",
+		Env:          "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_FIELD",
+		PromptString: `The field to extract from github issue api response payload, use dot notation to extract a deep value (eg: "fields.summary")`,
+		Validator:    noOpValidator,
+	},
 }
 
 var githubIssueDecoratorChoice = []strumt.Prompter{
@@ -128,7 +284,9 @@ var githubIssueDecoratorChoice = []strumt.Prompter{
 		addMainMenuAndQuitChoice(
 			[]builder.SwitchConfig{
 				{
-					"1", "Add a new github issue decorator field", "githubIssueDecoratorDestKey",
+					Choice:       "1",
+					PromptString: "Add a new github issue decorator field",
+					NextPromptID: "githubIssueDecoratorDestKey",
 				},
 			},
 		),
@@ -140,9 +298,27 @@ func newShellDecorator(store *builder.Store) []strumt.Prompter {
 }
 
 var shellDecoratorKeys = []builder.EnvConfig{
-	{"shellDecoratorCommand", "shellDecoratorOrigKey", "CHYLE_DECORATORS_SHELL_*_COMMAND", "Shell command to execute"},
-	{"shellDecoratorOrigKey", "shellDecoratorDestKey", "CHYLE_DECORATORS_SHELL_*_ORIGKEY", "A field from which you want to use the content to pipe a command on"},
-	{"shellDecoratorDestKey", "decoratorChoice", "CHYLE_DECORATORS_SHELL_*_DESTKEY", "A name for the key which will receive the extracted value"},
+	{
+		ID:           "shellDecoratorCommand",
+		NextID:       "shellDecoratorOrigKey",
+		Env:          "CHYLE_DECORATORS_SHELL_*_COMMAND",
+		PromptString: "Shell command to execute",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "shellDecoratorOrigKey",
+		NextID:       "shellDecoratorDestKey",
+		Env:          "CHYLE_DECORATORS_SHELL_*_ORIGKEY",
+		PromptString: "A field from which you want to use the content to pipe a command on",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "shellDecoratorDestKey",
+		NextID:       "decoratorChoice",
+		Env:          "CHYLE_DECORATORS_SHELL_*_DESTKEY",
+		PromptString: "A name for the key which will receive the extracted value",
+		Validator:    noOpValidator,
+	},
 }
 
 func newEnvDecorator(store *builder.Store) []strumt.Prompter {
@@ -150,6 +326,18 @@ func newEnvDecorator(store *builder.Store) []strumt.Prompter {
 }
 
 var envDecoratorKeys = []builder.EnvConfig{
-	{"envDecoratorVarName", "envDecoratorDestKey", "CHYLE_DECORATORS_ENV_*_VARNAME", "Environment variable name to dump in metadatas"},
-	{"envDecoratorDestKey", "decoratorChoice", "CHYLE_DECORATORS_ENV_*_DESTKEY", "The name of the key where to store dumped value in metadatas"},
+	{
+		ID:           "envDecoratorVarName",
+		NextID:       "envDecoratorDestKey",
+		Env:          "CHYLE_DECORATORS_ENV_*_VARNAME",
+		PromptString: "Environment variable name to dump in metadatas",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "envDecoratorDestKey",
+		NextID:       "decoratorChoice",
+		Env:          "CHYLE_DECORATORS_ENV_*_DESTKEY",
+		PromptString: "The name of the key where to store dumped value in metadatas",
+		Validator:    noOpValidator,
+	},
 }

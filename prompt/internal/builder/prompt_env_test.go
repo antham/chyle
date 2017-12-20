@@ -13,7 +13,7 @@ func TestNewEnvPrompt(t *testing.T) {
 
 	var stdout bytes.Buffer
 	buf := "1\n"
-	p := NewEnvPrompt(EnvConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value"}, store)
+	p := NewEnvPrompt(EnvConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value", func(value string) error { return nil }}, store)
 
 	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
 	s.AddLinePrompter(p.(strumt.LinePrompter))
@@ -36,7 +36,7 @@ func TestNewEnvPromptWithEmptyValueGiven(t *testing.T) {
 
 	var stdout bytes.Buffer
 	buf := "\n1\n"
-	p := NewEnvPrompt(EnvConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value"}, store)
+	p := NewEnvPrompt(EnvConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value", func(value string) error { return nil }}, store)
 
 	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
 	s.AddLinePrompter(p.(strumt.LinePrompter))
@@ -64,8 +64,8 @@ func TestNewEnvPrompts(t *testing.T) {
 	var stdout bytes.Buffer
 	buf := "1\n2\n"
 	p := NewEnvPrompts([]EnvConfig{
-		{"TEST1", "TEST2", "TEST_PROMPT_1", "Enter a value for prompt 1"},
-		{"TEST2", "", "TEST_PROMPT_2", "Enter a value for prompt 2"},
+		{"TEST1", "TEST2", "TEST_PROMPT_1", "Enter a value for prompt 1", func(value string) error { return nil }},
+		{"TEST2", "", "TEST_PROMPT_2", "Enter a value for prompt 2", func(value string) error { return nil }},
 	}, store)
 
 	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)

@@ -14,13 +14,13 @@ func NewGroupEnvPromptWithCounter(configs []EnvConfig, store *Store) []strumt.Pr
 	c := &counter.Counter{}
 
 	for i, config := range configs {
-		f := parseEnvWithCounter(config.Env, c, store)
+		f := parseEnvWithCounter(config.Validator, config.Env, c, store)
 
 		if i == len(configs)-1 {
-			f = parseEnvWithCounterAndIncrement(config.Env, c, store)
+			f = parseEnvWithCounterAndIncrement(config.Validator, config.Env, c, store)
 		}
 
-		p := template{
+		p := GenericPrompt{
 			config.ID,
 			config.PromptString,
 			func(NextID string) func(string) string { return func(string) string { return NextID } }(config.NextID),
@@ -34,10 +34,14 @@ func NewGroupEnvPromptWithCounter(configs []EnvConfig, store *Store) []strumt.Pr
 	return results
 }
 
-func parseEnvWithCounter(env string, counter *counter.Counter, store *Store) func(value string) error {
+func parseEnvWithCounter(validator func(string) error, env string, counter *counter.Counter, store *Store) func(value string) error {
 	return func(value string) error {
 		if value == "" {
 			return fmt.Errorf("No value given")
+		}
+
+		if err := validator(value); err != nil {
+			return err
 		}
 
 		(*store)[strings.Replace(env, "*", counter.Get(), -1)] = value
@@ -46,10 +50,14 @@ func parseEnvWithCounter(env string, counter *counter.Counter, store *Store) fun
 	}
 }
 
-func parseEnvWithCounterAndIncrement(env string, counter *counter.Counter, store *Store) func(value string) error {
+func parseEnvWithCounterAndIncrement(validator func(string) error, env string, counter *counter.Counter, store *Store) func(value string) error {
 	return func(value string) error {
 		if value == "" {
 			return fmt.Errorf("No value given")
+		}
+
+		if err := validator(value); err != nil {
+			return err
 		}
 
 		(*store)[strings.Replace(env, "*", counter.Get(), -1)] = value

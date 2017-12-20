@@ -11,10 +11,26 @@ var mainMenu = []strumt.Prompter{
 		"mainMenu",
 		addQuitChoice(
 			[]builder.SwitchConfig{
-				{"1", "Add a matcher", "matcherChoice"},
-				{"2", "Add an extractor", "extractorOrigKey"},
-				{"3", "Add a decorator", "decoratorChoice"},
-				{"4", "Add a sender", "senderChoice"},
+				{
+					Choice:       "1",
+					PromptString: "Add a matcher",
+					NextPromptID: "matcherChoice",
+				},
+				{
+					Choice:       "2",
+					PromptString: "Add an extractor",
+					NextPromptID: "extractorOrigKey",
+				},
+				{
+					Choice:       "3",
+					PromptString: "Add a decorator",
+					NextPromptID: "decoratorChoice",
+				},
+				{
+					Choice:       "4",
+					PromptString: "Add a sender",
+					NextPromptID: "senderChoice",
+				},
 			},
 		),
 	),

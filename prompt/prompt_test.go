@@ -22,6 +22,7 @@ func TestPrompt(t *testing.T) {
 	}
 
 	tests := []test{
+
 		// Mandatory parameters only
 		{
 			"HEAD\nHEAD~2\n/home/project\nq\n",
@@ -40,6 +41,7 @@ func TestPrompt(t *testing.T) {
 				"CHYLE_GIT_REPOSITORY_PATH": "/home/project",
 			},
 		},
+
 		// Matchers
 		{
 			"HEAD\nHEAD~2\n/home/project\n1\n1\nregular\n2\ntest.*\n3\njohn.*\n4\nsam.*\nm\nq\n",
@@ -72,7 +74,8 @@ func TestPrompt(t *testing.T) {
 				"CHYLE_MATCHERS_AUTHOR":     "sam.*",
 			},
 		},
-		// Matchers
+
+		// Extractors
 		{
 			"HEAD\nHEAD~2\n/home/project\n2\nid\nidParsed\n#\\d+\nq\n",
 			[]struct {
@@ -97,6 +100,7 @@ func TestPrompt(t *testing.T) {
 				"CHYLE_EXTRACTORS_0_REG":     "#\\d+",
 			},
 		},
+
 		// Decorators
 		{
 			"HEAD\nHEAD~2\n/home/project\n3\n1\nmessage\nid\n#\\d+\nhttp://test.com\n=@eTN#d0t:x4TgKE|XJ531!H<n0rJH\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n2\nmessage\nid\n#\\d+\nhttp://api.jira.com\nuser\npassword\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n3\nmessage\nid\n#\\d+\nd41d8cd98f00b204e9800998ecf8427e\nuser\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n4\necho\nmessage\nid\n4\necho\nmessage\nfield\nm\n3\n5\nTEST\ntest\n5\nfoo\nbar\nq\n",

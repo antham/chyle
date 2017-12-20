@@ -7,6 +7,9 @@ import (
 	"github.com/antham/chyle/prompt/internal/builder"
 )
 
+const json = "json"
+const template = "template"
+
 func newSenders(store *builder.Store) []strumt.Prompter {
 	return mergePrompters(
 		senderChoice,
@@ -17,32 +20,58 @@ func newSenders(store *builder.Store) []strumt.Prompter {
 }
 
 var senderChoice = []strumt.Prompter{
-	builder.NewSwitchPrompt("senderChoice", addMainMenuAndQuitChoice([]builder.SwitchConfig{{"1", "Add an stdout sender", "senderStdoutFormat"}, {"2", "Add a github release sender", "githubReleaseSenderCredentialsToken"}, {"3", "Add a custom api sender", "customAPISenderToken"}})),
+	builder.NewSwitchPrompt("senderChoice", addMainMenuAndQuitChoice(
+		[]builder.SwitchConfig{
+			{
+				Choice:       "1",
+				PromptString: "Add an stdout sender",
+				NextPromptID: "senderStdoutFormat",
+			},
+			{
+				Choice:       "2",
+				PromptString: "Add a github release sender",
+				NextPromptID: "githubReleaseSenderCredentialsToken",
+			},
+			{
+				Choice:       "3",
+				PromptString: "Add a custom api sender",
+				NextPromptID: "customAPISenderToken",
+			},
+		},
+	)),
 }
 
 func newStdoutSender(store *builder.Store) []strumt.Prompter {
 	return []strumt.Prompter{
-		builder.NewPromptWithCustomHandlers(
-			builder.EnvConfig{"senderStdoutFormat", "", "CHYLE_SENDERS_STDOUT_FORMAT", "Set output format : json or template"},
-			func(val string) string {
-				if val == "json" {
+		&builder.GenericPrompt{
+			PromptID:  "senderStdoutFormat",
+			PromptStr: "Set output format : json or template",
+			OnSuccess: func(val string) string {
+				if val == json {
 					return "senderChoice"
 				}
 				return "senderStdoutTemplate"
 			},
-			func(err error) string {
+			OnError: func(err error) string {
 				return "senderStdoutFormat"
 			},
-			func(val string) error {
-				if val != "json" && val != "template" {
+			ParseValue: func(val string) error {
+				if val != json && val != template {
 					return fmt.Errorf(`"%s" is not a valid format, it must be either "json" or "template"`, val)
 				}
 
-				return builder.ParseEnv("CHYLE_SENDERS_STDOUT_FORMAT", store)(val)
+				return builder.ParseEnv(func(value string) error { return nil }, "CHYLE_SENDERS_STDOUT_FORMAT", store)(val)
 			},
-			store,
+		},
+		builder.NewEnvPrompt(
+			builder.EnvConfig{
+				ID:           "senderStdoutTemplate",
+				NextID:       "senderChoice",
+				Env:          "CHYLE_SENDERS_STDOUT_TEMPLATE",
+				PromptString: "Set a template following golang template (more information here : https://github.com/antham/chyle#template)",
+				Validator:    validateTemplate,
+			}, store,
 		),
-		builder.NewEnvPrompt(builder.EnvConfig{"senderStdoutTemplate", "senderChoice", "CHYLE_SENDERS_STDOUT_TEMPLATE", "Set a template following golang template (more information here : https://github.com/antham/chyle#template)"}, store),
 	}
 }
 
@@ -51,16 +80,77 @@ func newGithubReleaseSender(store *builder.Store) []strumt.Prompter {
 }
 
 var githubReleaseSender = []builder.EnvConfig{
-	{"githubReleaseSenderCredentialsToken", "githubReleaseSenderCredentialsOwer", "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN", "Set github oauth token used to publish a release"},
-	{"githubReleaseSenderCredentialsOwer", "githubReleaseSenderReleaseDraft", "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER", "Set github user"},
-	{"githubReleaseSenderReleaseDraft", "githubReleaseSenderReleaseName", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_DRAFT", "Set if release must be marked as a draft (false or true)"},
-	{"githubReleaseSenderReleaseName", "githubReleaseSenderReleasePrerelease", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_NAME", "Set the title of the release"},
-	{"githubReleaseSenderReleasePrerelease", "githubReleaseSenderReleaseTagName", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_PRERELEASE", "Set if the release must be marked as prerelease (false or true)"},
-	{"githubReleaseSenderReleaseTagName", "githubReleaseSenderReleaseTargetCommit", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME", "Set release tag to create, when you update a release it will be used to find out release tied to this tag"},
-	{"githubReleaseSenderReleaseTargetCommit", "githubReleaseSenderReleaseTemplate", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TARGETCOMMITISH", "Set the commitish value that determines where the git tag is created from"},
-	{"githubReleaseSenderReleaseTemplate", "githubReleaseSenderReleaseUpdate", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE", "Set a template following golang template (more information here : https://github.com/antham/chyle#template)"},
-	{"githubReleaseSenderReleaseUpdate", "githubReleaseSenderRepositoryName", "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_UPDATE", "Set to true if you want to update an existing changelog, typical usage would be when you produce a release through GUI github release system"},
-	{"githubReleaseSenderRepositoryName", "senderChoice", "CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME", "Set github repository where we will publish the release (false or true)"},
+	{
+		ID:           "githubReleaseSenderCredentialsToken",
+		NextID:       "githubReleaseSenderCredentialsOwer",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN",
+		PromptString: "Set github oauth token used to publish a release",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "githubReleaseSenderCredentialsOwer",
+		NextID:       "githubReleaseSenderReleaseDraft",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER",
+		PromptString: "Set github user",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "githubReleaseSenderReleaseDraft",
+		NextID:       "githubReleaseSenderReleaseName",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_DRAFT",
+		PromptString: "Set if release must be marked as a draft (false or true)",
+		Validator:    validateBoolean,
+	},
+	{
+		ID:           "githubReleaseSenderReleaseName",
+		NextID:       "githubReleaseSenderReleasePrerelease",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_NAME",
+		PromptString: "Set the title of the release",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "githubReleaseSenderReleasePrerelease",
+		NextID:       "githubReleaseSenderReleaseTagName",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_PRERELEASE",
+		PromptString: "Set if the release must be marked as prerelease (false or true)",
+		Validator:    validateBoolean,
+	},
+	{
+		ID:           "githubReleaseSenderReleaseTagName",
+		NextID:       "githubReleaseSenderReleaseTargetCommit",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME",
+		PromptString: "Set release tag to create, when you update a release it will be used to find out release tied to this tag",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "githubReleaseSenderReleaseTargetCommit",
+		NextID:       "githubReleaseSenderReleaseTemplate",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TARGETCOMMITISH",
+		PromptString: "Set the commitish value that determines where the git tag is created from",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "githubReleaseSenderReleaseTemplate",
+		NextID:       "githubReleaseSenderReleaseUpdate",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE",
+		PromptString: "Set a template following golang template (more information here : https://github.com/antham/chyle#template)",
+
+		Validator: validateTemplate,
+	},
+	{
+		ID:           "githubReleaseSenderReleaseUpdate",
+		NextID:       "githubReleaseSenderRepositoryName",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_UPDATE",
+		PromptString: "Set to true if you want to update an existing changelog, typical usage would be when you produce a release through GUI github release system",
+		Validator:    validateBoolean,
+	},
+	{
+		ID:           "githubReleaseSenderRepositoryName",
+		NextID:       "senderChoice",
+		Env:          "CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME",
+		PromptString: "Set github repository where we will publish the release",
+		Validator:    noOpValidator,
+	},
 }
 
 func newCustomAPISender(store *builder.Store) []strumt.Prompter {
@@ -68,6 +158,18 @@ func newCustomAPISender(store *builder.Store) []strumt.Prompter {
 }
 
 var customAPISender = []builder.EnvConfig{
-	{"customAPISenderToken", "customAPISenderURL", "CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN", `Set an access token that would be given in request header "Authorization" to API`},
-	{"customAPISenderURL", "senderChoice", "CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL", "Set the URL endpoint where the POST request will be sent"},
+	{
+		ID:           "customAPISenderToken",
+		NextID:       "customAPISenderURL",
+		Env:          "CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN",
+		PromptString: `Set an access token that would be given in request header "Authorization" to API`,
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "customAPISenderURL",
+		NextID:       "senderChoice",
+		Env:          "CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL",
+		PromptString: "Set the URL endpoint where the POST request will be sent",
+		Validator:    validateURL,
+	},
 }

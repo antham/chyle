@@ -6,4 +6,5 @@ type EnvConfig struct {
 	NextID       string
 	Env          string
 	PromptString string
+	Validator    func(value string) error
 }

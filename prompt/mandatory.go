@@ -11,7 +11,25 @@ func newMandatoryOption(store *builder.Store) []strumt.Prompter {
 }
 
 var mandatoryOption = []builder.EnvConfig{
-	{"referenceFrom", "referenceTo", "CHYLE_GIT_REFERENCE_FROM", "Enter a git commit ID that start your range"},
-	{"referenceTo", "gitPath", "CHYLE_GIT_REFERENCE_TO", "Enter a git commit ID that end your range"},
-	{"gitPath", "mainMenu", "CHYLE_GIT_REPOSITORY_PATH", "Enter your git path repository"},
+	{
+		ID:           "referenceFrom",
+		NextID:       "referenceTo",
+		Env:          "CHYLE_GIT_REFERENCE_FROM",
+		PromptString: "Enter a git commit ID that start your range",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "referenceTo",
+		NextID:       "gitPath",
+		Env:          "CHYLE_GIT_REFERENCE_TO",
+		PromptString: "Enter a git commit ID that end your range",
+		Validator:    noOpValidator,
+	},
+	{
+		ID:           "gitPath",
+		NextID:       "mainMenu",
+		Env:          "CHYLE_GIT_REPOSITORY_PATH",
+		PromptString: "Enter your git path repository",
+		Validator:    noOpValidator,
+	},
 }

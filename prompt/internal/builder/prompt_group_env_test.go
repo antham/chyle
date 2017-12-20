@@ -15,8 +15,8 @@ func TestNewGroupEnvPromptWithCounter(t *testing.T) {
 	buf := "test0\ntest1\n1\ntest2\ntest3\nq\n"
 	prompts := NewGroupEnvPromptWithCounter(
 		[]EnvConfig{
-			{"TEST_0", "TEST_1", "TEST_*_0", "Enter a value"},
-			{"TEST_1", "choice", "TEST_*_1", "Enter a value"},
+			{"TEST_0", "TEST_1", "TEST_*_0", "Enter a value", func(value string) error { return nil }},
+			{"TEST_1", "choice", "TEST_*_1", "Enter a value", func(value string) error { return nil }},
 		}, store)
 
 	var choice = []strumt.Prompter{
