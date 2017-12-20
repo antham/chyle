@@ -1,6 +1,7 @@
 [config]
 exclude-merge-commits=true
 check-summary-length=true
+summary-length=72
 
 [matchers]
 simple="(?:feat|test|ref|fix|style|doc)\\(.*?\\) : .+(?:\n)?"

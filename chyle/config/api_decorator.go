@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/antham/envh"
 )
@@ -142,7 +143,7 @@ func (a *apiDecoratorConfigurator) validateKeys() error {
 	keys, err := a.config.FindChildrenKeys("CHYLE", "DECORATORS", a.decoratorKey, "KEYS")
 
 	if err != nil {
-		return fmt.Errorf(`define at least one environment variable couple "CHYLE_DECORATORS_%s_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_%s_KEYS_*_FIELD", replace "*" with your own naming`, a.decoratorKey, a.decoratorKey)
+		return EnvValidationError{fmt.Sprintf(`define at least one environment variable couple "CHYLE_DECORATORS_%s_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_%s_KEYS_*_FIELD", replace "*" with your own naming`, a.decoratorKey, a.decoratorKey), strings.Join([]string{"CHYLE", "DECORATORS", a.decoratorKey, "KEYS"}, "_")}
 	}
 
 	for _, key := range keys {

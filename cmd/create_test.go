@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"fmt"
+	"bytes"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"sync"
@@ -60,7 +61,6 @@ func TestCreateWithErrors(t *testing.T) {
 	}
 
 	var code int
-	var err error
 	var w sync.WaitGroup
 
 	exitError = func() {
@@ -71,9 +71,7 @@ func TestCreateWithErrors(t *testing.T) {
 		panic(0)
 	}
 
-	failure = func(e error) {
-		err = e
-	}
+	writer = &bytes.Buffer{}
 
 	fixtures := map[string]func(){
 		`environment variable missing : "CHYLE_GIT_REPOSITORY_PATH"`: func() {
@@ -124,9 +122,13 @@ func TestCreateWithErrors(t *testing.T) {
 
 		w.Wait()
 
-		assert.EqualValues(t, 1, code, "Must exit with an error (exit 1)")
-		assert.EqualError(t, err, errStr)
+		output, err := ioutil.ReadAll(writer.(*bytes.Buffer))
 
-		err = fmt.Errorf("Not a valid error")
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.EqualValues(t, 1, code, "Must exit with an error (exit 1)")
+		assert.Contains(t, string(output), errStr)
 	}
 }

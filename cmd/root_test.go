@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"bytes"
+	"io/ioutil"
 	"os"
 	"sync"
 	"testing"
@@ -10,7 +12,6 @@ import (
 
 func TestExecute(t *testing.T) {
 	var code int
-	var err error
 	var w sync.WaitGroup
 
 	exitError = func() {
@@ -21,9 +22,7 @@ func TestExecute(t *testing.T) {
 		panic(0)
 	}
 
-	failure = func(e error) {
-		err = e
-	}
+	writer = &bytes.Buffer{}
 
 	w.Add(1)
 
@@ -43,6 +42,12 @@ func TestExecute(t *testing.T) {
 
 	w.Wait()
 
-	assert.EqualError(t, err, `unknown command "whatever" for "chyle"`)
+	output, err := ioutil.ReadAll(writer.(*bytes.Buffer))
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Contains(t, string(output), `unknown command "whatever" for "chyle"`)
 	assert.EqualValues(t, 1, code, "Must exit with an errors (exit 1)")
 }
