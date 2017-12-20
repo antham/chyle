@@ -22,8 +22,6 @@ func (p *Prompts) populatePrompts(prompts []strumt.Prompter) {
 		switch prompt := item.(type) {
 		case strumt.LinePrompter:
 			p.prompts.AddLinePrompter(prompt)
-		case strumt.MultilinePrompter:
-			p.prompts.AddMultilinePrompter(prompt)
 		}
 	}
 }
