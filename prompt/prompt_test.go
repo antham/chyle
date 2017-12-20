@@ -43,7 +43,7 @@ func TestPrompt(t *testing.T) {
 
 		// Matchers
 		{
-			"HEAD\nHEAD~2\n/home/project\n999\n1\n1\nwhatever\nregular\n2\ntest.**\ntest.*\n3\njohn.**\njohn.*\n4\nsam.**\nsam.*\nm\nq\n",
+			"HEAD\nHEAD~2\n/home/project\n\n999\n1\n1\nwhatever\nregular\n2\ntest.**\ntest.*\n3\njohn.**\njohn.*\n4\nsam.**\nsam.*\nm\nq\n",
 			[]struct {
 				inputs []string
 				err    error
@@ -51,6 +51,7 @@ func TestPrompt(t *testing.T) {
 				{[]string{"HEAD"}, nil},
 				{[]string{"HEAD~2"}, nil},
 				{[]string{"/home/project"}, nil},
+				{[]string{""}, fmt.Errorf("No value given")},
 				{[]string{"999"}, fmt.Errorf("This choice doesn't exist")},
 				{[]string{"1"}, nil},
 				{[]string{"1"}, nil},
