@@ -82,7 +82,7 @@ func TestPrompt(t *testing.T) {
 
 		// Extractors
 		{
-			"HEAD\nHEAD~2\n/home/project\n2\nwhatever\nid\nidParsed\n#\\d++\n#\\d+\nq\n",
+			"HEAD\nHEAD~2\n/home/project\n2\n\nwhatever\nid\nidParsed\n#\\d++\n#\\d+\nq\n",
 			[]struct {
 				inputs []string
 				err    error
@@ -91,6 +91,7 @@ func TestPrompt(t *testing.T) {
 				{[]string{"HEAD~2"}, nil},
 				{[]string{"/home/project"}, nil},
 				{[]string{"2"}, nil},
+				{[]string{""}, fmt.Errorf(`No value given`)},
 				{[]string{"whatever"}, fmt.Errorf(`Must be one of [id authorName authorEmail authorDate committerName committerEmail committerMessage type]`)},
 				{[]string{"id"}, nil},
 				{[]string{"idParsed"}, nil},
