@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/antham/strumt"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -291,8 +289,7 @@ func TestPrompt(t *testing.T) {
 	for _, test := range tests {
 		buf := test.userInput
 
-		p := Prompts{}
-		p.prompts = strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
+		p := New(bytes.NewBufferString(buf), &stdout)
 
 		envs := p.Run()
 
