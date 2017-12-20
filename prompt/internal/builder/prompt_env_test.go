@@ -2,6 +2,7 @@ package builder
 
 import (
 	"bytes"
+	"errors"
 	"testing"
 
 	"github.com/antham/strumt"
@@ -31,12 +32,17 @@ func TestNewEnvPrompt(t *testing.T) {
 	assert.Equal(t, &Store{"TEST_NEW_ENV_PROMPT": "1"}, store)
 }
 
-func TestNewEnvPromptWithEmptyValueGiven(t *testing.T) {
+func TestNewEnvPromptWithEmptyValueAndCustomErrorGiven(t *testing.T) {
 	store := &Store{}
 
 	var stdout bytes.Buffer
-	buf := "\n1\n"
-	p := NewEnvPrompt(EnvConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value", func(value string) error { return nil }}, store)
+	buf := "\nfalse\ntrue\n"
+	p := NewEnvPrompt(EnvConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value", func(value string) error {
+		if value == "false" {
+			return errors.New("Value must be true")
+		}
+		return nil
+	}}, store)
 
 	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
 	s.AddLinePrompter(p.(strumt.LinePrompter))
@@ -45,17 +51,21 @@ func TestNewEnvPromptWithEmptyValueGiven(t *testing.T) {
 
 	scenario := s.Scenario()
 
-	assert.Len(t, scenario, 2)
+	assert.Len(t, scenario, 3)
 	assert.Equal(t, scenario[0].PromptString(), "Enter a value")
 	assert.Len(t, scenario[0].Inputs(), 1)
 	assert.Equal(t, scenario[0].Inputs()[0], "")
 	assert.EqualError(t, scenario[0].Error(), "No value given")
 	assert.Equal(t, scenario[1].PromptString(), "Enter a value")
 	assert.Len(t, scenario[1].Inputs(), 1)
-	assert.Equal(t, scenario[1].Inputs()[0], "1")
-	assert.Nil(t, scenario[1].Error())
+	assert.Equal(t, scenario[1].Inputs()[0], "false")
+	assert.Equal(t, scenario[1].Error().Error(), "Value must be true")
+	assert.Equal(t, scenario[2].PromptString(), "Enter a value")
+	assert.Len(t, scenario[2].Inputs(), 1)
+	assert.Equal(t, scenario[2].Inputs()[0], "true")
+	assert.Nil(t, scenario[2].Error())
 
-	assert.Equal(t, &Store{"TEST_NEW_ENV_PROMPT": "1"}, store)
+	assert.Equal(t, &Store{"TEST_NEW_ENV_PROMPT": "true"}, store)
 }
 
 func TestNewEnvPrompts(t *testing.T) {
