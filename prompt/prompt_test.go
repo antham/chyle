@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/antham/strumt"
@@ -44,7 +45,7 @@ func TestPrompt(t *testing.T) {
 
 		// Matchers
 		{
-			"HEAD\nHEAD~2\n/home/project\n1\n1\nregular\n2\ntest.*\n3\njohn.*\n4\nsam.*\nm\nq\n",
+			"HEAD\nHEAD~2\n/home/project\n1\n1\nregular\n2\ntest.**\ntest.*\n3\njohn.**\njohn.*\n4\nsam.**\nsam.*\nm\nq\n",
 			[]struct {
 				inputs []string
 				err    error
@@ -56,10 +57,13 @@ func TestPrompt(t *testing.T) {
 				{[]string{"1"}, nil},
 				{[]string{"regular"}, nil},
 				{[]string{"2"}, nil},
+				{[]string{"test.**"}, fmt.Errorf("\"test.**\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `**`")},
 				{[]string{"test.*"}, nil},
 				{[]string{"3"}, nil},
+				{[]string{"john.**"}, fmt.Errorf("\"john.**\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `**`")},
 				{[]string{"john.*"}, nil},
 				{[]string{"4"}, nil},
+				{[]string{"sam.**"}, fmt.Errorf("\"sam.**\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `**`")},
 				{[]string{"sam.*"}, nil},
 				{[]string{"m"}, nil},
 				{[]string{"q"}, nil},
@@ -77,7 +81,7 @@ func TestPrompt(t *testing.T) {
 
 		// Extractors
 		{
-			"HEAD\nHEAD~2\n/home/project\n2\nid\nidParsed\n#\\d+\nq\n",
+			"HEAD\nHEAD~2\n/home/project\n2\nid\nidParsed\n#\\d++\n#\\d+\nq\n",
 			[]struct {
 				inputs []string
 				err    error
@@ -88,6 +92,7 @@ func TestPrompt(t *testing.T) {
 				{[]string{"2"}, nil},
 				{[]string{"id"}, nil},
 				{[]string{"idParsed"}, nil},
+				{[]string{"#\\d++"}, fmt.Errorf("\"#\\d++\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `++`")},
 				{[]string{"#\\d+"}, nil},
 				{[]string{"q"}, nil},
 			},
@@ -103,7 +108,7 @@ func TestPrompt(t *testing.T) {
 
 		// Decorators
 		{
-			"HEAD\nHEAD~2\n/home/project\n3\n1\nmessage\nid\n#\\d+\nhttp://test.com\n=@eTN#d0t:x4TgKE|XJ531!H<n0rJH\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n2\nmessage\nid\n#\\d+\nhttp://api.jira.com\nuser\npassword\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n3\nmessage\nid\n#\\d+\nd41d8cd98f00b204e9800998ecf8427e\nuser\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n4\necho\nmessage\nid\n4\necho\nmessage\nfield\nm\n3\n5\nTEST\ntest\n5\nfoo\nbar\nq\n",
+			"HEAD\nHEAD~2\n/home/project\n3\n1\nmessage\nid\n#\\d++\n#\\d+\ntest\nhttp://test.com\n=@eTN#d0t:x4TgKE|XJ531!H<n0rJH\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n2\nmessage\nid\n#\\d++\n#\\d+\nhttp://api.jira.com\nuser\npassword\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n3\nmessage\nid\n#\\d++\n#\\d+\nd41d8cd98f00b204e9800998ecf8427e\nuser\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n4\necho\nmessage\nid\n4\necho\nmessage\nfield\nm\n3\n5\nTEST\ntest\n5\nfoo\nbar\nq\n",
 			[]struct {
 				inputs []string
 				err    error
@@ -115,7 +120,9 @@ func TestPrompt(t *testing.T) {
 				{[]string{"1"}, nil},
 				{[]string{"message"}, nil},
 				{[]string{"id"}, nil},
+				{[]string{"#\\d++"}, fmt.Errorf("\"#\\d++\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `++`")},
 				{[]string{"#\\d+"}, nil},
+				{[]string{"test"}, fmt.Errorf(`"test" must be a valid URL`)},
 				{[]string{"http://test.com"}, nil},
 				{[]string{"=@eTN#d0t:x4TgKE|XJ531!H<n0rJH"}, nil},
 				{[]string{"objectId"}, nil},
@@ -128,6 +135,7 @@ func TestPrompt(t *testing.T) {
 				{[]string{"2"}, nil},
 				{[]string{"message"}, nil},
 				{[]string{"id"}, nil},
+				{[]string{"#\\d++"}, fmt.Errorf("\"#\\d++\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `++`")},
 				{[]string{"#\\d+"}, nil},
 				{[]string{"http://api.jira.com"}, nil},
 				{[]string{"user"}, nil},
@@ -142,6 +150,7 @@ func TestPrompt(t *testing.T) {
 				{[]string{"3"}, nil},
 				{[]string{"message"}, nil},
 				{[]string{"id"}, nil},
+				{[]string{"#\\d++"}, fmt.Errorf("\"#\\d++\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `++`")},
 				{[]string{"#\\d+"}, nil},
 				{[]string{"d41d8cd98f00b204e9800998ecf8427e"}, nil},
 				{[]string{"user"}, nil},
@@ -217,7 +226,7 @@ func TestPrompt(t *testing.T) {
 
 		// Senders
 		{
-			"HEAD\nHEAD~2\n/home/project\n4\n1\njson\n2\nd41d8cd98f00b204e9800998ecf8427e\nuser\nfalse\nRelease 1\nfalse\nv1.0.0\nmaster\n{{.}}\nfalse\nrepository\n3\nd41d8cd98f00b204e9800998ecf8427e\nhttp://test.com\nq\n",
+			"HEAD\nHEAD~2\n/home/project\n4\n1\njso\njson\n1\ntemplate\n{{{\n{{.}}\n2\nd41d8cd98f00b204e9800998ecf8427e\nuser\nwhatever\nfalse\nRelease 1\nwhatever\nfalse\nv1.0.0\nmaster\n{{{\n{{.}}\nwhatever\nfalse\nrepository\n3\nd41d8cd98f00b204e9800998ecf8427e\ntest\nhttp://test.com\nq\n",
 			[]struct {
 				inputs []string
 				err    error
@@ -227,20 +236,30 @@ func TestPrompt(t *testing.T) {
 				{[]string{"/home/project"}, nil},
 				{[]string{"4"}, nil},
 				{[]string{"1"}, nil},
+				{[]string{"jso"}, fmt.Errorf(`"jso" is not a valid format, it must be either "json" or "template"`)},
 				{[]string{"json"}, nil},
+				{[]string{"1"}, nil},
+				{[]string{"template"}, nil},
+				{[]string{"{{{"}, fmt.Errorf(`"{{{" is an invalid template : template: template:1: unexpected "{" in command`)},
+				{[]string{"{{.}}"}, nil},
 				{[]string{"2"}, nil},
 				{[]string{"d41d8cd98f00b204e9800998ecf8427e"}, nil},
 				{[]string{"user"}, nil},
+				{[]string{"whatever"}, fmt.Errorf(`"whatever" must be true or false`)},
 				{[]string{"false"}, nil},
 				{[]string{"Release 1"}, nil},
+				{[]string{"whatever"}, fmt.Errorf(`"whatever" must be true or false`)},
 				{[]string{"false"}, nil},
 				{[]string{"v1.0.0"}, nil},
 				{[]string{"master"}, nil},
+				{[]string{"{{{"}, fmt.Errorf(`"{{{" is an invalid template : template: template:1: unexpected "{" in command`)},
 				{[]string{"{{.}}"}, nil},
+				{[]string{"whatever"}, fmt.Errorf(`"whatever" must be true or false`)},
 				{[]string{"false"}, nil},
 				{[]string{"repository"}, nil},
 				{[]string{"3"}, nil},
 				{[]string{"d41d8cd98f00b204e9800998ecf8427e"}, nil},
+				{[]string{"test"}, fmt.Errorf(`"test" must be a valid URL`)},
 				{[]string{"http://test.com"}, nil},
 				{[]string{"q"}, nil},
 			},
@@ -248,7 +267,8 @@ func TestPrompt(t *testing.T) {
 				"CHYLE_GIT_REFERENCE_FROM":                            "HEAD",
 				"CHYLE_GIT_REFERENCE_TO":                              "HEAD~2",
 				"CHYLE_GIT_REPOSITORY_PATH":                           "/home/project",
-				"CHYLE_SENDERS_STDOUT_FORMAT":                         "json",
+				"CHYLE_SENDERS_STDOUT_FORMAT":                         "template",
+				"CHYLE_SENDERS_STDOUT_TEMPLATE":                       "{{.}}",
 				"CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN":  "d41d8cd98f00b204e9800998ecf8427e",
 				"CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER":       "user",
 				"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_DRAFT":           "false",
