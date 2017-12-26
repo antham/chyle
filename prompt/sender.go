@@ -68,7 +68,7 @@ func newStdoutSender(store *builder.Store) []strumt.Prompter {
 				ID:           "senderStdoutTemplate",
 				NextID:       "senderChoice",
 				Env:          "CHYLE_SENDERS_STDOUT_TEMPLATE",
-				PromptString: "Set a template used to dump to stdout. The syntax follows the golang template (more information here : https://github.com/antham/chyle#template)",
+				PromptString: "Set a template used to dump to stdout. The syntax follows the golang template (more information here : https://github.com/antham/chyle/wiki/6-Templates)",
 				Validator:    validateTemplate,
 			}, store,
 		),
@@ -140,7 +140,7 @@ var githubReleaseSender = []builder.EnvConfig{
 		ID:           "githubReleaseSenderReleaseTemplate",
 		NextID:       "githubReleaseSenderReleaseUpdate",
 		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE",
-		PromptString: "Set a template used to dump the release body. The syntax follows the golang template (more information here : https://github.com/antham/chyle#template)",
+		PromptString: "Set a template used to dump the release body. The syntax follows the golang template (more information here : https://github.com/antham/chyle/wiki/6-Templates)",
 
 		Validator: validateTemplate,
 	},

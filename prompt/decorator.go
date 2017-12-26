@@ -195,7 +195,7 @@ var jiraIssueDecoratorKeys = []builder.EnvConfig{
 		ID:           "jiraIssueDecoratorField",
 		NextID:       "jiraIssueDecoratorChoice",
 		Env:          "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_FIELD",
-		PromptString: `The field to extract from jira api response payload, use dot notation to extract a nested value (eg: "fields.summary")`,
+		PromptString: `The field to extract from jira api response payload, use dot notation to extract a nested value (eg: "fields.summary" will retrieve the summary of a jira issue)`,
 		Validator:    validateDefinedValue,
 	},
 }
@@ -273,7 +273,7 @@ var githubIssueDecoratorKeys = []builder.EnvConfig{
 		ID:           "githubIssueDecoratorField",
 		NextID:       "githubIssueDecoratorChoice",
 		Env:          "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_FIELD",
-		PromptString: `The field to extract from github issue api response payload, use dot notation to extract a nested value (eg: "fields.summary")`,
+		PromptString: `The field to extract from github issue api response payload, use dot notation to extract a nested value (eg: "user.id" will retrieve the user who created the issue)`,
 		Validator:    validateDefinedValue,
 	},
 }
@@ -337,7 +337,7 @@ var envDecoratorKeys = []builder.EnvConfig{
 		ID:           "envDecoratorDestKey",
 		NextID:       "decoratorChoice",
 		Env:          "CHYLE_DECORATORS_ENV_*_DESTKEY",
-		PromptString: "The name of the key where to store dumped value in metadatas",
+		PromptString: "The name of the key where to store the dumped value in metadatas",
 		Validator:    validateDefinedValue,
 	},
 }
