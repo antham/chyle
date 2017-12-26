@@ -112,8 +112,8 @@ var githubReleaseSender = []builder.EnvConfig{
 		ID:           "githubReleaseSenderReleaseName",
 		NextID:       "githubReleaseSenderReleasePrerelease",
 		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_NAME",
-		PromptString: "Set the title of the release",
-		Validator:    validateDefinedValue,
+		PromptString: "Set the title of the release, just return if you don't want to give a title",
+		Validator:    noOpValidator,
 	},
 	{
 		ID:           "githubReleaseSenderReleasePrerelease",

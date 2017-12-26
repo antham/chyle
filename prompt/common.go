@@ -48,6 +48,10 @@ func addMainMenuAndQuitChoice(choices []builder.SwitchConfig) []builder.SwitchCo
 	return addQuitChoice(addMainMenuChoice(choices))
 }
 
+func noOpValidator(value string) error {
+	return nil
+}
+
 func validateDefinedValue(value string) error {
 	if value == "" {
 		return fmt.Errorf("No value given")
