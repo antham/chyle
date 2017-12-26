@@ -22,22 +22,22 @@ var matcherChoice = []strumt.Prompter{
 			[]builder.SwitchConfig{
 				{
 					Choice:       "1",
-					PromptString: "Add a type matcher",
+					PromptString: "Add a type matcher, it's used to match merge commit or regular one",
 					NextPromptID: "matcherType",
 				},
 				{
 					Choice:       "2",
-					PromptString: "Add a message matcher",
+					PromptString: "Add a message matcher, it's used to match a commit according to a pattern found in commit message",
 					NextPromptID: "matcherMessage",
 				},
 				{
 					Choice:       "3",
-					PromptString: "Add a committer matcher",
+					PromptString: "Add a committer matcher, it's used to match a commit according to a pattern apply to the committer field",
 					NextPromptID: "matcherCommitter",
 				},
 				{
 					Choice:       "4",
-					PromptString: "Add an author matcher",
+					PromptString: "Add an author matcher, it's used to match a commit according to a pattern apply to the author field",
 					NextPromptID: "matcherAuthor",
 				},
 			},

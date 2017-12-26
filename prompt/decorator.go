@@ -44,7 +44,7 @@ var decorator = []strumt.Prompter{
 				},
 				{
 					Choice:       "5",
-					PromptString: "Add an environment variable decorator",
+					PromptString: "Add an environment variable decorator to add an environment variable to the global metadata hashmap",
 					NextPromptID: "envDecoratorVarName",
 				},
 			},
@@ -110,7 +110,7 @@ var customAPIDecoratorKeys = []builder.EnvConfig{
 		ID:           "customAPIDecoratorField",
 		NextID:       "customAPIDecoratorChoice",
 		Env:          "CHYLE_DECORATORS_CUSTOMAPIID_KEYS_*_FIELD",
-		PromptString: `The field to extract from your custom api response payload, use dot notation to extract a deep value (eg: "fields.summary")`,
+		PromptString: `The field to extract from your custom api response payload, use dot notation to extract a nested value (eg: "fields.summary")`,
 		Validator:    noOpValidator,
 	},
 }
@@ -195,7 +195,7 @@ var jiraIssueDecoratorKeys = []builder.EnvConfig{
 		ID:           "jiraIssueDecoratorField",
 		NextID:       "jiraIssueDecoratorChoice",
 		Env:          "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_FIELD",
-		PromptString: `The field to extract from jira api response payload, use dot notation to extract a deep value (eg: "fields.summary")`,
+		PromptString: `The field to extract from jira api response payload, use dot notation to extract a nested value (eg: "fields.summary")`,
 		Validator:    noOpValidator,
 	},
 }
@@ -273,7 +273,7 @@ var githubIssueDecoratorKeys = []builder.EnvConfig{
 		ID:           "githubIssueDecoratorField",
 		NextID:       "githubIssueDecoratorChoice",
 		Env:          "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_FIELD",
-		PromptString: `The field to extract from github issue api response payload, use dot notation to extract a deep value (eg: "fields.summary")`,
+		PromptString: `The field to extract from github issue api response payload, use dot notation to extract a nested value (eg: "fields.summary")`,
 		Validator:    noOpValidator,
 	},
 }

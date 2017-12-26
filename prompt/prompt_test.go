@@ -229,7 +229,7 @@ func TestPrompt(t *testing.T) {
 
 		// Senders
 		{
-			"HEAD\nHEAD~2\n/home/project\n4\n1\njso\njson\n1\ntemplate\n{{{\n{{.}}\n2\nd41d8cd98f00b204e9800998ecf8427e\nuser\nwhatever\nfalse\nRelease 1\nwhatever\nfalse\nv1.0.0\nmaster\n{{{\n{{.}}\nwhatever\nfalse\nrepository\n3\nd41d8cd98f00b204e9800998ecf8427e\ntest\nhttp://test.com\nq\n",
+			"HEAD\nHEAD~2\n/home/project\n4\n1\njso\njson\n1\ntemplate\n{{{\n{{.}}\n2\nd41d8cd98f00b204e9800998ecf8427e\nuser\nrepository\nwhatever\nfalse\nRelease 1\nwhatever\nfalse\nv1.0.0\nmaster\n{{{\n{{.}}\nwhatever\nfalse\n3\nd41d8cd98f00b204e9800998ecf8427e\ntest\nhttp://test.com\nq\n",
 			[]struct {
 				inputs []string
 				err    error
@@ -248,6 +248,7 @@ func TestPrompt(t *testing.T) {
 				{[]string{"2"}, nil},
 				{[]string{"d41d8cd98f00b204e9800998ecf8427e"}, nil},
 				{[]string{"user"}, nil},
+				{[]string{"repository"}, nil},
 				{[]string{"whatever"}, fmt.Errorf(`"whatever" must be true or false`)},
 				{[]string{"false"}, nil},
 				{[]string{"Release 1"}, nil},
@@ -259,7 +260,6 @@ func TestPrompt(t *testing.T) {
 				{[]string{"{{.}}"}, nil},
 				{[]string{"whatever"}, fmt.Errorf(`"whatever" must be true or false`)},
 				{[]string{"false"}, nil},
-				{[]string{"repository"}, nil},
 				{[]string{"3"}, nil},
 				{[]string{"d41d8cd98f00b204e9800998ecf8427e"}, nil},
 				{[]string{"test"}, fmt.Errorf(`"test" must be a valid URL`)},
@@ -274,6 +274,7 @@ func TestPrompt(t *testing.T) {
 				"CHYLE_SENDERS_STDOUT_TEMPLATE":                       "{{.}}",
 				"CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN":  "d41d8cd98f00b204e9800998ecf8427e",
 				"CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER":       "user",
+				"CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME":         "repository",
 				"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_DRAFT":           "false",
 				"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_NAME":            "Release 1",
 				"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_PRERELEASE":      "false",
@@ -281,7 +282,6 @@ func TestPrompt(t *testing.T) {
 				"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TARGETCOMMITISH": "master",
 				"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE":        "{{.}}",
 				"CHYLE_SENDERS_GITHUBRELEASE_RELEASE_UPDATE":          "false",
-				"CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME":         "repository",
 				"CHYLE_SENDERS_CUSTOMAPI_CREDENTIALS_TOKEN":           "d41d8cd98f00b204e9800998ecf8427e",
 				"CHYLE_SENDERS_CUSTOMAPI_ENDPOINT_URL":                "http://test.com",
 			},
