@@ -33,7 +33,9 @@ func ParseEnv(validator func(string) error, env string, store *Store) func(value
 			return err
 		}
 
-		(*store)[env] = value
+		if value != "" {
+			(*store)[env] = value
+		}
 
 		return nil
 	}

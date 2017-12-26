@@ -32,6 +32,29 @@ func TestNewEnvPrompt(t *testing.T) {
 	assert.Equal(t, &Store{"TEST_NEW_ENV_PROMPT": "1"}, store)
 }
 
+func TestNewEnvPromptWithAnEmptyValueAndNoValidationRules(t *testing.T) {
+	store := &Store{}
+
+	var stdout bytes.Buffer
+	buf := "\n"
+	p := NewEnvPrompt(EnvConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value", func(value string) error { return nil }}, store)
+
+	s := strumt.NewPromptsFromReaderAndWriter(bytes.NewBufferString(buf), &stdout)
+	s.AddLinePrompter(p.(strumt.LinePrompter))
+	s.SetFirst("TEST")
+	s.Run()
+
+	scenario := s.Scenario()
+
+	assert.Len(t, scenario, 1)
+	assert.Equal(t, scenario[0].PromptString(), "Enter a value")
+	assert.Len(t, scenario[0].Inputs(), 1)
+	assert.Equal(t, scenario[0].Inputs()[0], "")
+	assert.Nil(t, scenario[0].Error())
+
+	assert.Equal(t, &Store{}, store)
+}
+
 func TestNewEnvPromptWithEmptyValueAndCustomErrorGiven(t *testing.T) {
 	store := &Store{}
 
