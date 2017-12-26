@@ -40,7 +40,7 @@ jobs:
           command: |
             if [ $CIRCLE_BRANCH != 'master' ]; then
             git fetch --all
-            ~/bin/gommit check range $(git log --pretty=format:%H --reverse origin/master..${CIRCLE_BRANCH}|head -n 1) $(git rev-parse ${CIRCLE_BRANCH})
+            ~/bin/gommit check range $(git rev-parse origin/master) $(git rev-parse ${CIRCLE_BRANCH})
             fi
       - run:
           name: Run doc-hunt
