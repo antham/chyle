@@ -7,4 +7,5 @@ type EnvConfig struct {
 	Env          string
 	PromptString string
 	Validator    func(value string) error
+	DefaultValue string
 }

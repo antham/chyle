@@ -22,13 +22,19 @@ func NewEnvPrompt(config EnvConfig, store *Store) strumt.Prompter {
 		config.PromptString,
 		func(string) string { return config.NextID },
 		func(error) string { return config.ID },
-		ParseEnv(config.Validator, config.Env, store),
+		ParseEnv(config.Validator, config.Env, config.DefaultValue, store),
 	}
 }
 
 // ParseEnv provides an env parser callback
-func ParseEnv(validator func(string) error, env string, store *Store) func(value string) error {
+func ParseEnv(validator func(string) error, env string, defaultValue string, store *Store) func(value string) error {
 	return func(value string) error {
+		if value == "" && defaultValue != "" {
+			(*store)[env] = defaultValue
+
+			return nil
+		}
+
 		if err := validator(value); err != nil {
 			return err
 		}

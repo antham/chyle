@@ -60,7 +60,7 @@ func newStdoutSender(store *builder.Store) []strumt.Prompter {
 					return fmt.Errorf(`"%s" is not a valid format, it must be either "json" or "template"`, val)
 				}
 
-				return builder.ParseEnv(func(value string) error { return nil }, "CHYLE_SENDERS_STDOUT_FORMAT", store)(val)
+				return builder.ParseEnv(func(value string) error { return nil }, "CHYLE_SENDERS_STDOUT_FORMAT", "", store)(val)
 			},
 		},
 		builder.NewEnvPrompt(
@@ -105,8 +105,9 @@ var githubReleaseSender = []builder.EnvConfig{
 		ID:           "githubReleaseSenderReleaseDraft",
 		NextID:       "githubReleaseSenderReleaseName",
 		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_DRAFT",
-		PromptString: "Set if release must be marked as a draft (false or true)",
+		PromptString: "Set if release must be marked as a draft (default: false)",
 		Validator:    validateBoolean,
+		DefaultValue: "false",
 	},
 	{
 		ID:           "githubReleaseSenderReleaseName",
@@ -119,37 +120,39 @@ var githubReleaseSender = []builder.EnvConfig{
 		ID:           "githubReleaseSenderReleasePrerelease",
 		NextID:       "githubReleaseSenderReleaseTagName",
 		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_PRERELEASE",
-		PromptString: "Set if the release must be marked as a prerelease (false or true)",
+		PromptString: "Set if the release must be marked as a prerelease (default: false)",
 		Validator:    validateBoolean,
+		DefaultValue: "false",
 	},
 	{
 		ID:           "githubReleaseSenderReleaseTagName",
 		NextID:       "githubReleaseSenderReleaseTargetCommit",
 		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME",
-		PromptString: "Set release tag to create, when you update a release it will be used to find out the release tied to this tag",
+		PromptString: "Set the release tag to create, if you update a release instead, it will be used to find out the release tied to this tag",
 		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "githubReleaseSenderReleaseTargetCommit",
 		NextID:       "githubReleaseSenderReleaseTemplate",
 		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TARGETCOMMITISH",
-		PromptString: "Set the commitish value that determines where the git tag must created from",
-		Validator:    validateDefinedValue,
+		PromptString: "Set the commitish value that determines where the git tag must created from (default: master)",
+		Validator:    noOpValidator,
+		DefaultValue: "master",
 	},
 	{
 		ID:           "githubReleaseSenderReleaseTemplate",
 		NextID:       "githubReleaseSenderReleaseUpdate",
 		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE",
 		PromptString: "Set a template used to dump the release body. The syntax follows the golang template (more information here : https://github.com/antham/chyle/wiki/6-Templates)",
-
-		Validator: validateTemplate,
+		Validator:    validateTemplate,
 	},
 	{
 		ID:           "githubReleaseSenderReleaseUpdate",
 		NextID:       "senderChoice",
 		Env:          "CHYLE_SENDERS_GITHUBRELEASE_RELEASE_UPDATE",
-		PromptString: "Set to true if you want to update an existing changelog, typical usage would be when you produce a release through GUI github release system",
+		PromptString: "Set if you want to update an existing changelog, typical usage would be when you produce a release through GUI github release system (default: false)",
 		Validator:    validateBoolean,
+		DefaultValue: "false",
 	},
 }
 
