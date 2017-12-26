@@ -4,15 +4,15 @@ check-summary-length=true
 summary-length=72
 
 [matchers]
-simple="(?:feat|test|ref|fix|style|doc)\\(.*?\\) : .+(?:\n)?"
-extended="(?:feat|test|ref|fix|style|doc)\\(.*?\\) : .+?\n(?:\n?.+)+(?:\n)?"
+simple=".+? : [a-z0-9].+(?:\n)?"
+extended=".+? : [a-z0-9].+?\n(?:\n?.+)+(?:\n)?"
 
 [examples]
 a_simple_commit="""
-[feat|test|ref|fix|style|doc](module) : A commit message
+module : a commit message
 """
 an_extended_commit="""
-[feat|test|ref|fix|style|doc](module) : A commit message
+module : a commit message
 
 * first line
 * second line
