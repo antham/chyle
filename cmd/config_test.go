@@ -51,5 +51,5 @@ func TestConfig(t *testing.T) {
 
 	assert.EqualValues(t, 0, code, "Must exit with no errors (exit 0)")
 	assert.Contains(t, string(promptRecord), "Enter a git commit ID that start your range")
-	assert.Contains(t, string(promptRecord), "CHYLE_GIT_REFERENCE_TO=test")
+	assert.Contains(t, string(promptRecord), `CHYLE_GIT_REFERENCE_TO="test"`)
 }
