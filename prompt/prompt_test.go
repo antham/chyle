@@ -111,7 +111,7 @@ func TestPrompt(t *testing.T) {
 
 		// Decorators
 		{
-			"HEAD\nHEAD~2\n/home/project\n3\n1\nmessage\nid\n#\\d++\n#\\d+\ntest\nhttp://test.com\n=@eTN#d0t:x4TgKE|XJ531!H<n0rJH\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n2\nmessage\nid\n#\\d++\n#\\d+\nhttp://api.jira.com\nuser\npassword\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n3\nmessage\nid\n#\\d++\n#\\d+\nd41d8cd98f00b204e9800998ecf8427e\nuser\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n4\necho\nmessage\nid\n4\necho\nmessage\nfield\nm\n3\n5\nTEST\ntest\n5\nfoo\nbar\nq\n",
+			"HEAD\nHEAD~2\n/home/project\n3\n1\nmessage\nid\n#\\d++\n#\\d+\ntest\nhttp://test.com\n=@eTN#d0t:x4TgKE|XJ531!H<n0rJH\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n2\nmessage\n#\\d++\n#\\d+\nhttp://api.jira.com\nuser\npassword\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n3\nmessage\n#\\d++\n#\\d+\nd41d8cd98f00b204e9800998ecf8427e\nuser\nobjectId\nfields.id\n1\ndate\nfields.date\nm\n3\n4\necho\nmessage\nid\n4\necho\nmessage\nfield\nm\n3\n5\nTEST\ntest\n5\nfoo\nbar\nq\n",
 			[]struct {
 				inputs []string
 				err    error
@@ -137,7 +137,6 @@ func TestPrompt(t *testing.T) {
 				{[]string{"3"}, nil},
 				{[]string{"2"}, nil},
 				{[]string{"message"}, nil},
-				{[]string{"id"}, nil},
 				{[]string{"#\\d++"}, fmt.Errorf("\"#\\d++\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `++`")},
 				{[]string{"#\\d+"}, nil},
 				{[]string{"http://api.jira.com"}, nil},
@@ -152,7 +151,6 @@ func TestPrompt(t *testing.T) {
 				{[]string{"3"}, nil},
 				{[]string{"3"}, nil},
 				{[]string{"message"}, nil},
-				{[]string{"id"}, nil},
 				{[]string{"#\\d++"}, fmt.Errorf("\"#\\d++\" is an invalid regexp : error parsing regexp: invalid nested repetition operator: `++`")},
 				{[]string{"#\\d+"}, nil},
 				{[]string{"d41d8cd98f00b204e9800998ecf8427e"}, nil},
@@ -196,7 +194,7 @@ func TestPrompt(t *testing.T) {
 				"CHYLE_DECORATORS_CUSTOMAPIID_KEYS_1_DESTKEY":         "date",
 				"CHYLE_DECORATORS_CUSTOMAPIID_KEYS_1_FIELD":           "fields.date",
 				"CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY":                "message",
-				"CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY":                "id",
+				"CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY":                "jiraIssueId",
 				"CHYLE_EXTRACTORS_JIRAISSUEID_REG":                    "#\\d+",
 				"CHYLE_DECORATORS_JIRAISSUE_ENDPOINT_URL":             "http://api.jira.com",
 				"CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME":     "user",
@@ -206,7 +204,7 @@ func TestPrompt(t *testing.T) {
 				"CHYLE_DECORATORS_JIRAISSUE_KEYS_1_DESTKEY":           "date",
 				"CHYLE_DECORATORS_JIRAISSUE_KEYS_1_FIELD":             "fields.date",
 				"CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY":              "message",
-				"CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY":              "id",
+				"CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY":              "githubIssueId",
 				"CHYLE_EXTRACTORS_GITHUBISSUEID_REG":                  "#\\d+",
 				"CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN": "d41d8cd98f00b204e9800998ecf8427e",
 				"CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER":      "user",

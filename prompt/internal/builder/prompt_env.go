@@ -20,7 +20,11 @@ func NewEnvPrompt(config EnvConfig, store *Store) strumt.Prompter {
 	return &GenericPrompt{
 		config.ID,
 		config.PromptString,
-		func(string) string { return config.NextID },
+		func(value string) string {
+			config.RunBeforeNextPrompt(value, store)
+
+			return config.NextID
+		},
 		func(error) string { return config.ID },
 		ParseEnv(config.Validator, config.Env, config.DefaultValue, store),
 	}

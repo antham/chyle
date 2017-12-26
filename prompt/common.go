@@ -84,6 +84,8 @@ func validateBoolean(value string) error {
 	return nil
 }
 
+func noOpRunBeforeNextPrompt(value string, store *builder.Store) {}
+
 func validateTemplate(value string) error {
 	if _, err := tmplh.Parse("template", value); err != nil {
 		return fmt.Errorf(`"%s" is an invalid template : %s`, value, err.Error())

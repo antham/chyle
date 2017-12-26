@@ -14,25 +14,28 @@ func newExtractors(store *builder.Store) []strumt.Prompter {
 
 var extractor = []builder.EnvConfig{
 	{
-		ID:           "extractorOrigKey",
-		NextID:       "extractorDestKey",
-		Env:          "CHYLE_EXTRACTORS_*_ORIGKEY",
-		PromptString: "Enter a commit field from which we want to extract datas (id, authorName, authorEmail, authorDate, committerName, committerEmail, committerMessage, type)",
-		Validator:    validateExtractorCommitField,
+		ID:                  "extractorOrigKey",
+		NextID:              "extractorDestKey",
+		Env:                 "CHYLE_EXTRACTORS_*_ORIGKEY",
+		PromptString:        "Enter a commit field from which we want to extract datas (id, authorName, authorEmail, authorDate, committerName, committerEmail, committerMessage, type)",
+		Validator:           validateExtractorCommitField,
+		RunBeforeNextPrompt: noOpRunBeforeNextPrompt,
 	},
 	{
-		ID:           "extractorDestKey",
-		NextID:       "extractorReg",
-		Env:          "CHYLE_EXTRACTORS_*_DESTKEY",
-		PromptString: "Enter a name for the key which will receive the extracted value",
-		Validator:    validateDefinedValue,
+		ID:                  "extractorDestKey",
+		NextID:              "extractorReg",
+		Env:                 "CHYLE_EXTRACTORS_*_DESTKEY",
+		PromptString:        "Enter a name for the key which will receive the extracted value",
+		Validator:           validateDefinedValue,
+		RunBeforeNextPrompt: noOpRunBeforeNextPrompt,
 	},
 	{
-		ID:           "extractorReg",
-		NextID:       "mainMenu",
-		Env:          "CHYLE_EXTRACTORS_*_REG",
-		PromptString: "Enter a regexp used to extract a data",
-		Validator:    validateRegexp,
+		ID:                  "extractorReg",
+		NextID:              "mainMenu",
+		Env:                 "CHYLE_EXTRACTORS_*_REG",
+		PromptString:        "Enter a regexp used to extract a data",
+		Validator:           validateRegexp,
+		RunBeforeNextPrompt: noOpRunBeforeNextPrompt,
 	},
 }
 
