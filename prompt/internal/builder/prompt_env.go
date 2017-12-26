@@ -1,7 +1,6 @@
 package builder
 
 import (
-	"fmt"
 	"github.com/antham/strumt"
 )
 
@@ -30,10 +29,6 @@ func NewEnvPrompt(config EnvConfig, store *Store) strumt.Prompter {
 // ParseEnv provides an env parser callback
 func ParseEnv(validator func(string) error, env string, store *Store) func(value string) error {
 	return func(value string) error {
-		if value == "" {
-			return fmt.Errorf("No value given")
-		}
-
 		if err := validator(value); err != nil {
 			return err
 		}

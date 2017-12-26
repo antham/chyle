@@ -38,7 +38,7 @@ func TestNewEnvPromptWithEmptyValueAndCustomErrorGiven(t *testing.T) {
 	var stdout bytes.Buffer
 	buf := "\nfalse\ntrue\n"
 	p := NewEnvPrompt(EnvConfig{"TEST", "NEXT_TEST", "TEST_NEW_ENV_PROMPT", "Enter a value", func(value string) error {
-		if value == "false" {
+		if value != "true" {
 			return errors.New("Value must be true")
 		}
 		return nil
@@ -55,7 +55,7 @@ func TestNewEnvPromptWithEmptyValueAndCustomErrorGiven(t *testing.T) {
 	assert.Equal(t, scenario[0].PromptString(), "Enter a value")
 	assert.Len(t, scenario[0].Inputs(), 1)
 	assert.Equal(t, scenario[0].Inputs()[0], "")
-	assert.EqualError(t, scenario[0].Error(), "No value given")
+	assert.EqualError(t, scenario[0].Error(), "Value must be true")
 	assert.Equal(t, scenario[1].PromptString(), "Enter a value")
 	assert.Len(t, scenario[1].Inputs(), 1)
 	assert.Equal(t, scenario[1].Inputs()[0], "false")

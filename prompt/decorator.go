@@ -66,14 +66,14 @@ var customAPIDecorator = []builder.EnvConfig{
 		NextID:       "extractorDestKeyCustomAPI",
 		Env:          "CHYLE_EXTRACTORS_CUSTOMAPIID_ORIGKEY",
 		PromptString: "Enter a commit field where your custom api id is located",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "extractorDestKeyCustomAPI",
 		NextID:       "extractorRegCustomAPI",
 		Env:          "CHYLE_EXTRACTORS_CUSTOMAPIID_DESTKEY",
 		PromptString: "Enter a name for the key which will receive the extracted value",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "extractorRegCustomAPI",
@@ -94,7 +94,7 @@ var customAPIDecorator = []builder.EnvConfig{
 		NextID:       "customAPIDecoratorDestKey",
 		Env:          "CHYLE_DECORATORS_CUSTOMAPIID_CREDENTIALS_TOKEN",
 		PromptString: "Enter token submitted as authorization header when calling your api",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 }
 
@@ -104,14 +104,14 @@ var customAPIDecoratorKeys = []builder.EnvConfig{
 		NextID:       "customAPIDecoratorField",
 		Env:          "CHYLE_DECORATORS_CUSTOMAPIID_KEYS_*_DESTKEY",
 		PromptString: "A name for the key which will receive the data extracted from the custom api",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "customAPIDecoratorField",
 		NextID:       "customAPIDecoratorChoice",
 		Env:          "CHYLE_DECORATORS_CUSTOMAPIID_KEYS_*_FIELD",
 		PromptString: `The field to extract from your custom api response payload, use dot notation to extract a nested value (eg: "fields.summary")`,
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 }
 
@@ -144,14 +144,14 @@ var jiraIssueDecorator = []builder.EnvConfig{
 		NextID:       "extractorDestKeyJiraIssueID",
 		Env:          "CHYLE_EXTRACTORS_JIRAISSUEID_ORIGKEY",
 		PromptString: "Enter a commit field where your jira issue id is located",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "extractorDestKeyJiraIssueID",
 		NextID:       "extractorRegJiraIssueID",
 		Env:          "CHYLE_EXTRACTORS_JIRAISSUEID_DESTKEY",
 		PromptString: "Enter a name for the key which will receive the extracted value",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "extractorRegJiraIssueID",
@@ -172,14 +172,14 @@ var jiraIssueDecorator = []builder.EnvConfig{
 		NextID:       "jiraIssueDecoratorPassword",
 		Env:          "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_USERNAME",
 		PromptString: "Enter jira username",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "jiraIssueDecoratorPassword",
 		NextID:       "jiraIssueDecoratorDestKey",
 		Env:          "CHYLE_DECORATORS_JIRAISSUE_CREDENTIALS_PASSWORD",
 		PromptString: "Enter jira password",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 }
 
@@ -189,14 +189,14 @@ var jiraIssueDecoratorKeys = []builder.EnvConfig{
 		NextID:       "jiraIssueDecoratorField",
 		Env:          "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_DESTKEY",
 		PromptString: "A name for the key which will receive the extracted value",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "jiraIssueDecoratorField",
 		NextID:       "jiraIssueDecoratorChoice",
 		Env:          "CHYLE_DECORATORS_JIRAISSUE_KEYS_*_FIELD",
 		PromptString: `The field to extract from jira api response payload, use dot notation to extract a nested value (eg: "fields.summary")`,
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 }
 
@@ -229,14 +229,14 @@ var githubIssueDecorator = []builder.EnvConfig{
 		NextID:       "extractorDestKeyGithubIssueID",
 		Env:          "CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY",
 		PromptString: "Enter a commit field where your github issue id is located",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "extractorDestKeyGithubIssueID",
 		NextID:       "extractorRegGithubIssueID",
 		Env:          "CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY",
 		PromptString: "Enter a name for the key which will receive the extracted value",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "extractorRegGithubIssueID",
@@ -250,14 +250,14 @@ var githubIssueDecorator = []builder.EnvConfig{
 		NextID:       "githubIssueCredentialsOwner",
 		Env:          "CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN",
 		PromptString: "Enter github oauth token",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "githubIssueCredentialsOwner",
 		NextID:       "githubIssueDecoratorDestKey",
 		Env:          "CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER",
 		PromptString: "Enter github owner name",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 }
 
@@ -267,14 +267,14 @@ var githubIssueDecoratorKeys = []builder.EnvConfig{
 		NextID:       "githubIssueDecoratorField",
 		Env:          "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_DESTKEY",
 		PromptString: "A name for the key which will receive the extracted value",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "githubIssueDecoratorField",
 		NextID:       "githubIssueDecoratorChoice",
 		Env:          "CHYLE_DECORATORS_GITHUBISSUE_KEYS_*_FIELD",
 		PromptString: `The field to extract from github issue api response payload, use dot notation to extract a nested value (eg: "fields.summary")`,
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 }
 
@@ -303,21 +303,21 @@ var shellDecoratorKeys = []builder.EnvConfig{
 		NextID:       "shellDecoratorOrigKey",
 		Env:          "CHYLE_DECORATORS_SHELL_*_COMMAND",
 		PromptString: "Shell command to execute",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "shellDecoratorOrigKey",
 		NextID:       "shellDecoratorDestKey",
 		Env:          "CHYLE_DECORATORS_SHELL_*_ORIGKEY",
 		PromptString: "A field from which you want to use the content to pipe a command on",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "shellDecoratorDestKey",
 		NextID:       "decoratorChoice",
 		Env:          "CHYLE_DECORATORS_SHELL_*_DESTKEY",
 		PromptString: "A name for the key which will receive the extracted value",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 }
 
@@ -331,13 +331,13 @@ var envDecoratorKeys = []builder.EnvConfig{
 		NextID:       "envDecoratorDestKey",
 		Env:          "CHYLE_DECORATORS_ENV_*_VARNAME",
 		PromptString: "Environment variable name to dump in metadatas",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "envDecoratorDestKey",
 		NextID:       "decoratorChoice",
 		Env:          "CHYLE_DECORATORS_ENV_*_DESTKEY",
 		PromptString: "The name of the key where to store dumped value in metadatas",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 }

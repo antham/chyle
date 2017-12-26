@@ -25,7 +25,7 @@ var extractor = []builder.EnvConfig{
 		NextID:       "extractorReg",
 		Env:          "CHYLE_EXTRACTORS_*_DESTKEY",
 		PromptString: "Enter a name for the key which will receive the extracted value",
-		Validator:    noOpValidator,
+		Validator:    validateDefinedValue,
 	},
 	{
 		ID:           "extractorReg",
