@@ -66,6 +66,11 @@ jobs:
           command: |
             go get -u github.com/mitchellh/gox
             go get -u github.com/tcnksm/ghr
+            go get -u github.com/golang/dep/cmd/dep
+      - run:
+          name: Install vendors
+          command: |
+            dep ensure -v
       - run:
           name: Compile
           command: |
