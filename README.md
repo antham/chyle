@@ -3,6 +3,8 @@ Chyle [![CircleCI](https://circleci.com/gh/antham/chyle.svg?style=svg)](https://
 
 Chyle produces a changelog from a git repository.
 
+[![asciicast](https://asciinema.org/a/o2PDZ4ELfUP3F1eKWl1IqirzU.png)](https://asciinema.org/a/o2PDZ4ELfUP3F1eKWl1IqirzU)
+
 ---
 
 * [Usage](#usage)
