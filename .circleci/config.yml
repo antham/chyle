@@ -60,7 +60,7 @@ jobs:
       - run:
           name: Fetch tags
           command: |
-            git pull --tags
+            git fetch --tags
       - run:
           name: Install gox and ghr
           command: |
