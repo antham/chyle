@@ -91,7 +91,7 @@ func TestPrompt(t *testing.T) {
 				{[]string{"HEAD~2"}, nil},
 				{[]string{"/home/project"}, nil},
 				{[]string{"2"}, nil},
-				{[]string{""}, fmt.Errorf(`No value given`)},
+				{[]string{""}, fmt.Errorf(`Must be one of [id authorName authorEmail authorDate committerName committerEmail committerMessage type]`)},
 				{[]string{"whatever"}, fmt.Errorf(`Must be one of [id authorName authorEmail authorDate committerName committerEmail committerMessage type]`)},
 				{[]string{"id"}, nil},
 				{[]string{"idParsed"}, nil},
