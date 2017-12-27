@@ -50,3 +50,74 @@ jobs:
           name: Push on codecov result
           command: |
             bash <(curl -s https://codecov.io/bash)
+
+  publish:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/antham/chyle
+    steps:
+      - checkout
+      - run:
+          name: Fetch tags
+          command: |
+            git pull --tags
+      - run:
+          name: Install gox and ghr
+          command: |
+            go get -u github.com/mitchellh/gox
+            go get -u github.com/tcnksm/ghr
+      - run:
+          name: Compile
+          command: |
+            make compile
+      - run:
+          run: Upload assets
+          command: |
+            ghr $(git tag -l --sort=-v:refname|head -n 1) build/
+      - run:
+          name: Install chyle
+          command: |
+            wget -O chyle https://github.com/antham/chyle/releases/download/v1.2.0/chyle_linux_amd64
+            chmod 777 chyle
+      - run:
+          name: Run chyle
+          command: |
+            FROM_TAG=$(git tag -l --sort=-v:refname|head -n 2|tail -n 1)
+            TO_TAG=$(git tag -l --sort=-v:refname|head -n 1)
+            export CHYLE_GIT_REPOSITORY_PATH="."
+            export CHYLE_GIT_REFERENCE_FROM="$(git rev-parse $FROM_TAG)"
+            export CHYLE_GIT_REFERENCE_TO="$(git rev-parse $TO_TAG)"
+            export CHYLE_MATCHERS_TYPE="merge"
+            export CHYLE_EXTRACTORS_GITHUBISSUEID_ORIGKEY="message"
+            export CHYLE_EXTRACTORS_GITHUBISSUEID_DESTKEY="githubIssueId"
+            export CHYLE_EXTRACTORS_GITHUBISSUEID_REG="#(\\d+)"
+            export CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OWNER="antham"
+            export CHYLE_DECORATORS_GITHUBISSUE_CREDENTIALS_OAUTHTOKEN="$GITHUB_TOKEN"
+            export CHYLE_DECORATORS_GITHUBISSUE_KEYS_TITLE_DESTKEY="issueTitle"
+            export CHYLE_DECORATORS_GITHUBISSUE_KEYS_TITLE_FIELD="title"
+            export CHYLE_DECORATORS_GITHUBISSUE_REPOSITORY_NAME="$CIRCLE_PROJECT_REPONAME"
+
+            export CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OAUTHTOKEN="$GITHUB_TOKEN"
+            export CHYLE_SENDERS_GITHUBRELEASE_CREDENTIALS_OWNER="antham"
+            export CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TAGNAME="$FROM_TAG"
+            export CHYLE_SENDERS_GITHUBRELEASE_RELEASE_UPDATE="true"
+            export CHYLE_SENDERS_GITHUBRELEASE_REPOSITORY_NAME="$CIRCLE_PROJECT_REPONAME"
+            export CHYLE_SENDERS_GITHUBRELEASE_RELEASE_TEMPLATE='### Changes
+            {{ range $key, $value := .Datas }}
+            => {{ $value.issueTitle }} (#{{ $value.githubIssueId }}) {{ end }}'
+
+            ~/chyle create
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+  publish:
+    jobs:
+      - publish:
+          context: org-global
+          filters:
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
