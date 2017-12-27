@@ -62,11 +62,13 @@ jobs:
           command: |
             git fetch --tags
       - run:
-          name: Install gox and ghr
+          name: Install dependencies
           command: |
             go get -u github.com/mitchellh/gox
             go get -u github.com/tcnksm/ghr
             go get -u github.com/golang/dep/cmd/dep
+            wget -O chyle https://github.com/antham/chyle/releases/download/v1.2.0/chyle_linux_amd64
+            chmod 777 chyle
       - run:
           name: Install vendors
           command: |
@@ -78,12 +80,7 @@ jobs:
       - run:
           run: Upload assets
           command: |
-            ghr $(git tag -l --sort=-v:refname|head -n 1) build/
-      - run:
-          name: Install chyle
-          command: |
-            wget -O chyle https://github.com/antham/chyle/releases/download/v1.2.0/chyle_linux_amd64
-            chmod 777 chyle
+            ghr -u antham $(git tag -l --sort=-v:refname|head -n 1) build/
       - run:
           name: Run chyle
           command: |
