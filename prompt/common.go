@@ -52,6 +52,14 @@ func noOpValidator(value string) error {
 	return nil
 }
 
+func validateDefinedValue(value string) error {
+	if value == "" {
+		return fmt.Errorf("No value given")
+	}
+
+	return nil
+}
+
 func validateRegexp(value string) error {
 	if _, err := regexp.Compile(value); err != nil {
 		return fmt.Errorf(`"%s" is an invalid regexp : %s`, value, err.Error())
@@ -75,6 +83,8 @@ func validateBoolean(value string) error {
 
 	return nil
 }
+
+func noOpRunBeforeNextPrompt(value string, store *builder.Store) {}
 
 func validateTemplate(value string) error {
 	if _, err := tmplh.Parse("template", value); err != nil {

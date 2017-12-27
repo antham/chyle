@@ -1,7 +1,6 @@
 package builder
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/antham/chyle/prompt/internal/counter"
@@ -14,10 +13,10 @@ func NewGroupEnvPromptWithCounter(configs []EnvConfig, store *Store) []strumt.Pr
 	c := &counter.Counter{}
 
 	for i, config := range configs {
-		f := parseEnvWithCounter(config.Validator, config.Env, c, store)
+		f := parseEnvWithCounter(config.Validator, config.Env, config.DefaultValue, c, store)
 
 		if i == len(configs)-1 {
-			f = parseEnvWithCounterAndIncrement(config.Validator, config.Env, c, store)
+			f = parseEnvWithCounterAndIncrement(config.Validator, config.Env, config.DefaultValue, c, store)
 		}
 
 		p := GenericPrompt{
@@ -34,33 +33,41 @@ func NewGroupEnvPromptWithCounter(configs []EnvConfig, store *Store) []strumt.Pr
 	return results
 }
 
-func parseEnvWithCounter(validator func(string) error, env string, counter *counter.Counter, store *Store) func(value string) error {
+func parseEnvWithCounter(validator func(string) error, env string, defaultValue string, counter *counter.Counter, store *Store) func(value string) error {
 	return func(value string) error {
-		if value == "" {
-			return fmt.Errorf("No value given")
+		if value == "" && defaultValue != "" {
+			(*store)[strings.Replace(env, "*", counter.Get(), -1)] = defaultValue
+
+			return nil
 		}
 
 		if err := validator(value); err != nil {
 			return err
 		}
 
-		(*store)[strings.Replace(env, "*", counter.Get(), -1)] = value
+		if value != "" {
+			(*store)[strings.Replace(env, "*", counter.Get(), -1)] = value
+		}
 
 		return nil
 	}
 }
 
-func parseEnvWithCounterAndIncrement(validator func(string) error, env string, counter *counter.Counter, store *Store) func(value string) error {
+func parseEnvWithCounterAndIncrement(validator func(string) error, env string, defaultValue string, counter *counter.Counter, store *Store) func(value string) error {
 	return func(value string) error {
-		if value == "" {
-			return fmt.Errorf("No value given")
+		if value == "" && defaultValue != "" {
+			(*store)[strings.Replace(env, "*", counter.Get(), -1)] = defaultValue
+
+			return nil
 		}
 
 		if err := validator(value); err != nil {
 			return err
 		}
 
-		(*store)[strings.Replace(env, "*", counter.Get(), -1)] = value
+		if value != "" {
+			(*store)[strings.Replace(env, "*", counter.Get(), -1)] = value
+		}
 
 		counter.Increment()
 

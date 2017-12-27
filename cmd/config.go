@@ -21,7 +21,7 @@ var configCmd = &cobra.Command{
 		printWithNewLine("")
 
 		for key, value := range (map[string]string)(p) {
-			printWithNewLine(fmt.Sprintf("export %s=%s", key, value))
+			printWithNewLine(fmt.Sprintf(`export %s="%s"`, key, value))
 		}
 	},
 }
