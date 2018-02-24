@@ -154,7 +154,7 @@ func buildOriginCommitList(commit *object.Commit) (map[string]bool, error) {
 				return nil
 			})
 
-		if err != nil && err.Error() != git.ErrObjectNotFound.Error() {
+		if err != nil && err.Error() != plumbing.ErrObjectNotFound.Error() {
 			return seen, errBrowsingTree
 		}
 	}
@@ -189,7 +189,7 @@ func findDiffCommits(commit *object.Commit, exclusionList *map[string]bool) (*[]
 				return nil
 			})
 
-		if err != nil && err.Error() != git.ErrObjectNotFound.Error() {
+		if err != nil && err.Error() != plumbing.ErrObjectNotFound.Error() {
 			return &commits, errBrowsingTree
 		}
 	}

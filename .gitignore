@@ -33,3 +33,4 @@ chyle/git/shallow-repository-test/
 /cmd/testing-repository/
 /testing-repository/
 vendor/
+.idea
