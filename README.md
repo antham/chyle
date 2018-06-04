@@ -1,6 +1,4 @@
-<p align="left"><img src="logo/horizontalversion.png" alt="chyle" height="100px"></p>
-
-Chyle [![CircleCI](https://circleci.com/gh/antham/chyle.svg?style=svg)](https://circleci.com/gh/antham/chyle) [![codecov](https://codecov.io/gh/antham/chyle/branch/master/graph/badge.svg)](https://codecov.io/gh/antham/chyle) [![codebeat badge](https://codebeat.co/badges/c3867610-2741-4ae3-a195-d5e9711c7fcd)](https://codebeat.co/projects/github-com-antham-chyle-master) [![Go Report Card](https://goreportcard.com/badge/github.com/antham/chyle)](https://goreportcard.com/report/github.com/antham/chyle) [![GoDoc](https://godoc.org/github.com/antham/chyle?status.svg)](http://godoc.org/github.com/antham/chyle) [![GitHub tag](https://img.shields.io/github/tag/antham/chyle.svg)]()
+[![CircleCI](https://circleci.com/gh/antham/chyle.svg?style=svg)](https://circleci.com/gh/antham/chyle) [![codecov](https://codecov.io/gh/antham/chyle/branch/master/graph/badge.svg)](https://codecov.io/gh/antham/chyle) [![codebeat badge](https://codebeat.co/badges/c3867610-2741-4ae3-a195-d5e9711c7fcd)](https://codebeat.co/projects/github-com-antham-chyle-master) [![Go Report Card](https://goreportcard.com/badge/github.com/antham/chyle)](https://goreportcard.com/report/github.com/antham/chyle) [![GoDoc](https://godoc.org/github.com/antham/chyle?status.svg)](http://godoc.org/github.com/antham/chyle) [![GitHub tag](https://img.shields.io/github/tag/antham/chyle.svg)]()
 =====
 
 Chyle produces a changelog from a git repository.
