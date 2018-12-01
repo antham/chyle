@@ -9,8 +9,8 @@ import (
 
 func failure(err error) {
 	c := color.New(color.FgRed)
-	if _, err := c.Fprintf(writer, "%s\n", err.Error()); err != nil {
-		log.Fatal(err)
+	if _, ferr := c.Fprintf(writer, "%s\n", err.Error()); ferr != nil {
+		log.Fatal(ferr)
 	}
 }
 
