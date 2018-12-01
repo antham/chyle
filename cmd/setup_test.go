@@ -6,8 +6,8 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/antham/envh"
+	"github.com/sirupsen/logrus"
 )
 
 var gitRepositoryPath = "testing-repository"
