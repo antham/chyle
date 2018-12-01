@@ -211,5 +211,5 @@ func TestBuildChangelogWithDebuggingEnabled(t *testing.T) {
 
 	EnableDebugging = false
 
-	assert.Regexp(t, `CHYLE - \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} {\n\s+"GIT": {\n\s+"REPOSITORY": {\n`, string(buffer.String()))
+	assert.Regexp(t, `CHYLE - \d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} {\n\s+"GIT": {\n\s+"REPOSITORY": {\n`, buffer.String())
 }

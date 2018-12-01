@@ -36,9 +36,9 @@ func (t templateStdout) Send(changelog *types.Changelog) error {
 		return err
 	}
 
-	fmt.Fprint(t.stdout, datas)
+	_, err = fmt.Fprint(t.stdout, datas)
 
-	return nil
+	return err
 }
 
 func newStdout(config stdoutConfig) Sender {
