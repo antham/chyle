@@ -23,6 +23,10 @@ jobs:
             go get github.com/alecthomas/gometalinter
             gometalinter --install --update
       - run:
+          name: Install gox
+          command: |
+            go get -u github.com/mitchellh/gox
+      - run:
           name: Install vendors
           command: |
             export GO111MODULE=on
@@ -46,6 +50,10 @@ jobs:
           name: Run doc-hunt
           command: |
             ~/bin/doc-hunt check -e
+      - run:
+          name: Compile
+          command: |
+            gox -output "build/{{.Dir}}_{{.OS}}_{{.Arch}}"
       - run:
           name: Push on codecov result
           command: |
