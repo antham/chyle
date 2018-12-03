@@ -3,7 +3,6 @@ module github.com/antham/chyle
 require (
 	github.com/Masterminds/semver v1.3.1 // indirect
 	github.com/Masterminds/sprig v0.0.0-20180403013413-6b2a58267f6a
-	github.com/Sirupsen/logrus v0.11.5 // indirect
 	github.com/alcortesm/tgz v0.0.0-20161220082320-9c5fe88206d7 // indirect
 	github.com/anmitsu/go-shlex v0.0.0-20161002113705-648efa622239 // indirect
 	github.com/antham/envh v1.2.0
@@ -44,3 +43,5 @@ require (
 	gopkg.in/warnings.v0 v0.1.1 // indirect
 	gopkg.in/yaml.v2 v2.2.1 // indirect
 )
+
+replace github.com/antham/envh v1.2.0 => github.com/antham/envh v1.3.0

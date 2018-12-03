@@ -2,14 +2,13 @@ github.com/Masterminds/semver v1.3.1 h1:4CEBDLZtuloRJFiIzzlR/VcQOCiFzhaaa7hE4DEB
 github.com/Masterminds/semver v1.3.1/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF078ddwwvV3Y=
 github.com/Masterminds/sprig v0.0.0-20180403013413-6b2a58267f6a h1:PyEzJqkuWc9yoPhxjywv6mqIOmVVIhAFe44BF+fq7hQ=
 github.com/Masterminds/sprig v0.0.0-20180403013413-6b2a58267f6a/go.mod h1:y6hNFY5UBTIWBxnzTeuNhlNS5hqE0NB0E6fgfo2Br3o=
-github.com/Sirupsen/logrus v0.11.5 h1:aIMrrsnipdTlAieMe7FC/iiuJ0+ELiXCT4YiVQiK9j8=
-github.com/Sirupsen/logrus v0.11.5/go.mod h1:rmk17hk6i8ZSAJkSDa7nOxamrG+SP4P0mm+DAvExv4U=
 github.com/alcortesm/tgz v0.0.0-20161220082320-9c5fe88206d7 h1:uSoVVbwJiQipAclBbw+8quDsfcvFjOpI5iCf4p/cqCs=
 github.com/alcortesm/tgz v0.0.0-20161220082320-9c5fe88206d7/go.mod h1:6zEj6s6u/ghQa61ZWa/C2Aw3RkjiTBOix7dkqa1VLIs=
 github.com/anmitsu/go-shlex v0.0.0-20161002113705-648efa622239 h1:kFOfPq6dUM1hTo4JG6LR5AXSUEsOjtdm0kw0FtQtMJA=
 github.com/anmitsu/go-shlex v0.0.0-20161002113705-648efa622239/go.mod h1:2FmKhYUyUczH0OGQWaF5ceTx0UBShxjsH6f8oGKYe2c=
 github.com/antham/envh v1.2.0 h1:p/VXCN9YEM1H6Jt9HC0GKsLMLEcRsvbHwnM5yZTJ63w=
 github.com/antham/envh v1.2.0/go.mod h1:ocIRPHuwwjyBVBtuUJOJc2TYzGg+d23xSAZexl4y9hQ=
+github.com/antham/envh v1.3.0/go.mod h1:XEzSj+S+lssBdPABWOqSKvhZZdVKbD2a0GqweLbgJ88=
 github.com/antham/strumt v0.0.0-20171215230529-6776189777d3 h1:MFGpimQiyX0xB0MJYcMsFt+DKZvx4hnZKijGyB8igSA=
 github.com/antham/strumt v0.0.0-20171215230529-6776189777d3/go.mod h1:sE7EYIUE0nQzPiv5zQAmw2aVkei0j2xmb4gTIIqSFSI=
 github.com/aokoli/goutils v1.0.1 h1:7fpzNGoJ3VA8qcrm++XEE1QUe0mIwNeLa02Nwq7RDkg=
@@ -77,6 +76,8 @@ golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01 h1:po1f06KS05FvIQQA2pMuOWZAU
 golang.org/x/net v0.0.0-20180218175443-cbe0f9307d01/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/sys v0.0.0-20180905080454-ebe1bf3edb33 h1:I6FyU15t786LL7oL/hn43zqTuEGr4PN7F4XJ1p4E3Y8=
 golang.org/x/sys v0.0.0-20180905080454-ebe1bf3edb33/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/sys v0.0.0-20180909124046-d0be0721c37e h1:o3PsSEY8E4eXWkXrIP9YJALUkVZqzHJT5DOasTyn8Vs=
+golang.org/x/sys v0.0.0-20180909124046-d0be0721c37e/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
