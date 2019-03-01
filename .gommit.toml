@@ -6,6 +6,7 @@ summary-length=72
 [matchers]
 simple=".+? : [a-z0-9].+(?:\n)?"
 extended=".+? : [a-z0-9].+?\n(?:\n?.+)+(?:\n)?"
+dependabot="Bump.+?\n(?:\n?.+)+(?:\n)?"
 
 [examples]
 a_simple_commit="""
