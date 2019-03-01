@@ -3,7 +3,7 @@ module github.com/antham/chyle
 require (
 	github.com/Masterminds/semver v1.3.1 // indirect
 	github.com/Masterminds/sprig v0.0.0-20180403013413-6b2a58267f6a
-	github.com/antham/envh v1.2.0
+	github.com/antham/envh v1.3.0
 	github.com/antham/strumt v0.0.0-20171215230529-6776189777d3
 	github.com/aokoli/goutils v1.0.1 // indirect
 	github.com/fatih/color v1.7.0
