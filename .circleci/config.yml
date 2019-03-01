@@ -18,11 +18,6 @@ jobs:
           command: |
             wget -O ~/bin/gommit https://github.com/antham/gommit/releases/download/v2.1.1/gommit_linux_386 && chmod 777 ~/bin/gommit
       - run:
-          name: Install gometalinter
-          command: |
-            go get github.com/alecthomas/gometalinter
-            gometalinter --install --update
-      - run:
           name: Install gox
           command: |
             go get -u github.com/mitchellh/gox
@@ -31,10 +26,6 @@ jobs:
           command: |
             export GO111MODULE=on
             go mod vendor
-      - run:
-          name: Run gometalinter
-          command: |
-            make gometalinter
       - run:
           name: Run tests
           command: |
