@@ -24,7 +24,3 @@ require (
 	gopkg.in/src-d/go-git.v4 v4.10.0
 	gopkg.in/yaml.v2 v2.2.1 // indirect
 )
-
-replace github.com/antham/envh v1.2.0 => github.com/antham/envh v1.3.0
-
-replace gopkg.in/src-d/go-git.v4 v4.1.1 => gopkg.in/src-d/go-git.v4 v4.8.1
