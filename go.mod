@@ -18,7 +18,7 @@ require (
 	github.com/spf13/cobra v0.0.0-00000000000000-c46add8a6528
 	github.com/spf13/pflag v0.0.0-20170508184408-e57e3eeb33f7 // indirect
 	github.com/stretchr/testify v1.2.2
-	github.com/tidwall/gjson v1.1.0
+	github.com/tidwall/gjson v1.2.1
 	github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1 // indirect
 	gopkg.in/h2non/gock.v0 v0.0.0-20160419120746-1baf36abac00
 	gopkg.in/src-d/go-git.v4 v4.10.0
