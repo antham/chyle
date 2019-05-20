@@ -14,7 +14,7 @@ require (
 	github.com/mattn/go-colorable v0.0.8 // indirect
 	github.com/mattn/go-isatty v0.0.2 // indirect
 	github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32 // indirect
-	github.com/sirupsen/logrus v1.4.1
+	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.0-00000000000000-c46add8a6528
 	github.com/spf13/pflag v0.0.0-20170508184408-e57e3eeb33f7 // indirect
 	github.com/stretchr/testify v1.3.0
