@@ -3,7 +3,7 @@ package prompt
 import (
 	"fmt"
 
-	"github.com/antham/strumt"
+	"github.com/antham/strumt/v2"
 
 	"github.com/antham/chyle/prompt/internal/builder"
 )

@@ -1,7 +1,7 @@
 package builder
 
 import (
-	"github.com/antham/strumt"
+	"github.com/antham/strumt/v2"
 
 	"fmt"
 )

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/antham/strumt"
+	"github.com/antham/strumt/v2"
 	"github.com/stretchr/testify/assert"
 )
 
