@@ -4,8 +4,8 @@ PKGS := $(shell go list ./... | grep -v /vendor)
 fmt:
 	find ! -path "./vendor/*" -name "*.go" -exec gofmt -s -w {} \;
 
-gometalinter:
-	gometalinter -D gotype -D aligncheck --vendor --deadline=600s --dupl-threshold=200 -e '_string' -j 5 ./...
+lint:
+	golangci-lint run
 
 doc-hunt:
 	doc-hunt check -e
@@ -27,3 +27,5 @@ run-quick-tests: setup-test-fixtures
 test-package:
 	go test -race -cover -coverprofile=/tmp/chyle github.com/antham/chyle/$(pkg)
 	go tool cover -html=/tmp/chyle -o /tmp/chyle.html
+
+test-all: lint run-tests doc-hunt
