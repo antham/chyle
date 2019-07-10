@@ -1,7 +1,7 @@
 package builder
 
 import (
-	"github.com/antham/strumt"
+	"github.com/antham/strumt/v2"
 )
 
 // NewEnvPrompts creates several prompts at once to populate environments variables

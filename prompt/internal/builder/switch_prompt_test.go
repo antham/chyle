@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/antham/strumt"
+	"github.com/antham/strumt/v2"
 )
 
 func TestCreateSwitchChoice(t *testing.T) {

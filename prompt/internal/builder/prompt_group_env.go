@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/antham/chyle/prompt/internal/counter"
-	"github.com/antham/strumt"
+	"github.com/antham/strumt/v2"
 )
 
 // NewGroupEnvPromptWithCounter gives the ability to create several group of related environment variable, a common prefix provided as a number from an internal counter tied variable together. For instance in variables environments TEST_*_KEY and TEST_*_VALUE, * is replaced with a number, it becomes TEST_0_KEY and TEST_0_VALUE another call would give TEST_1_VALUE and TEST_1_KEY

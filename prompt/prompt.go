@@ -1,7 +1,7 @@
 package prompt
 
 import (
-	"github.com/antham/strumt"
+	"github.com/antham/strumt/v2"
 	"io"
 
 	"github.com/antham/chyle/prompt/internal/builder"
