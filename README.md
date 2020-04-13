@@ -1,6 +1,7 @@
 <p align="left"><img src="logo/horizontalversion.png" alt="chyle" height="100px"></p>
 
-[![CircleCI](https://circleci.com/gh/antham/chyle.svg?style=svg)](https://circleci.com/gh/antham/chyle) [![codecov](https://codecov.io/gh/antham/chyle/branch/master/graph/badge.svg)](https://codecov.io/gh/antham/chyle) [![codebeat badge](https://codebeat.co/badges/c3867610-2741-4ae3-a195-d5e9711c7fcd)](https://codebeat.co/projects/github-com-antham-chyle-master) [![Go Report Card](https://goreportcard.com/badge/github.com/antham/chyle)](https://goreportcard.com/report/github.com/antham/chyle) [![GolangCI](https://golangci.com/badges/github.com/antham/chyle.svg)](https://golangci.com)  [![GoDoc](https://godoc.org/github.com/antham/chyle?status.svg)](http://godoc.org/github.com/antham/chyle) [![GitHub tag](https://img.shields.io/github/tag/antham/chyle.svg)]()
+[![CircleCI](https://circleci.com/gh/antham/chyle.svg?style=svg)](https://circleci.com/gh/antham/chyle) [![codecov](https://codecov.io/gh/antham/chyle/branch/master/graph/badge.svg)](https://codecov.io/gh/antham/chyle) [![codebeat badge](https://codebeat.co/badges/c3867610-2741-4ae3-a195-d5e9711c7fcd)](https://codebeat.co/projects/github-com-antham-chyle-master) [![Go Report Card](https://goreportcard.com/badge/github.com/antham/chyle)](https://goreportcard.com/report/github.com/antham/chyle) [![GolangCI](https://golangci.com/badges/github.com/antham/chyle.svg)](https://golangci.com) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fantham%2Fchyle.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fantham%2Fchyle?ref=badge_shield)
+ [![GoDoc](https://godoc.org/github.com/antham/chyle?status.svg)](http://godoc.org/github.com/antham/chyle) [![GitHub tag](https://img.shields.io/github/tag/antham/chyle.svg)]()
 =====
 
 Chyle produces a changelog from a git repository.
@@ -67,3 +68,7 @@ If you want to add a new feature to chyle project, the best way is to open a tic
 
 After cloning the repository you need to install vendors with `go mod vendor`
 To test your changes locally you can run go tests with : ```make test-all```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fantham%2Fchyle.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fantham%2Fchyle?ref=badge_large)
