@@ -89,7 +89,7 @@ func TestGithubReleaseCreateReleaseWithWrongCredentials(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.EqualError(t, err, "can't create github release : Post https://api.github.com/repos/test/test/releases: an error occurred", "Must return an error when api response something wrong")
+	assert.EqualError(t, err, `can't create github release : Post "https://api.github.com/repos/test/test/releases": an error occurred`, "Must return an error when api response something wrong")
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
@@ -178,6 +178,6 @@ func TestGithubReleaseUpdateReleaseWithWrongCredentials(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.EqualError(t, err, "can't retrieve github release v1.0.0 : Get https://api.github.com/repos/test/test/releases/tags/v1.0.0: an error occurred")
+	assert.EqualError(t, err, `can't retrieve github release v1.0.0 : Get "https://api.github.com/repos/test/test/releases/tags/v1.0.0": an error occurred`)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
