@@ -72,7 +72,7 @@ func TestCustomAPIWithWrongCredentials(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.EqualError(t, err, `can't call custom api to send release : Post https://test.com/releases: {"error":"You don't have correct credentials"}`)
+	assert.EqualError(t, err, `can't call custom api to send release : Post "https://test.com/releases": {"error":"You don't have correct credentials"}`)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }
 
@@ -95,6 +95,6 @@ func TestCustomAPIWithWrongURL(t *testing.T) {
 
 	err := s.Send(&c)
 
-	assert.EqualError(t, err, `can't call custom api to send release : parse :test: missing protocol scheme`)
+	assert.EqualError(t, err, `can't call custom api to send release : parse ":test": missing protocol scheme`)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
 }

@@ -28,7 +28,7 @@ func (s *switchPrompt) ID() string {
 }
 
 func (s *switchPrompt) PromptString() string {
-	out := fmt.Sprintf("Choose one of this option and press enter:\n")
+	out := "Choose one of this option and press enter:\n"
 
 	for _, choice := range s.choices {
 		out += fmt.Sprintf("%s - %s\n", choice.Choice, choice.PromptString)
