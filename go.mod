@@ -4,7 +4,7 @@ require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/antham/envh v1.3.0
+	github.com/antham/envh v1.4.0
 	github.com/antham/strumt/v2 v2.0.1
 	github.com/fatih/color v1.10.0
 	github.com/google/uuid v1.1.1 // indirect
