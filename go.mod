@@ -18,7 +18,7 @@ require (
 	github.com/spf13/cobra v0.0.7
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.7.0
-	github.com/tidwall/gjson v1.6.8
+	github.com/tidwall/gjson v1.7.5
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d // indirect
 	golang.org/x/net v0.0.0-20200226121028-0de0cce0169b // indirect
 	gopkg.in/h2non/gock.v0 v0.1.6
