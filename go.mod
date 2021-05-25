@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/antham/envh v1.4.0
 	github.com/antham/strumt/v2 v2.1.0
-	github.com/fatih/color v1.11.0
+	github.com/fatih/color v1.12.0
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/huandu/xstrings v1.3.0 // indirect
 	github.com/imdario/mergo v0.3.8 // indirect
