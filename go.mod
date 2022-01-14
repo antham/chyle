@@ -16,7 +16,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
-	github.com/tidwall/gjson v1.12.1
+	github.com/tidwall/gjson v1.13.0
 	gopkg.in/h2non/gock.v0 v0.1.6
 	gopkg.in/src-d/go-git.v4 v4.13.1
 )
