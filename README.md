@@ -1,7 +1,6 @@
 <p align="left"><img src="logo/horizontalversion.png" alt="chyle" height="100px"></p>
 
-[![CircleCI](https://circleci.com/gh/antham/chyle.svg?style=svg)](https://circleci.com/gh/antham/chyle) [![codecov](https://codecov.io/gh/antham/chyle/branch/master/graph/badge.svg)](https://codecov.io/gh/antham/chyle) [![codebeat badge](https://codebeat.co/badges/c3867610-2741-4ae3-a195-d5e9711c7fcd)](https://codebeat.co/projects/github-com-antham-chyle-master) [![Go Report Card](https://goreportcard.com/badge/github.com/antham/chyle)](https://goreportcard.com/report/github.com/antham/chyle) [![GolangCI](https://golangci.com/badges/github.com/antham/chyle.svg)](https://golangci.com)  [![GoDoc](https://godoc.org/github.com/antham/chyle?status.svg)](http://godoc.org/github.com/antham/chyle) [![GitHub tag](https://img.shields.io/github/tag/antham/chyle.svg)]()
-=====
+# [![codecov](https://codecov.io/gh/antham/chyle/branch/master/graph/badge.svg)](https://codecov.io/gh/antham/chyle) [![Go Report Card](https://goreportcard.com/badge/github.com/antham/chyle)](https://goreportcard.com/report/github.com/antham/chyle) [![GitHub tag](https://img.shields.io/github/tag/antham/chyle.svg)]()
 
 Chyle produces a changelog from a git repository.
 
@@ -9,11 +8,11 @@ Chyle produces a changelog from a git repository.
 
 ---
 
-* [Usage](#usage)
-* [How it works ?](#how-it-works-)
-* [Setup](#setup)
-* [Documentation and examples](#documentation-and-examples)
-* [Contribute](#contribute)
+- [Usage](#usage)
+- [How it works ?](#how-it-works-)
+- [Setup](#setup)
+- [Documentation and examples](#documentation-and-examples)
+- [Contribute](#contribute)
 
 ---
 
@@ -53,7 +52,7 @@ Chyle fetch a range of commits using given criterias from a git repository. From
 
 Download from release page according to your architecture chyle binary : https://github.com/antham/chyle/releases
 
-Look at the documentation and examples,  run ```chyle config``` to launch the configuration prompt.
+Look at the documentation and examples, run `chyle config` to launch the configuration prompt.
 
 ## Documentation and examples
 
@@ -66,4 +65,4 @@ If you want to add a new feature to chyle project, the best way is to open a tic
 ### Setup
 
 After cloning the repository you need to install vendors with `go mod vendor`
-To test your changes locally you can run go tests with : ```make test-all```
+To test your changes locally you can run go tests with : `make test-all`

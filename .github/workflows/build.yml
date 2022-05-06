@@ -1,0 +1,16 @@
+name: Go
+
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+      - main
+  pull_request:
+permissions:
+  contents: read
+
+jobs:
+  call-workflow:
+    uses: antham/go-workflow-github-action/.github/workflows/build.yml@master

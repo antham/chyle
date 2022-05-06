@@ -1,0 +1,13 @@
+name: Create the release
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  call-workflow:
+    uses: antham/go-workflow-github-action/.github/workflows/create-release.yml@master
