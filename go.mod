@@ -9,7 +9,7 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
-	github.com/stretchr/testify v1.7.4
+	github.com/stretchr/testify v1.7.5
 	github.com/tidwall/gjson v1.14.1
 	gopkg.in/h2non/gock.v0 v0.1.6
 	gopkg.in/src-d/go-git.v4 v4.13.1
