@@ -7,7 +7,7 @@ require (
 	github.com/antham/envh v1.5.0
 	github.com/antham/strumt/v2 v2.2.0
 	github.com/fatih/color v1.13.0
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.5.0
 	github.com/stretchr/testify v1.8.0
 	github.com/tidwall/gjson v1.14.1
@@ -41,7 +41,7 @@ require (
 	github.com/xanzy/ssh-agent v0.2.1 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
 	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
-	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	gopkg.in/src-d/go-billy.v4 v4.3.2 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
