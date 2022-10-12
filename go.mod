@@ -8,7 +8,7 @@ require (
 	github.com/antham/strumt/v2 v2.2.0
 	github.com/fatih/color v1.13.0
 	github.com/sirupsen/logrus v1.9.0
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/stretchr/testify v1.8.0
 	github.com/tidwall/gjson v1.14.3
 	gopkg.in/h2non/gock.v0 v0.1.6
@@ -23,7 +23,7 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20190725054713-01f96b0aa0cd // indirect
 	github.com/mattn/go-colorable v0.1.9 // indirect
