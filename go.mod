@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/antham/envh v1.5.0
 	github.com/antham/strumt/v2 v2.2.0
-	github.com/fatih/color v1.14.0
+	github.com/fatih/color v1.14.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.1
