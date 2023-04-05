@@ -8,7 +8,7 @@ require (
 	github.com/antham/strumt/v2 v2.3.0
 	github.com/fatih/color v1.15.0
 	github.com/sirupsen/logrus v1.9.0
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tidwall/gjson v1.14.4
 	gopkg.in/h2non/gock.v0 v0.1.6
