@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 	"sync"
 	"testing"
@@ -43,7 +43,7 @@ func TestConfig(t *testing.T) {
 
 	wg.Wait()
 
-	promptRecord, err := ioutil.ReadAll(writer.(*bytes.Buffer))
+	promptRecord, err := io.ReadAll(writer.(*bytes.Buffer))
 	if err != nil {
 		t.Fatal(err)
 	}

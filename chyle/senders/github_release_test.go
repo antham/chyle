@@ -2,8 +2,8 @@ package senders
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,7 +23,7 @@ func TestGithubReleaseCreateRelease(t *testing.T) {
 
 	defer gock.Off()
 
-	tagCreationResponse, err := ioutil.ReadFile("fixtures/github-tag-creation-response.json")
+	tagCreationResponse, err := os.ReadFile("fixtures/github-tag-creation-response.json")
 
 	assert.NoError(t, err, "Must read json fixture file")
 
@@ -105,7 +105,7 @@ func TestGithubReleaseUpdateRelease(t *testing.T) {
 
 	defer gock.Off()
 
-	fetchReleaseResponse, err := ioutil.ReadFile("fixtures/github-release-fetch-response.json")
+	fetchReleaseResponse, err := os.ReadFile("fixtures/github-release-fetch-response.json")
 
 	assert.NoError(t, err, "Must read json fixture file")
 

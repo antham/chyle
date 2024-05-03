@@ -1,8 +1,8 @@
 package decorators
 
 import (
-	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -30,7 +30,7 @@ func TestGithubIssue(t *testing.T) {
 
 	defer gock.Off()
 
-	issueResponse, err := ioutil.ReadFile("fixtures/github-issue-fetch-response.json")
+	issueResponse, err := os.ReadFile("fixtures/github-issue-fetch-response.json")
 
 	assert.NoError(t, err, "Must read json fixture file")
 
@@ -62,7 +62,7 @@ func TestGithubIssue(t *testing.T) {
 func TestGithubWithNoGithubIssueIdDefined(t *testing.T) {
 	defer gock.Off()
 
-	issueResponse, err := ioutil.ReadFile("fixtures/github-issue-fetch-response.json")
+	issueResponse, err := os.ReadFile("fixtures/github-issue-fetch-response.json")
 
 	assert.NoError(t, err, "Must read json fixture file")
 

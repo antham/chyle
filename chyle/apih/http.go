@@ -2,7 +2,7 @@ package apih
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 )
@@ -40,7 +40,7 @@ func SendRequest(client *http.Client, request *http.Request) (int, []byte, error
 		}
 	}()
 
-	b, err := ioutil.ReadAll(response.Body)
+	b, err := io.ReadAll(response.Body)
 	if err != nil {
 		return response.StatusCode, b, errResponse{request, response, b}
 	}

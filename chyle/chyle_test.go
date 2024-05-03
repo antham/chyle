@@ -3,7 +3,6 @@ package chyle
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -29,7 +28,7 @@ func TestBuildChangelog(t *testing.T) {
 	setenv("CHYLE_EXTRACTORS_MESSAGE_REG", "(.{1,50})")
 	setenv("CHYLE_SENDERS_STDOUT_FORMAT", "json")
 
-	f, err := ioutil.TempFile(p+"/testing-repository", "test")
+	f, err := os.CreateTemp(p+"/testing-repository", "test")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -54,7 +53,7 @@ func TestBuildChangelog(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	b, err := ioutil.ReadFile(f.Name())
+	b, err := os.ReadFile(f.Name())
 
 	assert.NoError(t, err)
 

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 	"os/exec"
 	"sync"
@@ -121,7 +121,7 @@ func TestCreateWithErrors(t *testing.T) {
 
 		w.Wait()
 
-		output, err := ioutil.ReadAll(writer.(*bytes.Buffer))
+		output, err := io.ReadAll(writer.(*bytes.Buffer))
 		if err != nil {
 			t.Fatal(err)
 		}
