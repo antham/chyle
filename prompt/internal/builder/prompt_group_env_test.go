@@ -20,7 +20,7 @@ func TestNewGroupEnvPromptWithCounter(t *testing.T) {
 			{"TEST_1", "choice", "TEST_*_1", "Enter a value", func(value string) error { return nil }, "", func(value string, store *Store) {}},
 		}, store)
 
-	var choice = []strumt.Prompter{
+	choice := []strumt.Prompter{
 		&switchPrompt{
 			"choice",
 			[]SwitchConfig{
@@ -107,7 +107,7 @@ func TestNewGroupEnvPromptWithAnEmptyValueAndValidationRules(t *testing.T) {
 			{"TEST_1", "choice", "TEST_*_1", "Enter a value", func(value string) error { return nil }, "test4", func(value string, store *Store) {}},
 		}, store)
 
-	var choice = []strumt.Prompter{
+	choice := []strumt.Prompter{
 		&switchPrompt{
 			"choice",
 			[]SwitchConfig{

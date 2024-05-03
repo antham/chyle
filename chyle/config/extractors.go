@@ -61,7 +61,6 @@ func (e *extractorsConfigurator) setExtractors(config *CHYLE) {
 			DESTKEY string
 			REG     *regexp.Regexp
 		}{
-
 			e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, "ORIGKEY"),
 			e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, "DESTKEY"),
 			regexp.MustCompile(e.config.FindStringUnsecured("CHYLE", "EXTRACTORS", key, "REG")),

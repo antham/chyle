@@ -58,7 +58,6 @@ type githubRelease struct {
 // buildBody creates a request body from changelog
 func (g githubRelease) buildBody(changelog *types.Changelog) ([]byte, error) {
 	body, err := tmplh.Build("github-release-template", g.config.RELEASE.TEMPLATE, changelog)
-
 	if err != nil {
 		return []byte{}, err
 	}
@@ -79,7 +78,6 @@ func (g githubRelease) createRelease(body []byte) error {
 	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME)
 
 	req, err := http.NewRequest("POST", URL, bytes.NewBuffer(body))
-
 	if err != nil {
 		return err
 	}
@@ -107,7 +105,6 @@ func (g githubRelease) getReleaseID() (int, error) {
 	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/tags/%s", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME, g.config.RELEASE.TAGNAME)
 
 	req, err := http.NewRequest("GET", URL, nil)
-
 	if err != nil {
 		return 0, err
 	}
@@ -119,13 +116,11 @@ func (g githubRelease) getReleaseID() (int, error) {
 	})
 
 	_, body, err := apih.SendRequest(g.client, req)
-
 	if err != nil {
 		return 0, errh.AddCustomMessageToError(errMsg, err)
 	}
 
 	err = json.Unmarshal(body, &release)
-
 	if err != nil {
 		return 0, errh.AddCustomMessageToError(errMsg, err)
 	}
@@ -136,7 +131,6 @@ func (g githubRelease) getReleaseID() (int, error) {
 // updateRelease updates an existing release from a tag name
 func (g githubRelease) updateRelease(body []byte) error {
 	ID, err := g.getReleaseID()
-
 	if err != nil {
 		return err
 	}
@@ -144,7 +138,6 @@ func (g githubRelease) updateRelease(body []byte) error {
 	URL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/%d", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME, ID)
 
 	req, err := http.NewRequest("PATCH", URL, bytes.NewBuffer(body))
-
 	if err != nil {
 		return err
 	}
@@ -162,7 +155,6 @@ func (g githubRelease) updateRelease(body []byte) error {
 
 func (g githubRelease) Send(changelog *types.Changelog) error {
 	body, err := g.buildBody(changelog)
-
 	if err != nil {
 		return err
 	}

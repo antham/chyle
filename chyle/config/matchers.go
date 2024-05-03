@@ -40,7 +40,6 @@ func (m *matchersConfigurator) isDisabled() bool {
 func (m *matchersConfigurator) validateRegexpMatchers() error {
 	for _, key := range []string{"MESSAGE", "COMMITTER", "AUTHOR"} {
 		_, err := m.config.FindString("CHYLE", "MATCHERS", key)
-
 		if err != nil {
 			continue
 		}
@@ -55,7 +54,6 @@ func (m *matchersConfigurator) validateRegexpMatchers() error {
 
 func (m *matchersConfigurator) validateTypeMatcher() error {
 	_, err := m.config.FindString("CHYLE", "MATCHERS", "TYPE")
-
 	if err != nil {
 		return nil
 	}

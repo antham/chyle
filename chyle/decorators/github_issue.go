@@ -36,7 +36,6 @@ func (g githubIssue) Decorate(commitMap *map[string]interface{}) (*map[string]in
 	}
 
 	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.github.com/repos/%s/%s/issues/%d", g.config.CREDENTIALS.OWNER, g.config.REPOSITORY.NAME, ID), nil)
-
 	if err != nil {
 		return commitMap, err
 	}

@@ -61,7 +61,6 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 	}
 
 	iter, err := repository.References()
-
 	if err != nil {
 		return &object.Commit{}, errReferenceNotFound{refCommit}
 	}
@@ -90,19 +89,16 @@ func resolveRef(refCommit string, repository *git.Repository) (*object.Commit, e
 // FetchCommits retrieves commits in a reference range
 func FetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Commit, error) {
 	rep, err := git.PlainOpen(repoPath)
-
 	if err != nil {
 		return nil, errRepositoryPath{repoPath}
 	}
 
 	fromCommit, err := resolveRef(fromRef, rep)
-
 	if err != nil {
 		return &[]object.Commit{}, err
 	}
 
 	toCommit, err := resolveRef(toRef, rep)
-
 	if err != nil {
 		return &[]object.Commit{}, err
 	}
@@ -111,7 +107,6 @@ func FetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 	var commits *[]object.Commit
 
 	exclusionList, err := buildOriginCommitList(fromCommit)
-
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +116,6 @@ func FetchCommits(repoPath string, fromRef string, toRef string) (*[]object.Comm
 	}
 
 	commits, err = findDiffCommits(toCommit, &exclusionList)
-
 	if err != nil {
 		return nil, err
 	}

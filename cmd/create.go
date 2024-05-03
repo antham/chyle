@@ -20,7 +20,6 @@ Changelog creation follows this process :
 5 - publish datas`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := chyle.BuildChangelog(envTree)
-
 		if err != nil {
 			failure(err)
 

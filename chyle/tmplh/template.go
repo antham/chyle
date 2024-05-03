@@ -41,7 +41,6 @@ func Parse(ID string, template string) (*tmpl.Template, error) {
 // final resolved string
 func Build(ID string, template string, data interface{}) (string, error) {
 	t, err := Parse(ID, template)
-
 	if err != nil {
 		return "", errh.AddCustomMessageToError("check your template is well-formed", err)
 	}

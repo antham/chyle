@@ -27,7 +27,6 @@ func saveExistingEnvs() {
 	env := envh.NewEnv()
 
 	envs, err = env.FindEntries(".*")
-
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -46,7 +45,6 @@ func restoreEnvs() {
 
 func setenv(key string, value string) {
 	err := os.Setenv(key, value)
-
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

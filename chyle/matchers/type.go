@@ -10,16 +10,14 @@ const (
 )
 
 // mergeCommit match merge commit message
-type mergeCommit struct {
-}
+type mergeCommit struct{}
 
 func (m mergeCommit) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 2
 }
 
 // regularCommit match regular commit message
-type regularCommit struct {
-}
+type regularCommit struct{}
 
 func (r regularCommit) Match(commit *object.Commit) bool {
 	return commit.NumParents() == 1 || commit.NumParents() == 0

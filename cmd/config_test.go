@@ -44,7 +44,6 @@ func TestConfig(t *testing.T) {
 	wg.Wait()
 
 	promptRecord, err := ioutil.ReadAll(writer.(*bytes.Buffer))
-
 	if err != nil {
 		t.Fatal(err)
 	}

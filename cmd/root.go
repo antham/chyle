@@ -10,11 +10,15 @@ import (
 	"github.com/antham/envh"
 )
 
-var envTree *envh.EnvTree
-var debug bool
+var (
+	envTree *envh.EnvTree
+	debug   bool
+)
 
-var writer io.Writer
-var reader io.Reader
+var (
+	writer io.Writer
+	reader io.Reader
+)
 
 // RootCmd represents initial cobra command
 var RootCmd = &cobra.Command{
@@ -42,7 +46,6 @@ func init() {
 
 func initConfig() {
 	e, err := envh.NewEnvTree("CHYLE", "_")
-
 	if err != nil {
 		failure(err)
 		exitError()

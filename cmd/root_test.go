@@ -43,7 +43,6 @@ func TestExecute(t *testing.T) {
 	w.Wait()
 
 	output, err := ioutil.ReadAll(writer.(*bytes.Buffer))
-
 	if err != nil {
 		t.Fatal(err)
 	}

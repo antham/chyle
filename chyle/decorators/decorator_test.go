@@ -54,7 +54,8 @@ func TestDecorator(t *testing.T) {
 			{
 				"test":        "test2",
 				"jiraIssueId": "ABC-123",
-			}},
+			},
+		},
 		Metadatas: map[string]interface{}{},
 	}
 
@@ -71,7 +72,8 @@ func TestDecorator(t *testing.T) {
 				"test":         "test2",
 				"jiraIssueId":  "ABC-123",
 				"jiraIssueKey": "ABC-123",
-			}},
+			},
+		},
 		Metadatas: map[string]interface{}{},
 	}
 

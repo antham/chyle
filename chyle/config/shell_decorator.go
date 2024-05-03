@@ -63,5 +63,4 @@ func (s *shellDecoratorConfigurator) setShellConfigs(config *CHYLE) {
 			s.config.FindStringUnsecured("CHYLE", "DECORATORS", "SHELL", key, "DESTKEY"),
 		}
 	}
-
 }

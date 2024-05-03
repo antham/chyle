@@ -29,21 +29,18 @@ func SetHeaders(request *http.Request, headers map[string]string) {
 // SendRequest picks a request and send it with given client
 func SendRequest(client *http.Client, request *http.Request) (int, []byte, error) {
 	response, err := client.Do(request)
-
 	if err != nil {
 		return 0, []byte{}, err
 	}
 
 	defer func() {
 		err = response.Body.Close()
-
 		if err != nil {
 			log.Fatal(err)
 		}
 	}()
 
 	b, err := ioutil.ReadAll(response.Body)
-
 	if err != nil {
 		return response.StatusCode, b, errResponse{request, response, b}
 	}

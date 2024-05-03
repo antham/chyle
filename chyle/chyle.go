@@ -22,7 +22,6 @@ var EnableDebugging = false
 // BuildChangelog creates a changelog from defined configuration
 func BuildChangelog(envConfig *envh.EnvTree) error {
 	conf, err := config.Create(envConfig)
-
 	if err != nil {
 		return err
 	}
@@ -32,7 +31,6 @@ func BuildChangelog(envConfig *envh.EnvTree) error {
 	}
 
 	commits, err := git.FetchCommits(conf.GIT.REPOSITORY.PATH, conf.GIT.REFERENCE.FROM, conf.GIT.REFERENCE.TO)
-
 	if err != nil {
 		return err
 	}
