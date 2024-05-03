@@ -34,7 +34,6 @@ func proceed(process *process, commits *[]object.Commit) error {
 	changelog, err := decorators.Decorate(process.decorators,
 		extractors.Extract(process.extractors,
 			matchers.Filter(process.matchers, commits)))
-
 	if err != nil {
 		return err
 	}

@@ -36,6 +36,7 @@ func TestSend(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, `{"datas":[{"id":1,"test":"test"},{"id":2,"test":"test"}],"metadatas":{}}`, strings.TrimRight(buf.String(), "\n"))
 }
+
 func TestCreate(t *testing.T) {
 	tests := []func() (Features, Config){
 		func() (Features, Config) {

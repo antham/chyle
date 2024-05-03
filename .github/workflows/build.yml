@@ -14,3 +14,5 @@ permissions:
 jobs:
   call-workflow:
     uses: antham/go-workflow-github-action/.github/workflows/build.yml@master
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

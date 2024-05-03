@@ -27,13 +27,11 @@ type customAPI struct {
 
 func (c customAPI) createRequest(changelog *types.Changelog) (*http.Request, error) {
 	payload, err := json.Marshal(changelog)
-
 	if err != nil {
 		return nil, err
 	}
 
 	req, err := http.NewRequest("POST", c.config.ENDPOINT.URL, bytes.NewBuffer(payload))
-
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +48,6 @@ func (c customAPI) Send(changelog *types.Changelog) error {
 	errMsg := "can't call custom api to send release"
 
 	req, err := c.createRequest(changelog)
-
 	if err != nil {
 		return errh.AddCustomMessageToError(errMsg, err)
 	}

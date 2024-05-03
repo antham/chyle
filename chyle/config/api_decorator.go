@@ -141,7 +141,6 @@ func (a *apiDecoratorConfigurator) applyCustomValidators(keyChains *[][]string) 
 // validateKeys checks key mapping between fields extracted from api and fields added to final struct
 func (a *apiDecoratorConfigurator) validateKeys() error {
 	keys, err := a.config.FindChildrenKeys("CHYLE", "DECORATORS", a.decoratorKey, "KEYS")
-
 	if err != nil {
 		return EnvValidationError{fmt.Sprintf(`define at least one environment variable couple "CHYLE_DECORATORS_%s_KEYS_*_DESTKEY" and "CHYLE_DECORATORS_%s_KEYS_*_FIELD", replace "*" with your own naming`, a.decoratorKey, a.decoratorKey), strings.Join([]string{"CHYLE", "DECORATORS", a.decoratorKey, "KEYS"}, "_")}
 	}

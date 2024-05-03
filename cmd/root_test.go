@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 	"sync"
 	"testing"
@@ -42,8 +42,7 @@ func TestExecute(t *testing.T) {
 
 	w.Wait()
 
-	output, err := ioutil.ReadAll(writer.(*bytes.Buffer))
-
+	output, err := io.ReadAll(writer.(*bytes.Buffer))
 	if err != nil {
 		t.Fatal(err)
 	}

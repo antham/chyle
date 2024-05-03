@@ -76,7 +76,6 @@ func TestPopulateTemplate(t *testing.T) {
 		store = map[string]interface{}{}
 
 		d, err := Build(test.ID, test.template, test.data)
-
 		if err != nil {
 			assert.EqualError(t, err, test.errStr)
 

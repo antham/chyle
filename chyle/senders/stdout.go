@@ -31,7 +31,6 @@ type templateStdout struct {
 
 func (t templateStdout) Send(changelog *types.Changelog) error {
 	datas, err := tmplh.Build("stdout-template", t.template, changelog)
-
 	if err != nil {
 		return err
 	}

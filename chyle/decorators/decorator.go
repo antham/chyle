@@ -20,7 +20,6 @@ func Decorate(decorators *map[string][]Decorater, changelog *types.Changelog) (*
 
 		for _, decorator := range (*decorators)["datas"] {
 			result, err = decorator.Decorate(&d)
-
 			if err != nil {
 				return nil, err
 			}
@@ -35,7 +34,6 @@ func Decorate(decorators *map[string][]Decorater, changelog *types.Changelog) (*
 
 	for _, decorator := range (*decorators)["metadatas"] {
 		m, err := decorator.Decorate(&metadatas)
-
 		if err != nil {
 			return nil, err
 		}

@@ -2,13 +2,16 @@ package prompt
 
 import (
 	"fmt"
+
 	"github.com/antham/strumt/v2"
 
 	"github.com/antham/chyle/prompt/internal/builder"
 )
 
-const json = "json"
-const template = "template"
+const (
+	json     = "json"
+	template = "template"
+)
 
 func newSenders(store *builder.Store) []strumt.Prompter {
 	return mergePrompters(

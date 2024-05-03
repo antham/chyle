@@ -21,7 +21,6 @@ func TestPrompt(t *testing.T) {
 	}
 
 	tests := []test{
-
 		// Mandatory parameters only
 		{
 			"HEAD\nHEAD~2\n/home/project\nq\n",

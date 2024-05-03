@@ -76,15 +76,13 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 	assert.Len(t, *(p.senders), 1)
 }
 
-type mockDecorator struct {
-}
+type mockDecorator struct{}
 
 func (m mockDecorator) Decorate(*map[string]interface{}) (*map[string]interface{}, error) {
 	return &map[string]interface{}{}, fmt.Errorf("An error occured from mock decorator")
 }
 
-type mockSender struct {
-}
+type mockSender struct{}
 
 func (m mockSender) Send(changelog *types.Changelog) error {
 	return fmt.Errorf("An error occured from mock sender")

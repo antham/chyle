@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 	"os/exec"
 	"sync"
@@ -54,7 +54,6 @@ func TestCreate(t *testing.T) {
 func TestCreateWithErrors(t *testing.T) {
 	for _, filename := range []string{"../features/init.sh", "../features/merge-commits.sh"} {
 		err := exec.Command(filename).Run()
-
 		if err != nil {
 			logrus.Fatal(err)
 		}
@@ -122,8 +121,7 @@ func TestCreateWithErrors(t *testing.T) {
 
 		w.Wait()
 
-		output, err := ioutil.ReadAll(writer.(*bytes.Buffer))
-
+		output, err := io.ReadAll(writer.(*bytes.Buffer))
 		if err != nil {
 			t.Fatal(err)
 		}

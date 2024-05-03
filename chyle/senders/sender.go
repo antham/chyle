@@ -13,7 +13,6 @@ type Sender interface {
 func Send(senders *[]Sender, changelog *types.Changelog) error {
 	for _, sender := range *senders {
 		err := sender.Send(changelog)
-
 		if err != nil {
 			return err
 		}

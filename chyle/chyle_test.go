@@ -3,7 +3,6 @@ package chyle
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -16,7 +15,6 @@ import (
 func TestBuildChangelog(t *testing.T) {
 	restoreEnvs()
 	p, err := os.Getwd()
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,8 +28,7 @@ func TestBuildChangelog(t *testing.T) {
 	setenv("CHYLE_EXTRACTORS_MESSAGE_REG", "(.{1,50})")
 	setenv("CHYLE_SENDERS_STDOUT_FORMAT", "json")
 
-	f, err := ioutil.TempFile(p+"/testing-repository", "test")
-
+	f, err := os.CreateTemp(p+"/testing-repository", "test")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +40,6 @@ func TestBuildChangelog(t *testing.T) {
 	}()
 
 	config, err := envh.NewEnvTree("CHYLE", "_")
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +53,7 @@ func TestBuildChangelog(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	b, err := ioutil.ReadFile(f.Name())
+	b, err := os.ReadFile(f.Name())
 
 	assert.NoError(t, err)
 
@@ -120,7 +116,6 @@ func TestBuildChangelog(t *testing.T) {
 func TestBuildChangelogWithAnErrorFromGitPackage(t *testing.T) {
 	restoreEnvs()
 	p, err := os.Getwd()
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -135,7 +130,6 @@ func TestBuildChangelogWithAnErrorFromGitPackage(t *testing.T) {
 	setenv("CHYLE_SENDERS_STDOUT_FORMAT", "json")
 
 	config, err := envh.NewEnvTree("CHYLE", "_")
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -149,7 +143,6 @@ func TestBuildChangelogWithAnErrorFromGitPackage(t *testing.T) {
 func TestBuildChangelogWithAnErrorFromConfigPackage(t *testing.T) {
 	restoreEnvs()
 	p, err := os.Getwd()
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -160,7 +153,6 @@ func TestBuildChangelogWithAnErrorFromConfigPackage(t *testing.T) {
 	setenv("CHYLE_SENDERS_STDOUT_FORMAT", "whatever")
 
 	config, err := envh.NewEnvTree("CHYLE", "_")
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -174,7 +166,6 @@ func TestBuildChangelogWithAnErrorFromConfigPackage(t *testing.T) {
 func TestBuildChangelogWithDebuggingEnabled(t *testing.T) {
 	restoreEnvs()
 	p, err := os.Getwd()
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -190,7 +181,6 @@ func TestBuildChangelogWithDebuggingEnabled(t *testing.T) {
 	setenv("CHYLE_EXTRACTORS_MESSAGE_REG", "(.{1,50})")
 
 	config, err := envh.NewEnvTree("CHYLE", "_")
-
 	if err != nil {
 		log.Fatal(err)
 	}

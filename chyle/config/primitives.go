@@ -90,7 +90,6 @@ func validateTemplate(fullconfig *envh.EnvTree, keyChain []string) error {
 	val := fullconfig.FindStringUnsecured(keyChain...)
 
 	_, err := tmplh.Parse("test", val)
-
 	if err != nil {
 		return EnvValidationError{fmt.Sprintf(`provide a valid template string for "%s" : "%s", "%s" given`, strings.Join(keyChain, "_"), err.Error(), val), strings.Join(keyChain, "_")}
 	}

@@ -1,9 +1,9 @@
 package builder
 
 import (
-	"github.com/antham/strumt/v2"
-
 	"fmt"
+
+	"github.com/antham/strumt/v2"
 )
 
 // NewSwitchPrompt creates a new prompt used to provides several choices, like a menu can do
