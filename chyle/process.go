@@ -7,7 +7,7 @@ import (
 	"github.com/antham/chyle/chyle/matchers"
 	"github.com/antham/chyle/chyle/senders"
 
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
 // process represents all steps executed
