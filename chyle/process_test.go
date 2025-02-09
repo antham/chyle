@@ -12,7 +12,7 @@ import (
 	"github.com/antham/chyle/chyle/senders"
 	"github.com/antham/chyle/chyle/types"
 
-	"gopkg.in/src-d/go-git.v4/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/object"
 
 	"github.com/stretchr/testify/assert"
 )
