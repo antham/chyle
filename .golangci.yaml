@@ -1,3 +1,4 @@
-linters:
+version: "2"
+formatters:
   enable:
     - gofumpt
