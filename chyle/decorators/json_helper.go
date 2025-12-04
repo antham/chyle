@@ -20,7 +20,7 @@ type jSONResponse struct {
 	}
 }
 
-func (j jSONResponse) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+func (j jSONResponse) Decorate(commitMap *map[string]any) (*map[string]any, error) {
 	statusCode, body, err := apih.SendRequest(j.client, j.request)
 
 	if statusCode == 404 {

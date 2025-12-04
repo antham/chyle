@@ -20,7 +20,7 @@ func parseBool(str string) (bool, error) {
 
 // GuessPrimitiveType extracts underlying primitive type from a string
 // ,"true" will be translated as a boolean value for instance
-func GuessPrimitiveType(str string) interface{} {
+func GuessPrimitiveType(str string) any {
 	if b, err := parseBool(str); err == nil {
 		return b
 	}
@@ -37,7 +37,7 @@ func GuessPrimitiveType(str string) interface{} {
 }
 
 // ConvertToString extracts string value from an interface
-func ConvertToString(value interface{}) (string, error) {
+func ConvertToString(value any) (string, error) {
 	switch v := value.(type) {
 	case int:
 		return strconv.Itoa(v), nil

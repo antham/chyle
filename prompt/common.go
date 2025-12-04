@@ -1,6 +1,7 @@
 package prompt
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 	"regexp"
@@ -54,7 +55,7 @@ func noOpValidator(value string) error {
 
 func validateDefinedValue(value string) error {
 	if value == "" {
-		return fmt.Errorf("No value given")
+		return errors.New("no value given")
 	}
 
 	return nil

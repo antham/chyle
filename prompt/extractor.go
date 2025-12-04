@@ -48,5 +48,5 @@ func validateExtractorCommitField(value string) error {
 		}
 	}
 
-	return fmt.Errorf("Must be one of %v", fields)
+	return fmt.Errorf("must be one of %v", fields)
 }

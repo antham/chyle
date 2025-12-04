@@ -36,7 +36,7 @@ func NewGroupEnvPromptWithCounter(configs []EnvConfig, store *Store) []strumt.Pr
 func parseEnvWithCounter(validator func(string) error, env string, defaultValue string, counter *counter.Counter, store *Store) func(value string) error {
 	return func(value string) error {
 		if value == "" && defaultValue != "" {
-			(*store)[strings.Replace(env, "*", counter.Get(), -1)] = defaultValue
+			(*store)[strings.ReplaceAll(env, "*", counter.Get())] = defaultValue
 
 			return nil
 		}
@@ -46,7 +46,7 @@ func parseEnvWithCounter(validator func(string) error, env string, defaultValue 
 		}
 
 		if value != "" {
-			(*store)[strings.Replace(env, "*", counter.Get(), -1)] = value
+			(*store)[strings.ReplaceAll(env, "*", counter.Get())] = value
 		}
 
 		return nil
@@ -56,7 +56,7 @@ func parseEnvWithCounter(validator func(string) error, env string, defaultValue 
 func parseEnvWithCounterAndIncrement(validator func(string) error, env string, defaultValue string, counter *counter.Counter, store *Store) func(value string) error {
 	return func(value string) error {
 		if value == "" && defaultValue != "" {
-			(*store)[strings.Replace(env, "*", counter.Get(), -1)] = defaultValue
+			(*store)[strings.ReplaceAll(env, "*", counter.Get())] = defaultValue
 
 			return nil
 		}
@@ -66,7 +66,7 @@ func parseEnvWithCounterAndIncrement(validator func(string) error, env string, d
 		}
 
 		if value != "" {
-			(*store)[strings.Replace(env, "*", counter.Get(), -1)] = value
+			(*store)[strings.ReplaceAll(env, "*", counter.Get())] = value
 		}
 
 		counter.Increment()

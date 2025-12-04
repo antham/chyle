@@ -22,8 +22,8 @@ type shell struct {
 	DESTKEY string
 }
 
-func (s shell) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
-	var tmp interface{}
+func (s shell) Decorate(commitMap *map[string]any) (*map[string]any, error) {
+	var tmp any
 	var value string
 	var ok bool
 	var err error
@@ -47,7 +47,7 @@ func (s shell) execute(value string) (string, error) {
 	var result []byte
 	var err error
 
-	command := fmt.Sprintf(`echo "%s"|%s`, strings.Replace(value, `"`, `\"`, -1), s.COMMAND)
+	command := fmt.Sprintf(`echo "%s"|%s`, strings.ReplaceAll(value, `"`, `\"`), s.COMMAND)
 
 	/* #nosec */
 	if result, err = exec.Command("sh", "-c", command).Output(); err != nil {

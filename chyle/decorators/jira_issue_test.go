@@ -43,9 +43,9 @@ func TestJira(t *testing.T) {
 	j := jiraIssue{*client, config}
 
 	// request with issue id
-	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
+	result, err := j.Decorate(&map[string]any{"test": "test", "jiraIssueId": int64(10000)})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":         "test",
 		"jiraIssueId":  int64(10000),
 		"jiraIssueKey": "EX-1",
@@ -55,9 +55,9 @@ func TestJira(t *testing.T) {
 	assert.Equal(t, expected, *result)
 
 	// request with issue key
-	result, err = j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": "EX-1"})
+	result, err = j.Decorate(&map[string]any{"test": "test", "jiraIssueId": "EX-1"})
 
-	expected = map[string]interface{}{
+	expected = map[string]any{
 		"test":         "test",
 		"jiraIssueId":  "EX-1",
 		"jiraIssueKey": "EX-1",
@@ -80,9 +80,9 @@ func TestJiraWithNoJiraIssueIdDefined(t *testing.T) {
 
 	j := jiraIssue{*client, jiraIssueConfig{}}
 
-	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
+	result, err := j.Decorate(&map[string]any{"test": "test"})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test": "test",
 	}
 
@@ -121,9 +121,9 @@ func TestJiraWhenIssueIsNotFound(t *testing.T) {
 
 	j := jiraIssue{*client, config}
 
-	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": int64(10000)})
+	result, err := j.Decorate(&map[string]any{"test": "test", "jiraIssueId": int64(10000)})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":        "test",
 		"jiraIssueId": int64(10000),
 	}
@@ -157,9 +157,9 @@ func TestJiraWithJiraIssueIdMissing(t *testing.T) {
 
 	j := jiraIssue{*client, config}
 
-	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
+	result, err := j.Decorate(&map[string]any{"test": "test"})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test": "test",
 	}
 
@@ -191,9 +191,9 @@ func TestJiraWithJiraIssueIdEmpty(t *testing.T) {
 
 	j := jiraIssue{*client, config}
 
-	result, err := j.Decorate(&map[string]interface{}{"test": "test", "jiraIssueId": ""})
+	result, err := j.Decorate(&map[string]any{"test": "test", "jiraIssueId": ""})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":        "test",
 		"jiraIssueId": "",
 	}

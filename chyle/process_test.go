@@ -78,8 +78,8 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 
 type mockDecorator struct{}
 
-func (m mockDecorator) Decorate(*map[string]interface{}) (*map[string]interface{}, error) {
-	return &map[string]interface{}{}, fmt.Errorf("An error occured from mock decorator")
+func (m mockDecorator) Decorate(*map[string]any) (*map[string]any, error) {
+	return &map[string]any{}, fmt.Errorf("An error occured from mock decorator")
 }
 
 type mockSender struct{}
@@ -88,8 +88,8 @@ func (m mockSender) Send(changelog *types.Changelog) error {
 	return fmt.Errorf("An error occured from mock sender")
 }
 
-func (m mockSender) Decorate(*map[string]interface{}) (*map[string]interface{}, error) {
-	return &map[string]interface{}{}, fmt.Errorf("An error occured from mock decorator")
+func (m mockSender) Decorate(*map[string]any) (*map[string]any, error) {
+	return &map[string]any{}, fmt.Errorf("An error occured from mock decorator")
 }
 
 func TestBuildProcessWithErrorsFromDecorator(t *testing.T) {

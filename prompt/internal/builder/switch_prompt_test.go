@@ -61,7 +61,7 @@ func TestCreateSwitchChoice(t *testing.T) {
 		},
 		{
 			"4",
-			fmt.Errorf("This choice doesn't exist"),
+			fmt.Errorf("this choice doesn't exist"),
 		},
 		{
 			"3",

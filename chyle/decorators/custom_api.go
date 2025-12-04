@@ -27,7 +27,7 @@ type customAPI struct {
 	config customAPIConfig
 }
 
-func (c customAPI) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+func (c customAPI) Decorate(commitMap *map[string]any) (*map[string]any, error) {
 	var ID string
 
 	switch v := (*commitMap)["customApiId"].(type) {

@@ -10,7 +10,7 @@ func TestPopulateTemplate(t *testing.T) {
 	tests := []struct {
 		ID       string
 		template string
-		data     interface{}
+		data     any
 		expected string
 		errStr   string
 	}{
@@ -73,7 +73,7 @@ func TestPopulateTemplate(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		store = map[string]interface{}{}
+		store = map[string]any{}
 
 		d, err := Build(test.ID, test.template, test.data)
 		if err != nil {

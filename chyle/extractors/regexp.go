@@ -13,8 +13,8 @@ type regex struct {
 	re         *regexp.Regexp
 }
 
-func (r regex) Extract(commitMap *map[string]interface{}) *map[string]interface{} {
-	var mapValue interface{}
+func (r regex) Extract(commitMap *map[string]any) *map[string]any {
+	var mapValue any
 	var ok bool
 
 	if mapValue, ok = (*commitMap)[r.index]; !ok {

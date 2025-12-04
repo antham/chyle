@@ -82,7 +82,7 @@ var matcher = []builder.EnvConfig{
 
 func validateMatcherType(value string) error {
 	if value != "regular" && value != "merge" {
-		return fmt.Errorf(`Must be "regular" or "merge"`)
+		return fmt.Errorf(`must be "regular" or "merge"`)
 	}
 
 	return nil

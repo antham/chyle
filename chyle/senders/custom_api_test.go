@@ -32,11 +32,11 @@ func TestCustomAPI(t *testing.T) {
 	s.client = client
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
+	c.Datas = append(c.Datas, map[string]any{"test": "Hello world !"})
 
 	err := s.Send(&c)
 
@@ -64,11 +64,11 @@ func TestCustomAPIWithWrongCredentials(t *testing.T) {
 	s.client = client
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
+	c.Datas = append(c.Datas, map[string]any{"test": "Hello world !"})
 
 	err := s.Send(&c)
 
@@ -87,11 +87,11 @@ func TestCustomAPIWithWrongURL(t *testing.T) {
 	s.client = client
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
+	c.Datas = append(c.Datas, map[string]any{"test": "Hello world !"})
 
 	err := s.Send(&c)
 

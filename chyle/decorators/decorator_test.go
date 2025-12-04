@@ -46,7 +46,7 @@ func TestDecorator(t *testing.T) {
 	}
 
 	changelog := types.Changelog{
-		Datas: []map[string]interface{}{
+		Datas: []map[string]any{
 			{
 				"test":        "test1",
 				"jiraIssueId": "10000",
@@ -56,13 +56,13 @@ func TestDecorator(t *testing.T) {
 				"jiraIssueId": "ABC-123",
 			},
 		},
-		Metadatas: map[string]interface{}{},
+		Metadatas: map[string]any{},
 	}
 
 	result, err := Decorate(&decorators, &changelog)
 
 	expected := types.Changelog{
-		Datas: []map[string]interface{}{
+		Datas: []map[string]any{
 			{
 				"test":         "test1",
 				"jiraIssueId":  "10000",
@@ -74,7 +74,7 @@ func TestDecorator(t *testing.T) {
 				"jiraIssueKey": "ABC-123",
 			},
 		},
-		Metadatas: map[string]interface{}{},
+		Metadatas: map[string]any{},
 	}
 
 	assert.NoError(t, err)

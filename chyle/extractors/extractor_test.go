@@ -38,7 +38,7 @@ func TestExtract(t *testing.T) {
 		},
 	}
 
-	commitMaps := []map[string]interface{}{
+	commitMaps := []map[string]any{
 		{
 			"id":               "Whatever #30 whatever true 12345 whatever 12345.12",
 			"secondIdentifier": "test #12345",
@@ -55,7 +55,7 @@ func TestExtract(t *testing.T) {
 	results := Extract(&extractors, &commitMaps)
 
 	expected := types.Changelog{
-		Datas: []map[string]interface{}{
+		Datas: []map[string]any{
 			{
 				"id":               "Whatever #30 whatever true 12345 whatever 12345.12",
 				"secondIdentifier": "test #12345",
@@ -82,7 +82,7 @@ func TestExtract(t *testing.T) {
 				"floatValue":   "",
 			},
 		},
-		Metadatas: map[string]interface{}{},
+		Metadatas: map[string]any{},
 	}
 
 	assert.Equal(t, expected, *results)

@@ -15,7 +15,7 @@ type env struct {
 	destKey string
 }
 
-func (e env) Decorate(metadatas *map[string]interface{}) (*map[string]interface{}, error) {
+func (e env) Decorate(metadatas *map[string]any) (*map[string]any, error) {
 	(*metadatas)[e.destKey] = os.Getenv(e.varName)
 
 	return metadatas, nil
