@@ -16,11 +16,11 @@ func TestSend(t *testing.T) {
 	s := jSONStdout{buf}
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = []map[string]interface{}{
+	c.Datas = []map[string]any{
 		{
 			"id":   1,
 			"test": "test",

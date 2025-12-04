@@ -10,7 +10,7 @@ type Matcher interface {
 }
 
 // Filter filters commits that don't fit any matchers
-func Filter(matchers *[]Matcher, commits *[]object.Commit) *[]map[string]interface{} {
+func Filter(matchers *[]Matcher, commits *[]object.Commit) *[]map[string]any {
 	results := []object.Commit{}
 
 	for _, commit := range *commits {
@@ -30,12 +30,12 @@ func Filter(matchers *[]Matcher, commits *[]object.Commit) *[]map[string]interfa
 }
 
 // transformCommitsToMap extract useful commits data in hash map table
-func transformCommitsToMap(commits *[]object.Commit) *[]map[string]interface{} {
-	var commitMap map[string]interface{}
-	commitMaps := []map[string]interface{}{}
+func transformCommitsToMap(commits *[]object.Commit) *[]map[string]any {
+	var commitMap map[string]any
+	commitMaps := []map[string]any{}
 
 	for _, c := range *commits {
-		commitMap = map[string]interface{}{
+		commitMap = map[string]any{
 			"id":             c.ID().String(),
 			"authorName":     c.Author.Name,
 			"authorEmail":    c.Author.Email,

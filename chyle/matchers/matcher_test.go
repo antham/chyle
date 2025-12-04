@@ -191,7 +191,7 @@ func TestTransformCommitsToMap(t *testing.T) {
 	commits := []object.Commit{commit1}
 	commitMaps := transformCommitsToMap(&commits)
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"id":             commit1.ID().String(),
 		"authorName":     commit1.Author.Name,
 		"authorEmail":    commit1.Author.Email,

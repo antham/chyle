@@ -27,7 +27,7 @@ type githubIssue struct {
 	config githubIssueConfig
 }
 
-func (g githubIssue) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+func (g githubIssue) Decorate(commitMap *map[string]any) (*map[string]any, error) {
 	var ID int64
 	var ok bool
 

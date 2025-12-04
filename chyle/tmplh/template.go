@@ -9,7 +9,7 @@ import (
 	"github.com/antham/chyle/chyle/errh"
 )
 
-var store = map[string]interface{}{}
+var store = map[string]any{}
 
 func isset(key string) bool {
 	_, ok := store[key]
@@ -17,13 +17,13 @@ func isset(key string) bool {
 	return ok
 }
 
-func set(key string, value interface{}) string {
+func set(key string, value any) string {
 	store[key] = value
 
 	return ""
 }
 
-func get(key string) interface{} {
+func get(key string) any {
 	return store[key]
 }
 
@@ -39,7 +39,7 @@ func Parse(ID string, template string) (*tmpl.Template, error) {
 
 // Build creates a template instance and runs it against datas to get
 // final resolved string
-func Build(ID string, template string, data interface{}) (string, error) {
+func Build(ID string, template string, data any) (string, error) {
 	t, err := Parse(ID, template)
 	if err != nil {
 		return "", errh.AddCustomMessageToError("check your template is well-formed", err)

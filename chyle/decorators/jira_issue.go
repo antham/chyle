@@ -25,7 +25,7 @@ type jiraIssue struct {
 	config jiraIssueConfig
 }
 
-func (j jiraIssue) Decorate(commitMap *map[string]interface{}) (*map[string]interface{}, error) {
+func (j jiraIssue) Decorate(commitMap *map[string]any) (*map[string]any, error) {
 	var ID string
 
 	switch v := (*commitMap)["jiraIssueId"].(type) {

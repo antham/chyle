@@ -6,12 +6,12 @@ import (
 
 // Extracter describes a way to extract data from a commit hashmap summary
 type Extracter interface {
-	Extract(*map[string]interface{}) *map[string]interface{}
+	Extract(*map[string]any) *map[string]any
 }
 
 // Extract parses commit fields to extract datas
-func Extract(extractors *[]Extracter, commitMaps *[]map[string]interface{}) *types.Changelog {
-	results := []map[string]interface{}{}
+func Extract(extractors *[]Extracter, commitMaps *[]map[string]any) *types.Changelog {
+	results := []map[string]any{}
 
 	for _, commitMap := range *commitMaps {
 		result := &commitMap
@@ -25,7 +25,7 @@ func Extract(extractors *[]Extracter, commitMaps *[]map[string]interface{}) *typ
 
 	changelog := types.Changelog{}
 	changelog.Datas = results
-	changelog.Metadatas = map[string]interface{}{}
+	changelog.Metadatas = map[string]any{}
 
 	return &changelog
 }

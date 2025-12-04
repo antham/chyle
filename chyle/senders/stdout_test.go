@@ -24,11 +24,11 @@ func TestJSONStdout(t *testing.T) {
 	s := jSONStdout{buf}
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = []map[string]interface{}{
+	c.Datas = []map[string]any{
 		{
 			"id":   1,
 			"test": "test",
@@ -51,11 +51,11 @@ func TestTemplateStdout(t *testing.T) {
 	s := templateStdout{buf, "{{ range $key, $value := .Datas }}{{$value.id}} : {{$value.test}} | {{ end }}"}
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = []map[string]interface{}{
+	c.Datas = []map[string]any{
 		{
 			"id":   1,
 			"test": "test",

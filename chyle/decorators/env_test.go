@@ -22,11 +22,11 @@ func TestEnvs(t *testing.T) {
 		},
 	}
 
-	metadatas := map[string]interface{}{}
+	metadatas := map[string]any{}
 
 	e := newEnvs(envs)
 	m, err := e[0].Decorate(&metadatas)
 
 	assert.NoError(t, err)
-	assert.Equal(t, map[string]interface{}{"envTesting": "this is a test"}, *m)
+	assert.Equal(t, map[string]any{"envTesting": "this is a test"}, *m)
 }

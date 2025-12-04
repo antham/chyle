@@ -43,11 +43,11 @@ func TestGithubReleaseCreateRelease(t *testing.T) {
 	s.client = client
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
+	c.Datas = append(c.Datas, map[string]any{"test": "Hello world !"})
 
 	err = s.Send(&c)
 
@@ -81,11 +81,11 @@ func TestGithubReleaseCreateReleaseWithWrongCredentials(t *testing.T) {
 	s.client = client
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
+	c.Datas = append(c.Datas, map[string]any{"test": "Hello world !"})
 
 	err := s.Send(&c)
 
@@ -132,11 +132,11 @@ func TestGithubReleaseUpdateRelease(t *testing.T) {
 	s.client = client
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
+	c.Datas = append(c.Datas, map[string]any{"test": "Hello world !"})
 
 	err = s.Send(&c)
 
@@ -170,11 +170,11 @@ func TestGithubReleaseUpdateReleaseWithWrongCredentials(t *testing.T) {
 	s.client = client
 
 	c := types.Changelog{
-		Datas:     []map[string]interface{}{},
-		Metadatas: map[string]interface{}{},
+		Datas:     []map[string]any{},
+		Metadatas: map[string]any{},
 	}
 
-	c.Datas = append(c.Datas, map[string]interface{}{"test": "Hello world !"})
+	c.Datas = append(c.Datas, map[string]any{"test": "Hello world !"})
 
 	err := s.Send(&c)
 

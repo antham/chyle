@@ -9,8 +9,8 @@ import (
 func TestShell(t *testing.T) {
 	tests := []struct {
 		config   shellConfig
-		datas    map[string]interface{}
-		expected map[string]interface{}
+		datas    map[string]any
+		expected map[string]any
 		errStr   string
 	}{
 		{
@@ -21,10 +21,10 @@ func TestShell(t *testing.T) {
 					"TO",
 				},
 			},
-			map[string]interface{}{
+			map[string]any{
 				"FROM": `a sentence with the letter "x"`,
 			},
-			map[string]interface{}{
+			map[string]any{
 				"FROM": `a sentence with the letter "x"`,
 				"TO":   `a sentence with the letter "y"`,
 			},
@@ -38,10 +38,10 @@ func TestShell(t *testing.T) {
 					"TO",
 				},
 			},
-			map[string]interface{}{
+			map[string]any{
 				"FROM": "",
 			},
-			map[string]interface{}{
+			map[string]any{
 				"FROM": "",
 				"TO":   "",
 			},
@@ -55,10 +55,10 @@ func TestShell(t *testing.T) {
 					"TO",
 				},
 			},
-			map[string]interface{}{
+			map[string]any{
 				"FROM": `hello "whatever" !`,
 			},
-			map[string]interface{}{
+			map[string]any{
 				"FROM": `hello "whatever" !`,
 				"TO":   `hello "world" !`,
 			},
@@ -72,10 +72,10 @@ func TestShell(t *testing.T) {
 					"TO",
 				},
 			},
-			map[string]interface{}{
+			map[string]any{
 				"FROM": "",
 			},
-			map[string]interface{}{
+			map[string]any{
 				"FROM": "",
 				"TO":   "",
 			},

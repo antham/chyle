@@ -10,7 +10,7 @@ import (
 func TestGuessPrimitiveType(t *testing.T) {
 	tests := []struct {
 		str      string
-		expected interface{}
+		expected any
 	}{
 		{
 			"test",
@@ -37,7 +37,7 @@ func TestGuessPrimitiveType(t *testing.T) {
 
 func TestConvertToString(t *testing.T) {
 	tests := []struct {
-		value    interface{}
+		value    any
 		expected string
 		err      error
 	}{

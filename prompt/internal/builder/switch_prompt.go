@@ -39,7 +39,7 @@ func (s *switchPrompt) PromptString() string {
 
 func (s *switchPrompt) Parse(value string) error {
 	if value == "" {
-		return fmt.Errorf("No value given")
+		return fmt.Errorf("no value given")
 	}
 
 	for _, choice := range s.choices {
@@ -48,7 +48,7 @@ func (s *switchPrompt) Parse(value string) error {
 		}
 	}
 
-	return fmt.Errorf("This choice doesn't exist")
+	return fmt.Errorf("this choice doesn't exist")
 }
 
 func (s *switchPrompt) NextOnSuccess(value string) string {

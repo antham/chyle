@@ -46,9 +46,9 @@ func TestGithubIssue(t *testing.T) {
 
 	j := githubIssue{*client, config}
 
-	result, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
+	result, err := j.Decorate(&map[string]any{"test": "test", "githubIssueId": int64(10000)})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":             "test",
 		"githubIssueId":    int64(10000),
 		"milestoneCreator": float64(1),
@@ -75,9 +75,9 @@ func TestGithubWithNoGithubIssueIdDefined(t *testing.T) {
 
 	j := githubIssue{*client, githubIssueConfig{}}
 
-	result, err := j.Decorate(&map[string]interface{}{"test": "test"})
+	result, err := j.Decorate(&map[string]any{"test": "test"})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test": "test",
 	}
 
@@ -119,7 +119,7 @@ func TestGithubIssueWithAnErrorStatusCode(t *testing.T) {
 
 	j := githubIssue{*client, config}
 
-	_, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
+	_, err := j.Decorate(&map[string]any{"test": "test", "githubIssueId": int64(10000)})
 
 	assert.EqualError(t, err, `an error occurred when contacting remote api through https://api.github.com/repos/user/repository/issues/10000, status code 401, body {"message": "Bad credentials","documentation_url": "https://developer.github.com/v3"}`)
 	assert.True(t, gock.IsDone(), "Must have no pending requests")
@@ -158,9 +158,9 @@ func TestGithubIssueWhenIssueIsNotFound(t *testing.T) {
 
 	j := githubIssue{*client, config}
 
-	result, err := j.Decorate(&map[string]interface{}{"test": "test", "githubIssueId": int64(10000)})
+	result, err := j.Decorate(&map[string]any{"test": "test", "githubIssueId": int64(10000)})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":          "test",
 		"githubIssueId": int64(10000),
 	}

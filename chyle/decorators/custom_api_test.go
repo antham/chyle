@@ -46,9 +46,9 @@ func TestCustomAPI(t *testing.T) {
 	c := customAPI{*client, config}
 
 	// request with int id
-	result, err := c.Decorate(&map[string]interface{}{"test": "test", "customApiId": int64(1)})
+	result, err := c.Decorate(&map[string]any{"test": "test", "customApiId": int64(1)})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":        "test",
 		"customApiId": int64(1),
 		"authorEmail": "test@test.com",
@@ -58,9 +58,9 @@ func TestCustomAPI(t *testing.T) {
 	assert.Equal(t, expected, *result)
 
 	// request with string id
-	result, err = c.Decorate(&map[string]interface{}{"test": "test", "customApiId": "145d5926-2c7b-42c5-b0ff-41cd9b73c56c"})
+	result, err = c.Decorate(&map[string]any{"test": "test", "customApiId": "145d5926-2c7b-42c5-b0ff-41cd9b73c56c"})
 
-	expected = map[string]interface{}{
+	expected = map[string]any{
 		"test":        "test",
 		"customApiId": "145d5926-2c7b-42c5-b0ff-41cd9b73c56c",
 		"authorEmail": "test@test.com",
@@ -98,9 +98,9 @@ func TestCustomAPIWithUnvalidResponse(t *testing.T) {
 
 	c := customAPI{*client, config}
 
-	result, err := c.Decorate(&map[string]interface{}{"test": "test", "customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721"})
+	result, err := c.Decorate(&map[string]any{"test": "test", "customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721"})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":        "test",
 		"customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721",
 	}
@@ -124,9 +124,9 @@ func TestCustomAPIWithNoCustomApiIdDefined(t *testing.T) {
 
 	c := customAPI{*client, customAPIConfig{}}
 
-	result, err := c.Decorate(&map[string]interface{}{"test": "test"})
+	result, err := c.Decorate(&map[string]any{"test": "test"})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test": "test",
 	}
 
@@ -162,9 +162,9 @@ func TestCustomAPIWithAnErrorStatusCode(t *testing.T) {
 
 	c := customAPI{*client, config}
 
-	result, err := c.Decorate(&map[string]interface{}{"test": "test", "customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721"})
+	result, err := c.Decorate(&map[string]any{"test": "test", "customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721"})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":        "test",
 		"customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721",
 	}
@@ -201,9 +201,9 @@ func TestCustomAPIWhenEntryIsNotFound(t *testing.T) {
 
 	c := customAPI{*client, config}
 
-	result, err := c.Decorate(&map[string]interface{}{"test": "test", "customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721"})
+	result, err := c.Decorate(&map[string]any{"test": "test", "customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721"})
 
-	expected := map[string]interface{}{
+	expected := map[string]any{
 		"test":        "test",
 		"customApiId": "5b23f37a-7404-49ce-812e-e7b3595ac721",
 	}
