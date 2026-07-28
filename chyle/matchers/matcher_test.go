@@ -58,6 +58,7 @@ func (e *encodedObject) Writer() (io.WriteCloser, error) {
 
 func TestMergeCommits(t *testing.T) {
 	buf1 := &buffer{}
+	buf1.WriteString("tree 0000000000000000000000000000000000000001\n")
 	buf1.WriteString("parent 10a34637ad661d98ba3344717656fcc76209c2f8\n")
 	buf1.WriteString("parent 3e6c06b1a28a035e21aa0a736ef80afadc43122c\n")
 	encodedMergeCommit1 := &encodedObject{
@@ -67,6 +68,7 @@ func TestMergeCommits(t *testing.T) {
 	encodedMergeCommit1.SetType(plumbing.CommitObject)
 
 	buf2 := &buffer{}
+	buf2.WriteString("tree 0000000000000000000000000000000000000002\n")
 	buf2.WriteString("parent 2503b2b99c061ff5bac94f2c1972e4c28cf1a844\n")
 	buf2.WriteString("parent ee7fbf1c52742cf4f30d00b0e9e477dde72c7e51\n")
 	encodedMergeCommit2 := &encodedObject{
@@ -97,6 +99,7 @@ func TestMergeCommits(t *testing.T) {
 
 func TestRegularCommits(t *testing.T) {
 	buf1 := &buffer{}
+	buf1.WriteString("tree 0000000000000000000000000000000000000003\n")
 	buf1.WriteString("parent da39a3ee5e6b4b0d3255bfef95601890afd80709\n")
 	buf1.WriteString("parent 10a34637ad661d98ba3344717656fcc76209c2f8\n")
 	encodedMergeCommit1 := &encodedObject{
@@ -106,6 +109,7 @@ func TestRegularCommits(t *testing.T) {
 	encodedMergeCommit1.SetType(plumbing.CommitObject)
 
 	buf2 := &buffer{}
+	buf2.WriteString("tree 0000000000000000000000000000000000000004\n")
 	buf2.WriteString("parent ecc1978dca2e31d10751ede8d8753f1cbded832e\n")
 	buf2.WriteString("parent 6110212c651287fa93aae5142e60b50edde00970\n")
 	encodedMergeCommit2 := &encodedObject{
