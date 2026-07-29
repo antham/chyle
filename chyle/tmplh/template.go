@@ -4,7 +4,7 @@ import (
 	"bytes"
 	tmpl "html/template"
 
-	"github.com/Masterminds/sprig"
+	"github.com/Masterminds/sprig/v3"
 
 	"github.com/antham/chyle/chyle/errh"
 )
