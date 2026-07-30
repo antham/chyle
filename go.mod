@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/antham/envh v1.5.0
-	github.com/antham/strumt/v2 v2.3.0
+	github.com/antham/strumt/v2 v2.4.0
 	github.com/fatih/color v1.19.0
 	github.com/go-git/go-git/v5 v5.19.1
 	github.com/sirupsen/logrus v1.9.4
