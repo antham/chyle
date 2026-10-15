@@ -156,7 +156,7 @@ func (a *apiDecoratorConfigurator) validateKeys() error {
 
 func (a *apiDecoratorConfigurator) setMandatoryParameters(config *CHYLE) {
 	for _, c := range a.mandatoryParamsRefs {
-		*(c.ref) = a.config.FindStringUnsecured(c.keyChain...)
+		*c.ref = a.config.FindStringUnsecured(c.keyChain...)
 	}
 }
 
