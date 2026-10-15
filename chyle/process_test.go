@@ -70,10 +70,10 @@ func TestBuildProcessWithAFullConfig(t *testing.T) {
 
 	p := newProcess(&conf)
 
-	assert.Len(t, *(p.matchers), 1)
-	assert.Len(t, *(p.extractors), 1)
-	assert.Len(t, *(p.decorators), 2)
-	assert.Len(t, *(p.senders), 1)
+	assert.Len(t, *p.matchers, 1)
+	assert.Len(t, *p.extractors, 1)
+	assert.Len(t, *p.decorators, 2)
+	assert.Len(t, *p.senders, 1)
 }
 
 type mockDecorator struct{}

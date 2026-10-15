@@ -87,8 +87,8 @@ func (m *matchersConfigurator) setMatchers(config *CHYLE) {
 			config.MATCHERS.TYPE = val
 			config.FEATURES.MATCHERS.TYPE = true
 		} else {
-			*(c[key].re) = regexp.MustCompile(val)
-			*(c[key].feature) = true
+			*c[key].re = regexp.MustCompile(val)
+			*c[key].feature = true
 		}
 	}
 }
